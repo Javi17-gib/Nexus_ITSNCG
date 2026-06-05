@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Grupo;
 use App\Models\GrupoUser;
 
+
 class GrupoController extends Controller
 {
     /**
@@ -107,58 +108,102 @@ class GrupoController extends Controller
     /**
      * ALUMNO: Unirse a grupo por código
      */
-    public function unirsePorCodigo(Request $request)
-    {
-        $request->validate([
-            'codigo_acceso' => 'required'
-        ]);
+ public function unirsePorCodigo(Request $request)
+{
+    $request->validate([
+        'codigo_acceso' => 'required|string'
+    ]);
 
-        // buscar grupo por código
-        $grupo = Grupo::where('codigo_acceso', $request->codigo_acceso)->first();
+    $grupo = Grupo::where('codigo_acceso', $request->codigo_acceso)->first();
 
-        if (!$grupo) {
-            return response()->json([
-                'message' => 'Código inválido'
-            ], 404);
-        }
-
-        // usuario autenticado
-        $userId = auth()->id();
-
-        if (!$userId) {
-            return response()->json([
-                'message' => 'No autenticado'
-            ], 401);
-        }
-
-        // evitar duplicados
-        $existe = GrupoUser::where('grupo_id', $grupo->id)
-            ->where('user_id', $userId)
-            ->first();
-
-        if ($existe) {
-            return response()->json([
-                'message' => 'Ya estás en este grupo o ya enviaste solicitud'
-            ], 400);
-        }
-
-        // crear solicitud
-        GrupoUser::create([
-            'grupo_id' => $grupo->id,
-            'user_id' => $userId,
-            'estado' => 'pendiente'
-        ]);
-
+    if (!$grupo) {
         return response()->json([
-            'message' => 'Solicitud enviada correctamente',
-            'grupo' => $grupo
+            'message' => 'Grupo no encontrado'
+        ], 404);
+    }
+
+    $user = $request->user();
+
+    // evitar duplicados
+    $existe = GrupoUser::where('grupo_id', $grupo->id)
+        ->where('user_id', $user->id)
+        ->first();
+
+    if ($existe) {
+        return response()->json([
+            'message' => 'Ya estás en este grupo'
         ]);
     }
- public function pendientes($id)
-{
-    return response()->json([
-        'ok' => true,
-        'grupo_id' => $id
+
+    GrupoUser::create([
+        'grupo_id' => $grupo->id,
+        'user_id' => $user->id,
+        'estado' => 'pendiente'
     ]);
+
+    return response()->json([
+        'message' => 'Solicitud enviada correctamente',
+        'grupo_id' => $grupo->id
+    ]);
+}
+
+    public function pendientes($id)
+{
+    $solicitudes = GrupoUser::where('grupo_id', $id)
+        ->where('estado', 'pendiente')
+        ->with('user')
+        ->get();
+
+    return response()->json([
+        'grupo_id' => $id,
+        'solicitudes' => $solicitudes
+    ]);
+}
+public function aceptarAlumno(Request $request, $grupoId, $userId)
+{
+    $registro = GrupoUser::where('grupo_id', $grupoId)
+        ->where('user_id', $userId)
+        ->first();
+
+    if (!$registro) {
+        return response()->json([
+            'message' => 'Solicitud no encontrada'
+        ], 404);
+    }
+
+    $registro->estado = 'aceptado';
+    $registro->save();
+
+    return response()->json([
+        'message' => 'Alumno aceptado correctamente'
+    ]);
+}
+public function rechazarAlumno(Request $request, $grupoId, $userId)
+{
+    $registro = GrupoUser::where('grupo_id', $grupoId)
+        ->where('user_id', $userId)
+        ->first();
+
+    if (!$registro) {
+        return response()->json([
+            'message' => 'Solicitud no encontrada'
+        ], 404);
+    }
+
+    $registro->estado = 'rechazado';
+    $registro->save();
+
+    return response()->json([
+        'message' => 'Alumno rechazado'
+    ]);
+}
+public function alumnos($id)
+{
+    $alumnos = \App\Models\GrupoUser::where('grupo_id', $id)
+        ->where('estado', 'aceptado')
+        ->with('user')
+        ->get();
+
+    return response()->json($alumnos);
 }
 }
