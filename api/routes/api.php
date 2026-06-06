@@ -3,6 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\GrupoController;
+use App\Http\Controllers\Api\MateriaController;
+use App\Http\Controllers\Api\UnidadController;
+use App\Http\Controllers\Api\TemaController;
+use App\Http\Controllers\Api\ContenidoController;
+use App\Http\Controllers\Api\ArchivoController;
+use App\Http\Controllers\Api\RetoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,5 +44,36 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/grupos/{grupoId}/rechazar/{userId}', [GrupoController::class, 'rechazarAlumno']);
 
     Route::get('/grupos/{id}/alumnos', [GrupoController::class, 'alumnos']);
+    Route::get('/mis-grupos', [GrupoController::class, 'misGrupos']);
+    Route::apiResource('materias', MateriaController::class);
 
+    Route::apiResource('unidades', UnidadController::class);
+
+    Route::get(
+        '/materias/{materiaId}/unidades',
+        [UnidadController::class, 'porMateria']
+    );
+
+    Route::apiResource('temas', TemaController::class);
+
+    Route::get(
+        '/unidades/{unidadId}/temas',
+        [TemaController::class, 'porUnidad']
+    );
+    Route::apiResource('contenidos', ContenidoController::class);
+
+    Route::get(
+        '/temas/{temaId}/contenidos',
+        [ContenidoController::class, 'porTema']
+    );
+
+    Route::apiResource('archivos', ArchivoController::class);
+
+    Route::get(
+        'contenidos/{contenidoId}/archivos',
+        [ArchivoController::class, 'porContenido']
+    );
+
+    Route::post('/retos', [RetoController::class, 'store']);
+    Route::get('/temas/{tema}/retos', [RetoController::class, 'index']);
 });

@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Contenido extends Model
 {
-    protected $fillable = [
-        'tema_id',
-        'titulo',
-        'contenido'
-    ];
+   protected $fillable = [
+    'tema_id',
+    'titulo',
+    'contenido',
+    'tipo'
+];
 
     public function tema()
     {

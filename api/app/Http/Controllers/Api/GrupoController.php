@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Grupo;
 use App\Models\GrupoUser;
+use Illuminate\Support\Str;
 
 
 class GrupoController extends Controller
@@ -24,29 +25,40 @@ class GrupoController extends Controller
      * Crear grupo (solo docente)
      */
     public function store(Request $request)
-    {
-        $request->validate([
-            'nombre' => 'required',
-            'materia_id' => 'required',
-            'codigo_acceso' => 'required',
-            'semestre' => 'required',
-            'periodo' => 'required'
-        ]);
-
-        $grupo = Grupo::create([
-            'nombre' => $request->nombre,
-            'materia_id' => $request->materia_id,
-            'docente_id' => auth()->id(), // docente logueado
-            'codigo_acceso' => $request->codigo_acceso,
-            'semestre' => $request->semestre,
-            'periodo' => $request->periodo
-        ]);
-
+{
+    // Solo docentes pueden crear grupos
+    if (auth()->user()->rol !== 'docente') {
         return response()->json([
-            'message' => 'Grupo creado correctamente',
-            'grupo' => $grupo
-        ]);
+            'message' => 'Solo los docentes pueden crear grupos'
+        ], 403);
     }
+
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'materia_id' => 'required|integer',
+        'semestre' => 'required|string|max:50',
+        'periodo' => 'required|string|max:100'
+    ]);
+
+    // Generar código único
+    do {
+        $codigo = Str::upper(Str::random(6));
+    } while (Grupo::where('codigo_acceso', $codigo)->exists());
+
+    $grupo = Grupo::create([
+        'nombre' => $request->nombre,
+        'materia_id' => $request->materia_id,
+        'docente_id' => auth()->id(),
+        'codigo_acceso' => $codigo,
+        'semestre' => $request->semestre,
+        'periodo' => $request->periodo
+    ]);
+
+    return response()->json([
+        'message' => 'Grupo creado correctamente',
+        'grupo' => $grupo
+    ], 201);
+}
 
     /**
      * Ver un grupo específico
@@ -161,6 +173,20 @@ class GrupoController extends Controller
 }
 public function aceptarAlumno(Request $request, $grupoId, $userId)
 {
+    $grupo = Grupo::find($grupoId);
+
+    if (!$grupo) {
+        return response()->json([
+            'message' => 'Grupo no encontrado'
+        ], 404);
+    }
+
+    if ($grupo->docente_id != auth()->id()) {
+        return response()->json([
+            'message' => 'No tienes permisos sobre este grupo'
+        ], 403);
+    }
+
     $registro = GrupoUser::where('grupo_id', $grupoId)
         ->where('user_id', $userId)
         ->first();
@@ -180,6 +206,20 @@ public function aceptarAlumno(Request $request, $grupoId, $userId)
 }
 public function rechazarAlumno(Request $request, $grupoId, $userId)
 {
+    $grupo = Grupo::find($grupoId);
+
+    if (!$grupo) {
+        return response()->json([
+            'message' => 'Grupo no encontrado'
+        ], 404);
+    }
+
+    if ($grupo->docente_id != auth()->id()) {
+        return response()->json([
+            'message' => 'No tienes permisos sobre este grupo'
+        ], 403);
+    }
+
     $registro = GrupoUser::where('grupo_id', $grupoId)
         ->where('user_id', $userId)
         ->first();
@@ -194,7 +234,7 @@ public function rechazarAlumno(Request $request, $grupoId, $userId)
     $registro->save();
 
     return response()->json([
-        'message' => 'Alumno rechazado'
+        'message' => 'Alumno rechazado correctamente'
     ]);
 }
 public function alumnos($id)
@@ -205,5 +245,15 @@ public function alumnos($id)
         ->get();
 
     return response()->json($alumnos);
+}
+public function misGrupos(Request $request)
+{
+    $grupos = GrupoUser::where('user_id', $request->user()->id)
+        ->where('estado', 'aceptado')
+        ->with('grupo')
+        ->get()
+        ->pluck('grupo');
+
+    return response()->json($grupos);
 }
 }

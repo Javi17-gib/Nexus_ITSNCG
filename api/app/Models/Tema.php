@@ -37,4 +37,9 @@ class Tema extends Model
     {
         return $this->hasMany(ProgresoAlumno::class);
     }
+
+    public function retos()
+    {
+        return $this->hasMany(Reto::class);
+    }
 }

@@ -37,4 +37,11 @@ class Grupo extends Model
         )->withPivot('estado')
          ->withTimestamps();
     }
+
+    public function usuarios()
+    {
+        return $this->belongsToMany(User::class, 'grupo_user')
+            ->withPivot('estado')
+            ->withTimestamps();
+    }
 }

@@ -58,13 +58,11 @@ class User extends Authenticatable
      * Grupos donde está inscrito el alumno.
      */
     public function grupos()
-    {
-        return $this->belongsToMany(
-            Grupo::class,
-            'grupo_user'
-        )->withPivot('estado')
-         ->withTimestamps();
-    }
+{
+    return $this->belongsToMany(Grupo::class, 'grupo_user')
+        ->withPivot('estado')
+        ->withTimestamps();
+}
 
     /**
      * Grupos que administra como docente.

@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Archivo extends Model
 {
     protected $fillable = [
-        'contenido_id',
-        'nombre',
-        'ruta',
-        'tipo'
-    ];
+    'contenido_id',
+    'nombre',
+    'ruta',
+    'tipo',
+    'tamano'
+];
 
     public function contenido()
     {
