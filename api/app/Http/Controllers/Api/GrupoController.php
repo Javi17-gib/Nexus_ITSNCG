@@ -80,42 +80,56 @@ class GrupoController extends Controller
      * Actualizar grupo
      */
     public function update(Request $request, string $id)
-    {
-        $grupo = Grupo::find($id);
+{
+    $grupo = Grupo::find($id);
 
-        if (!$grupo) {
-            return response()->json([
-                'message' => 'Grupo no encontrado'
-            ], 404);
-        }
-
-        $grupo->update($request->all());
-
+    if (!$grupo) {
         return response()->json([
-            'message' => 'Grupo actualizado',
-            'grupo' => $grupo
-        ]);
+            'message' => 'Grupo no encontrado'
+        ], 404);
     }
+
+    // Solo el docente dueño puede modificarlo
+    if ($grupo->docente_id != auth()->id()) {
+        return response()->json([
+            'message' => 'No tienes permisos sobre este grupo'
+        ], 403);
+    }
+
+    $grupo->update($request->all());
+
+    return response()->json([
+        'message' => 'Grupo actualizado correctamente',
+        'grupo' => $grupo
+    ]);
+}
 
     /**
      * Eliminar grupo
      */
     public function destroy(string $id)
-    {
-        $grupo = Grupo::find($id);
+{
+    $grupo = Grupo::find($id);
 
-        if (!$grupo) {
-            return response()->json([
-                'message' => 'Grupo no encontrado'
-            ], 404);
-        }
-
-        $grupo->delete();
-
+    if (!$grupo) {
         return response()->json([
-            'message' => 'Grupo eliminado'
-        ]);
+            'message' => 'Grupo no encontrado'
+        ], 404);
     }
+
+    // Solo el docente dueño puede eliminarlo
+    if ($grupo->docente_id != auth()->id()) {
+        return response()->json([
+            'message' => 'No tienes permisos sobre este grupo'
+        ], 403);
+    }
+
+    $grupo->delete();
+
+    return response()->json([
+        'message' => 'Grupo eliminado correctamente'
+    ]);
+}
 
     /**
      * ALUMNO: Unirse a grupo por código
@@ -159,8 +173,23 @@ class GrupoController extends Controller
     ]);
 }
 
-    public function pendientes($id)
+   public function pendientes($id)
 {
+    $grupo = Grupo::find($id);
+
+    if (!$grupo) {
+        return response()->json([
+            'message' => 'Grupo no encontrado'
+        ], 404);
+    }
+
+    // Solo el docente dueño puede ver solicitudes
+    if ($grupo->docente_id != auth()->id()) {
+        return response()->json([
+            'message' => 'No tienes permisos sobre este grupo'
+        ], 403);
+    }
+
     $solicitudes = GrupoUser::where('grupo_id', $id)
         ->where('estado', 'pendiente')
         ->with('user')
@@ -171,6 +200,7 @@ class GrupoController extends Controller
         'solicitudes' => $solicitudes
     ]);
 }
+
 public function aceptarAlumno(Request $request, $grupoId, $userId)
 {
     $grupo = Grupo::find($grupoId);
@@ -239,7 +269,22 @@ public function rechazarAlumno(Request $request, $grupoId, $userId)
 }
 public function alumnos($id)
 {
-    $alumnos = \App\Models\GrupoUser::where('grupo_id', $id)
+    $grupo = Grupo::find($id);
+
+    if (!$grupo) {
+        return response()->json([
+            'message' => 'Grupo no encontrado'
+        ], 404);
+    }
+
+    // Solo el docente dueño puede ver alumnos
+    if ($grupo->docente_id != auth()->id()) {
+        return response()->json([
+            'message' => 'No tienes permisos sobre este grupo'
+        ], 403);
+    }
+
+    $alumnos = GrupoUser::where('grupo_id', $id)
         ->where('estado', 'aceptado')
         ->with('user')
         ->get();

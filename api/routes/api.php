@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\TemaController;
 use App\Http\Controllers\Api\ContenidoController;
 use App\Http\Controllers\Api\ArchivoController;
 use App\Http\Controllers\Api\RetoController;
+use App\Http\Controllers\Api\EstadisticaController;
+use App\Http\Controllers\Api\ChatbotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,25 +29,66 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    // AUTH
+    /*
+    |--------------------------------------------------------------------------
+    | AUTH
+    |--------------------------------------------------------------------------
+    */
+
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', [AuthController::class, 'user']);
 
-    // GRUPOS
+    /*
+    |--------------------------------------------------------------------------
+    | GRUPOS
+    |--------------------------------------------------------------------------
+    */
+
     Route::apiResource('grupos', GrupoController::class);
 
-    // ALUMNO SE UNE
-    Route::post('/grupos/unirse', [GrupoController::class, 'unirsePorCodigo']);
+    Route::post(
+        '/grupos/unirse',
+        [GrupoController::class, 'unirsePorCodigo']
+    );
 
-    // DOCENTE VE PENDIENTES
-    Route::get('/grupos/{id}/pendientes', [GrupoController::class, 'pendientes']);
+    Route::get(
+        '/grupos/{id}/pendientes',
+        [GrupoController::class, 'pendientes']
+    );
 
-    Route::post('/grupos/{grupoId}/aceptar/{userId}', [GrupoController::class, 'aceptarAlumno']);
-    Route::post('/grupos/{grupoId}/rechazar/{userId}', [GrupoController::class, 'rechazarAlumno']);
+    Route::post(
+        '/grupos/{grupoId}/aceptar/{userId}',
+        [GrupoController::class, 'aceptarAlumno']
+    );
 
-    Route::get('/grupos/{id}/alumnos', [GrupoController::class, 'alumnos']);
-    Route::get('/mis-grupos', [GrupoController::class, 'misGrupos']);
+    Route::post(
+        '/grupos/{grupoId}/rechazar/{userId}',
+        [GrupoController::class, 'rechazarAlumno']
+    );
+
+    Route::get(
+        '/grupos/{id}/alumnos',
+        [GrupoController::class, 'alumnos']
+    );
+
+    Route::get(
+        '/mis-grupos',
+        [GrupoController::class, 'misGrupos']
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | MATERIAS
+    |--------------------------------------------------------------------------
+    */
+
     Route::apiResource('materias', MateriaController::class);
+
+    /*
+    |--------------------------------------------------------------------------
+    | UNIDADES
+    |--------------------------------------------------------------------------
+    */
 
     Route::apiResource('unidades', UnidadController::class);
 
@@ -54,12 +97,25 @@ Route::middleware('auth:sanctum')->group(function () {
         [UnidadController::class, 'porMateria']
     );
 
+    /*
+    |--------------------------------------------------------------------------
+    | TEMAS
+    |--------------------------------------------------------------------------
+    */
+
     Route::apiResource('temas', TemaController::class);
 
     Route::get(
         '/unidades/{unidadId}/temas',
         [TemaController::class, 'porUnidad']
     );
+
+    /*
+    |--------------------------------------------------------------------------
+    | CONTENIDOS
+    |--------------------------------------------------------------------------
+    */
+
     Route::apiResource('contenidos', ContenidoController::class);
 
     Route::get(
@@ -67,13 +123,73 @@ Route::middleware('auth:sanctum')->group(function () {
         [ContenidoController::class, 'porTema']
     );
 
+    /*
+    |--------------------------------------------------------------------------
+    | ARCHIVOS
+    |--------------------------------------------------------------------------
+    */
+
     Route::apiResource('archivos', ArchivoController::class);
 
     Route::get(
-        'contenidos/{contenidoId}/archivos',
+        '/contenidos/{contenidoId}/archivos',
         [ArchivoController::class, 'porContenido']
     );
 
-    Route::post('/retos', [RetoController::class, 'store']);
-    Route::get('/temas/{tema}/retos', [RetoController::class, 'index']);
+    /*
+    |--------------------------------------------------------------------------
+    | RETOS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::apiResource('retos', RetoController::class);
+
+    Route::get(
+        '/temas/{tema}/retos',
+        [RetoController::class, 'index']
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | ESTADÍSTICAS
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/estadisticas/registrar',
+        [EstadisticaController::class, 'registrar']
+    );
+
+    Route::get(
+        '/estadisticas/grupo/{grupoId}',
+        [EstadisticaController::class, 'visitasPorGrupo']
+    );
+
+    Route::get(
+        '/estadisticas/grupo/{grupoId}/semana',
+        [EstadisticaController::class, 'visitasPorSemana']
+    );
+
+    Route::get(
+        '/estadisticas/grupo/{grupoId}/activos',
+        [EstadisticaController::class, 'alumnosActivos']
+    );
+
+    Route::get(
+        '/estadisticas/materia/{materiaId}',
+        [EstadisticaController::class, 'visitasPorMateria']
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD DOCENTE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/dashboard/docente',
+        [EstadisticaController::class, 'dashboardDocente']
+    );
+
+    Route::post('/chatbot', [ChatbotController::class, 'preguntar']);
 });

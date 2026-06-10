@@ -24,4 +24,8 @@ class Materia extends Model
     {
         return $this->hasMany(Unidad::class);
     }
+    public function estadisticas()
+{
+    return $this->hasMany(Estadistica::class);
+}
 }

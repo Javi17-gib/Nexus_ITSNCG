@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,14 +12,8 @@ use App\Models\Grupo;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'nombre',
         'apellido_paterno',
@@ -31,26 +24,15 @@ class User extends Authenticatable
         'foto_perfil'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
         ];
     }
 
@@ -58,11 +40,13 @@ class User extends Authenticatable
      * Grupos donde está inscrito el alumno.
      */
     public function grupos()
-{
-    return $this->belongsToMany(Grupo::class, 'grupo_user')
-        ->withPivot('estado')
-        ->withTimestamps();
-}
+    {
+        return $this->belongsToMany(
+            Grupo::class,
+            'grupo_user'
+        )->withPivot('estado')
+         ->withTimestamps();
+    }
 
     /**
      * Grupos que administra como docente.
@@ -72,6 +56,16 @@ class User extends Authenticatable
         return $this->hasMany(
             Grupo::class,
             'docente_id'
+        );
+    }
+
+    /**
+     * Estadísticas del usuario.
+     */
+    public function estadisticas()
+    {
+        return $this->hasMany(
+            Estadistica::class
         );
     }
 }

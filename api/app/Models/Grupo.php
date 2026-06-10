@@ -44,4 +44,8 @@ class Grupo extends Model
             ->withPivot('estado')
             ->withTimestamps();
     }
+    public function estadisticas()
+{
+    return $this->hasMany(Estadistica::class);
+}
 }
