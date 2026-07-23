@@ -34,10 +34,14 @@ export default function Login() {
     try {
       const res: any = await login(loginData);
 
+      console.log(res);
+
       if (res?.user?.rol === "docente") {
+        console.log("Entró como docente");
         navigate("/dashboard/docente");
       } else {
         navigate("/dashboard/alumno");
+        console.log("Entró como Alumno");
       }
     } catch (error) {
       console.error("Login error:", error);
