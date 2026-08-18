@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+use App\Models\Materia;
 use App\Models\Grupo;
 
 class User extends Authenticatable
@@ -68,4 +69,8 @@ class User extends Authenticatable
             Estadistica::class
         );
     }
+    public function materias()
+{
+    return $this->hasMany(Materia::class, 'docente_id');
+}
 }

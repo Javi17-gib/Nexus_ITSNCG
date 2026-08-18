@@ -3,21 +3,48 @@
 html,
 body,
 #root {
-  width: 100%;
-  height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 body {
-  margin: 0;
-  overflow: hidden;
-  font-family: Inter, sans-serif;
-  background: #020617;
+    margin: 0;
+    overflow: hidden;
+    font-family: Inter, sans-serif;
+    background: var(--nexus-bg);
 }
+
+:root {
+    --nexus-bg: #09090f;
+    --nexus-surface: #111118;
+    --nexus-surface-2: #181821;
+    --nexus-surface-secondary: #181821;
+
+    --nexus-text: #ffffff;
+    --nexus-text-secondary: #94a3b8;
+    --nexus-text-muted: #64748b;
+
+    --nexus-border: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="light"] {
+    --nexus-bg: #f8fafc;
+    --nexus-surface: #ffffff;
+    --nexus-surface-2: #f1f5f9;
+    --nexus-surface-secondary: #f1f5f9;
+
+    --nexus-text: #0f172a;
+    --nexus-text-secondary: #475569;
+    --nexus-text-muted: #64748b;
+
+    --nexus-border: rgba(15, 23, 42, 0.08);
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,0.05) inset !important;
-  -webkit-text-fill-color: white !important;
-  transition: background-color 5000s ease-in-out 0s;
+    -webkit-box-shadow: 0 0 0 1000px rgba(255,255,255,0.05) inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
