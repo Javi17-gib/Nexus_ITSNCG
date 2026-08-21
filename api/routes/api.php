@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\GrupoController;
 use App\Http\Controllers\Api\MateriaController;
@@ -12,14 +13,23 @@ use App\Http\Controllers\Api\RetoController;
 use App\Http\Controllers\Api\EstadisticaController;
 use App\Http\Controllers\Api\ChatbotController;
 
+
 /*
 |--------------------------------------------------------------------------
 | RUTAS PÚBLICAS
 |--------------------------------------------------------------------------
 */
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post(
+    '/register',
+    [AuthController::class, 'register']
+);
+
+Route::post(
+    '/login',
+    [AuthController::class, 'login']
+);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -29,14 +39,23 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
+
     /*
     |--------------------------------------------------------------------------
     | AUTH
     |--------------------------------------------------------------------------
     */
 
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/user', [AuthController::class, 'user']);
+    Route::post(
+        '/logout',
+        [AuthController::class, 'logout']
+    );
+
+    Route::get(
+        '/user',
+        [AuthController::class, 'user']
+    );
+
 
     /*
     |--------------------------------------------------------------------------
@@ -44,37 +63,104 @@ Route::middleware('auth:sanctum')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::apiResource('grupos', GrupoController::class);
+    Route::apiResource(
+        'grupos',
+        GrupoController::class
+    );
+    /*
+|--------------------------------------------------------------------------
+| NOTIFICACIONES DEL DOCENTE
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/notificaciones/docente',
+    [GrupoController::class, 'notificacionesDocente']
+);
+
+    /*
+    |--------------------------------------------------------------------------
+    | ALUMNO - UNIRSE A GRUPO
+    |--------------------------------------------------------------------------
+    */
 
     Route::post(
         '/grupos/unirse',
         [GrupoController::class, 'unirsePorCodigo']
     );
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | SOLICITUDES PENDIENTES
+    |--------------------------------------------------------------------------
+    */
+
     Route::get(
         '/grupos/{id}/pendientes',
         [GrupoController::class, 'pendientes']
     );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ACEPTAR ALUMNO
+    |--------------------------------------------------------------------------
+    */
 
     Route::post(
         '/grupos/{grupoId}/aceptar/{userId}',
         [GrupoController::class, 'aceptarAlumno']
     );
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | RECHAZAR ALUMNO
+    |--------------------------------------------------------------------------
+    */
+
     Route::post(
         '/grupos/{grupoId}/rechazar/{userId}',
         [GrupoController::class, 'rechazarAlumno']
     );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ALUMNOS DEL GRUPO
+    |--------------------------------------------------------------------------
+    */
 
     Route::get(
         '/grupos/{id}/alumnos',
         [GrupoController::class, 'alumnos']
     );
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | ELIMINAR ALUMNO DEL GRUPO
+    |--------------------------------------------------------------------------
+    */
+
+    Route::delete(
+        '/grupos/{grupoId}/alumnos/{userId}',
+        [GrupoController::class, 'eliminarAlumno']
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MIS GRUPOS - ALUMNO
+    |--------------------------------------------------------------------------
+    */
+
     Route::get(
         '/mis-grupos',
         [GrupoController::class, 'misGrupos']
     );
+
 
     /*
     |--------------------------------------------------------------------------
@@ -82,7 +168,11 @@ Route::middleware('auth:sanctum')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::apiResource('materias', MateriaController::class);
+    Route::apiResource(
+        'materias',
+        MateriaController::class
+    );
+
 
     /*
     |--------------------------------------------------------------------------
@@ -90,12 +180,16 @@ Route::middleware('auth:sanctum')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::apiResource('unidades', UnidadController::class);
+    Route::apiResource(
+        'unidades',
+        UnidadController::class
+    );
 
     Route::get(
         '/materias/{materiaId}/unidades',
         [UnidadController::class, 'porMateria']
     );
+
 
     /*
     |--------------------------------------------------------------------------
@@ -103,12 +197,16 @@ Route::middleware('auth:sanctum')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::apiResource('temas', TemaController::class);
+    Route::apiResource(
+        'temas',
+        TemaController::class
+    );
 
     Route::get(
         '/unidades/{unidadId}/temas',
         [TemaController::class, 'porUnidad']
     );
+
 
     /*
     |--------------------------------------------------------------------------
@@ -116,12 +214,16 @@ Route::middleware('auth:sanctum')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::apiResource('contenidos', ContenidoController::class);
+    Route::apiResource(
+        'contenidos',
+        ContenidoController::class
+    );
 
     Route::get(
         '/temas/{temaId}/contenidos',
         [ContenidoController::class, 'porTema']
     );
+
 
     /*
     |--------------------------------------------------------------------------
@@ -129,12 +231,16 @@ Route::middleware('auth:sanctum')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::apiResource('archivos', ArchivoController::class);
+    Route::apiResource(
+        'archivos',
+        ArchivoController::class
+    );
 
     Route::get(
         '/contenidos/{contenidoId}/archivos',
         [ArchivoController::class, 'porContenido']
     );
+
 
     /*
     |--------------------------------------------------------------------------
@@ -142,12 +248,16 @@ Route::middleware('auth:sanctum')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::apiResource('retos', RetoController::class);
+    Route::apiResource(
+        'retos',
+        RetoController::class
+    );
 
     Route::get(
         '/temas/{tema}/retos',
         [RetoController::class, 'index']
     );
+
 
     /*
     |--------------------------------------------------------------------------
@@ -180,6 +290,7 @@ Route::middleware('auth:sanctum')->group(function () {
         [EstadisticaController::class, 'visitasPorMateria']
     );
 
+
     /*
     |--------------------------------------------------------------------------
     | DASHBOARD DOCENTE
@@ -191,5 +302,16 @@ Route::middleware('auth:sanctum')->group(function () {
         [EstadisticaController::class, 'dashboardDocente']
     );
 
-    Route::post('/chatbot', [ChatbotController::class, 'preguntar']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | CHATBOT
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/chatbot',
+        [ChatbotController::class, 'preguntar']
+    );
+
 });

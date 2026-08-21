@@ -161,6 +161,22 @@ export async function eliminarGrupoRequest(
 |--------------------------------------------------------------------------
 */
 
+export async function getSolicitudesGrupoRequest(
+    id: number
+) {
+
+    const response =
+        await api.get(
+            `/grupos/${id}/pendientes`
+        );
+
+    console.log(
+        "📩 Solicitudes:",
+        response.data
+    );
+
+    return response.data;
+}
 
 
 /*
@@ -180,89 +196,6 @@ export async function getAlumnosGrupoRequest(
 
     console.log(
         "👥 Alumnos del grupo:",
-        response.data
-    );
-
-    return response.data;
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| ACEPTAR ALUMNO
-|--------------------------------------------------------------------------
-*/
-
-
-
-/*
-|--------------------------------------------------------------------------
-| RECHAZAR ALUMNO
-|--------------------------------------------------------------------------
-*/
-
-
-
-
-/*
-|--------------------------------------------------------------------------
-| ALUMNO: UNIRSE POR CÓDIGO
-|--------------------------------------------------------------------------
-*/
-
-export async function unirseGrupoRequest(
-    codigo_acceso: string
-) {
-
-    const response =
-        await api.post(
-            "/grupos/unirse",
-            {
-                codigo_acceso,
-            }
-        );
-
-
-    return response.data;
-
-}
-
-
-/*
-|--------------------------------------------------------------------------
-| ALUMNO: MIS GRUPOS
-|--------------------------------------------------------------------------
-*/
-
-export async function getMisGruposRequest() {
-
-    const response =
-        await api.get(
-            "/mis-grupos"
-        );
-
-
-    return response.data;
-
-}
-
-/*
-|--------------------------------------------------------------------------
-| SOLICITUDES PENDIENTES
-|--------------------------------------------------------------------------
-*/
-
-export async function getSolicitudesGrupoRequest(
-    id: number
-) {
-
-    const response =
-        await api.get(
-            `/grupos/${id}/pendientes`
-        );
-
-    console.log(
-        "📩 Solicitudes:",
         response.data
     );
 
@@ -305,6 +238,84 @@ export async function rechazarAlumnoRequest(
         await api.post(
             `/grupos/${grupoId}/rechazar/${userId}`
         );
+
+    return response.data;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| ELIMINAR ALUMNO DEL GRUPO
+|--------------------------------------------------------------------------
+|
+| IMPORTANTE:
+| Esto NO elimina al usuario de NEXUS.
+| Solamente elimina su pertenencia a este grupo.
+|
+|--------------------------------------------------------------------------
+*/
+
+export async function eliminarAlumnoRequest(
+    grupoId: number,
+    userId: number
+) {
+
+    const response =
+        await api.delete(
+            `/grupos/${grupoId}/alumnos/${userId}`
+        );
+
+
+    console.log(
+        "🗑️ Alumno eliminado del grupo:",
+        response.data
+    );
+
+
+    return response.data;
+
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| ALUMNO - UNIRSE A GRUPO POR CÓDIGO
+|--------------------------------------------------------------------------
+*/
+
+export async function unirseGrupoRequest(
+    codigo_acceso: string
+) {
+
+    const response =
+        await api.post(
+            "/grupos/unirse",
+            {
+                codigo_acceso,
+            }
+        );
+
+    return response.data;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| ALUMNO - MIS GRUPOS ACEPTADOS
+|--------------------------------------------------------------------------
+*/
+
+export async function getMisGruposRequest() {
+
+    const response =
+        await api.get(
+            "/mis-grupos"
+        );
+
+    console.log(
+        "📚 Mis grupos:",
+        response.data
+    );
 
     return response.data;
 }

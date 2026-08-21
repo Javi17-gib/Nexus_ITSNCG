@@ -848,9 +848,9 @@ class GrupoController extends Controller
 
 
             /*
-            |--------------------------------------------------------------
-            | Si anteriormente fue rechazado, permitimos volver a solicitar
-            |--------------------------------------------------------------
+            |--------------------------------------------------------------------------
+            | SI FUE RECHAZADO
+            |--------------------------------------------------------------------------
             */
 
             $existe->estado =
@@ -1350,6 +1350,296 @@ class GrupoController extends Controller
     }
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | ELIMINAR ALUMNO DEL GRUPO
+    |--------------------------------------------------------------------------
+    |
+    | IMPORTANTE:
+    |
+    | NO elimina al usuario de la plataforma.
+    |
+    | Solamente elimina su relación con este grupo.
+    |
+    */
+
+    public function eliminarAlumno(
+        Request $request,
+        $grupoId,
+        $userId
+    ) {
+
+        /*
+        |--------------------------------------------------------------------------
+        | SOLO DOCENTE
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $respuesta =
+                $this->verificarDocente($request)
+        ) {
+
+            return $respuesta;
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | BUSCAR GRUPO
+        |--------------------------------------------------------------------------
+        */
+
+        $grupo =
+            Grupo::find($grupoId);
+
+
+        if (!$grupo) {
+
+            return response()->json([
+
+                'message' =>
+                    'Grupo no encontrado',
+
+            ], 404);
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | VERIFICAR PROPIETARIO
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $grupo->docente_id !=
+            $request->user()->id
+        ) {
+
+            return response()->json([
+
+                'message' =>
+                    'No tienes permisos sobre este grupo',
+
+            ], 403);
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | BUSCAR RELACIÓN ALUMNO-GRUPO
+        |--------------------------------------------------------------------------
+        */
+
+        $registro =
+            GrupoUser::where(
+                'grupo_id',
+                $grupoId
+            )
+            ->where(
+                'user_id',
+                $userId
+            )
+            ->first();
+
+
+        if (!$registro) {
+
+            return response()->json([
+
+                'message' =>
+                    'El alumno no pertenece a este grupo',
+
+            ], 404);
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ELIMINAR RELACIÓN
+        |--------------------------------------------------------------------------
+        */
+
+        $registro->delete();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RESPUESTA
+        |--------------------------------------------------------------------------
+        */
+
+        return response()->json([
+
+            'message' =>
+                'Alumno eliminado del grupo correctamente',
+
+        ]);
+    }
+
+    /*
+|--------------------------------------------------------------------------
+| NOTIFICACIONES DEL DOCENTE
+|--------------------------------------------------------------------------
+|
+| Obtiene todas las solicitudes pendientes de todos
+| los grupos pertenecientes al docente autenticado.
+|
+*/
+
+public function notificacionesDocente(
+    Request $request
+) {
+
+    /*
+    |--------------------------------------------------------------------------
+    | SOLO DOCENTE
+    |--------------------------------------------------------------------------
+    */
+
+    if (
+        $respuesta =
+            $this->verificarDocente($request)
+    ) {
+
+        return $respuesta;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | OBTENER GRUPOS DEL DOCENTE
+    |--------------------------------------------------------------------------
+    */
+
+    $grupos =
+        Grupo::where(
+            'docente_id',
+            $request->user()->id
+        )
+        ->with('materia')
+        ->get();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | OBTENER SOLICITUDES PENDIENTES
+    |--------------------------------------------------------------------------
+    */
+
+    $notificaciones = [];
+
+
+    foreach (
+        $grupos as $grupo
+    ) {
+
+        $solicitudes =
+            GrupoUser::where(
+                'grupo_id',
+                $grupo->id
+            )
+            ->where(
+                'estado',
+                'pendiente'
+            )
+            ->with('user')
+            ->orderBy(
+                'created_at',
+                'desc'
+            )
+            ->get();
+
+
+        foreach (
+            $solicitudes as $solicitud
+        ) {
+
+            $notificaciones[] = [
+
+                'id' =>
+                    $solicitud->id,
+
+                'grupo_id' =>
+                    $grupo->id,
+
+                'grupo' =>
+                    $grupo->nombre,
+
+                'materia' =>
+                    $grupo->materia
+                        ? $grupo->materia->nombre
+                        : 'Sin materia',
+
+                'user_id' =>
+                    $solicitud->user_id,
+
+                'alumno' =>
+                    $solicitud->user
+                        ? trim(
+                            $solicitud->user->nombre .
+                            ' ' .
+                            $solicitud->user->apellido_paterno
+                        )
+                        : 'Alumno',
+
+                'fecha' =>
+                    $solicitud->created_at,
+
+            ];
+
+        }
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ORDENAR NOTIFICACIONES
+    |--------------------------------------------------------------------------
+    */
+
+    usort(
+        $notificaciones,
+        function (
+            $a,
+            $b
+        ) {
+
+            return strtotime(
+                $b['fecha']
+            ) <=> strtotime(
+                $a['fecha']
+            );
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RESPUESTA
+    |--------------------------------------------------------------------------
+    */
+
+    return response()->json([
+
+        'total' =>
+            count(
+                $notificaciones
+            ),
+
+        'notificaciones' =>
+            $notificaciones,
+
+    ]);
+
+}
     /*
     |--------------------------------------------------------------------------
     | MIS GRUPOS - ALUMNO
