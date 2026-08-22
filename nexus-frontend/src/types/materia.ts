@@ -7,14 +7,21 @@ export interface Materia {
     icono: string | null;
     portada: string | null;
     activa: boolean;
-    created_at?: string;
-    updated_at?: string;
 
-    // Información calculada que utilizaremos
+    // Estadísticas calculadas por Laravel
     unidades?: number;
     temas?: number;
     grupos?: number;
+
+    // Conteos calculados con withCount()
+    unidades_count?: number;
+    temas_count?: number;
+    grupos_count?: number;
+
+    created_at?: string;
+    updated_at?: string;
 }
+
 
 export interface CrearMateriaData {
     nombre: string;
@@ -25,6 +32,7 @@ export interface CrearMateriaData {
     activa?: boolean;
 }
 
+
 export interface ActualizarMateriaData {
     nombre: string;
     descripcion?: string;
@@ -33,6 +41,7 @@ export interface ActualizarMateriaData {
     portada?: string;
     activa?: boolean;
 }
+
 
 export interface MateriaResponse {
     message: string;

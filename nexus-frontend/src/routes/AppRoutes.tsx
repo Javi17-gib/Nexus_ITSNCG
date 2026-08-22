@@ -31,6 +31,9 @@ import DashboardDocente
 import Materias
     from "../pages/docente/Materias";
 
+import Unidades
+    from "../pages/docente/Unidades";
+
 import Grupos
     from "../pages/docente/Grupos";
 
@@ -121,6 +124,18 @@ export default function AppRoutes() {
                         path="materias"
                         element={
                             <Materias />
+                        }
+                    />
+
+
+                    {/* ---------------------------------------------
+                        UNIDADES DE UNA MATERIA
+                    --------------------------------------------- */}
+
+                    <Route
+                        path="materias/:materiaId"
+                        element={
+                            <Unidades />
                         }
                     />
 

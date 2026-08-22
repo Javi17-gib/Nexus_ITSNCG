@@ -79,27 +79,40 @@ class UnidadController extends Controller
     /**
      * Actualizar unidad
      */
-    public function update(Request $request, string $id)
-    {
-        if ($respuesta = $this->verificarDocente($request)) {
-            return $respuesta;
-        }
-
-        $unidad = Unidad::find($id);
-
-        if (!$unidad) {
-            return response()->json([
-                'message' => 'Unidad no encontrada'
-            ], 404);
-        }
-
-        $unidad->update($request->all());
-
-        return response()->json([
-            'message' => 'Unidad actualizada correctamente',
-            'unidad' => $unidad
-        ]);
+    /**
+ * Actualizar unidad
+ */
+public function update(Request $request, string $id)
+{
+    if ($respuesta = $this->verificarDocente($request)) {
+        return $respuesta;
     }
+
+    $unidad = Unidad::find($id);
+
+    if (!$unidad) {
+        return response()->json([
+            'message' => 'Unidad no encontrada'
+        ], 404);
+    }
+
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'descripcion' => 'nullable|string',
+        'orden' => 'nullable|integer|min:1'
+    ]);
+
+    $unidad->update([
+        'nombre' => $request->nombre,
+        'descripcion' => $request->descripcion,
+        'orden' => $request->orden ?? $unidad->orden
+    ]);
+
+    return response()->json([
+        'message' => 'Unidad actualizada correctamente',
+        'unidad' => $unidad
+    ]);
+}
 
     /**
      * Eliminar unidad

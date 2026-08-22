@@ -16,7 +16,20 @@ import {
     useNavigate,
 } from "react-router-dom";
 
+import {
+    useEffect,
+    useState,
+} from "react";
+
 import { useAuth } from "../../context/AuthContext";
+
+import {
+    getMateriaRequest,
+} from "../../api/materias";
+
+import type {
+    Materia,
+} from "../../types/materia";
 
 
 interface MenuItem {
@@ -48,11 +61,115 @@ export default function Sidebar() {
             /^\/dashboard\/docente\/materias\/([^/]+)/
         );
 
+
     const dentroDeMateria =
         Boolean(materiaMatch);
 
+
     const materiaId =
         materiaMatch?.[1];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MATERIA ACTUAL
+    |--------------------------------------------------------------------------
+    */
+
+    const [materiaActual, setMateriaActual] =
+        useState<Materia | null>(null);
+
+
+    const [cargandoMateria, setCargandoMateria] =
+        useState(false);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | OBTENER MATERIA ACTUAL
+    |--------------------------------------------------------------------------
+    */
+
+    useEffect(() => {
+
+        let cancelado = false;
+
+
+        const cargarMateria = async () => {
+
+            if (
+                !dentroDeMateria ||
+                !materiaId
+            ) {
+
+                setMateriaActual(null);
+
+                return;
+
+            }
+
+
+            try {
+
+                setCargandoMateria(true);
+
+
+                const materia =
+                    await getMateriaRequest(
+                        Number(materiaId)
+                    );
+
+
+                if (!cancelado) {
+
+                    setMateriaActual(
+                        materia
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Error al obtener materia actual:",
+                    error
+                );
+
+
+                if (!cancelado) {
+
+                    setMateriaActual(null);
+
+                }
+
+            } finally {
+
+                if (!cancelado) {
+
+                    setCargandoMateria(
+                        false
+                    );
+
+                }
+
+            }
+
+        };
+
+
+        cargarMateria();
+
+
+        return () => {
+
+            cancelado = true;
+
+        };
+
+    }, [
+        materiaId,
+        dentroDeMateria,
+    ]);
 
 
     /*
@@ -315,12 +432,14 @@ export default function Sidebar() {
                         </button>
 
 
-                        {/* NOMBRE DE LA MATERIA */}
+                        {/* =================================================
+                            MATERIA ACTUAL
+                        ================================================= */}
 
                         <div
                             className="
                                 px-4
-                                mb-4
+                                mb-5
                             "
                         >
 
@@ -330,57 +449,102 @@ export default function Sidebar() {
                                     uppercase
                                     tracking-[2px]
                                     text-[var(--nexus-text-muted)]
-                                    mb-2
+                                    mb-3
                                 "
                             >
                                 Materia actual
                             </p>
 
 
-                            <div className="flex items-center gap-3">
+                            <div
+                                className="
+                                    flex
+                                    items-center
+                                    gap-3
+                                    rounded-xl
+                                    p-3
+                                    bg-violet-500/5
+                                    border
+                                    border-violet-500/10
+                                "
+                            >
 
                                 <div
                                     className="
-                                        w-9
-                                        h-9
-                                        rounded-lg
+                                        w-10
+                                        h-10
+                                        rounded-xl
                                         bg-violet-500/10
                                         border
                                         border-violet-500/20
                                         flex
                                         items-center
                                         justify-center
+                                        shrink-0
                                     "
                                 >
 
                                     <GraduationCap
-                                        size={18}
-                                        className="text-violet-400"
+                                        size={19}
+                                        className="
+                                            text-violet-400
+                                        "
                                     />
 
                                 </div>
 
 
-                                <div className="min-w-0">
+                                <div
+                                    className="
+                                        min-w-0
+                                        flex-1
+                                    "
+                                >
 
                                     <p
                                         className="
-                                            text-sm
-                                            font-semibold
-                                            text-[var(--nexus-text)]
-                                            truncate
+                                            text-[10px]
+                                            uppercase
+                                            tracking-[1.5px]
+                                            text-[var(--nexus-text-muted)]
+                                            mb-0.5
                                         "
                                     >
                                         Materia
                                     </p>
 
+
                                     <p
                                         className="
-                                            text-xs
+                                            text-sm
+                                            font-bold
+                                            text-[var(--nexus-text)]
+                                            truncate
+                                        "
+                                        title={
+                                            materiaActual?.nombre ||
+                                            undefined
+                                        }
+                                    >
+
+                                        {cargandoMateria
+                                            ? "Cargando materia..."
+                                            : materiaActual?.nombre ||
+                                              "Materia no encontrada"}
+
+                                    </p>
+
+
+                                    <p
+                                        className="
+                                            text-[10px]
                                             text-[var(--nexus-text-muted)]
+                                            mt-0.5
                                         "
                                     >
-                                        ID #{materiaId}
+                                        {cargandoMateria
+                                            ? "Obteniendo información..."
+                                            : `ID #${materiaId}`}
                                     </p>
 
                                 </div>
@@ -388,6 +552,18 @@ export default function Sidebar() {
                             </div>
 
                         </div>
+
+
+                        {/* SEPARADOR */}
+
+                        <div
+                            className="
+                                mx-4
+                                mb-4
+                                h-px
+                                bg-[var(--nexus-border)]
+                            "
+                        />
 
 
                         {/* MENÚ DE MATERIA */}
@@ -398,6 +574,7 @@ export default function Sidebar() {
 
                                 const Icon =
                                     item.icon;
+
 
                                 return (
 
@@ -484,6 +661,7 @@ export default function Sidebar() {
 
                                 const Icon =
                                     item.icon;
+
 
                                 return (
 

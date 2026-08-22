@@ -1,22 +1,10 @@
 import api from "./axios";
 
-/*
-|--------------------------------------------------------------------------
-| TIPO MATERIA
-|--------------------------------------------------------------------------
-*/
-
-export interface Materia {
-    id: number;
-    nombre: string;
-    descripcion?: string | null;
-    color?: string | null;
-    icono?: string | null;
-    portada?: string | null;
-    activa?: boolean;
-    created_at?: string;
-    updated_at?: string;
-}
+import type {
+    Materia,
+    CrearMateriaData,
+    ActualizarMateriaData,
+} from "../types/materia";
 
 
 /*
@@ -37,36 +25,12 @@ export const getMateriasRequest = async (): Promise<Materia[]> => {
     );
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Laravel devuelve directamente:
-    |
-    | [
-    |   {
-    |      id: 1,
-    |      nombre: "..."
-    |   }
-    | ]
-    |
-    |--------------------------------------------------------------------------
-    */
-
     if (Array.isArray(response.data)) {
 
         return response.data;
 
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | Por seguridad, también aceptamos:
-    |
-    | {
-    |     materias: [...]
-    | }
-    |--------------------------------------------------------------------------
-    */
 
     if (
         response.data &&
@@ -79,12 +43,6 @@ export const getMateriasRequest = async (): Promise<Materia[]> => {
 
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | Si Laravel devuelve algo inesperado
-    |--------------------------------------------------------------------------
-    */
 
     console.error(
         "❌ Formato inesperado de /materias:",
@@ -124,7 +82,7 @@ export const getMateriaRequest = async (
 */
 
 export const createMateriaRequest = async (
-    data: Partial<Materia>
+    data: CrearMateriaData
 ) => {
 
     const response =
@@ -146,7 +104,7 @@ export const createMateriaRequest = async (
 
 export const updateMateriaRequest = async (
     id: number,
-    data: Partial<Materia>
+    data: ActualizarMateriaData
 ) => {
 
     const response =
@@ -178,18 +136,3 @@ export const deleteMateriaRequest = async (
     return response.data;
 
 };
-
-export interface Materia {
-    id: number;
-    nombre: string;
-    descripcion?: string | null;
-    color?: string | null;
-    icono?: string | null;
-    portada?: string | null;
-    activa?: boolean;
-
-    unidades_count?: number;
-
-    created_at?: string;
-    updated_at?: string;
-}

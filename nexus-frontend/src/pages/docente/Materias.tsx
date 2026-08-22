@@ -1697,8 +1697,7 @@ export default function Materias() {
                                                     "
                                                 >
                                                     {
-                                                        materia.grupos ??
-                                                        0
+                                                        materia.grupos_count ?? 0
                                                     }
                                                 </p>
 

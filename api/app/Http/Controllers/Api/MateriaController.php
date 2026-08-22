@@ -51,49 +51,51 @@ class MateriaController extends Controller
     */
 
     public function index(Request $request)
-    {
-        /*
-        |--------------------------------------------------------------------------
-        | DOCENTE
-        |--------------------------------------------------------------------------
-        */
+{
+    /*
+    |--------------------------------------------------------------------------
+    | DOCENTE
+    |--------------------------------------------------------------------------
+    */
 
-        if ($request->user()->rol === 'docente') {
+    if ($request->user()->rol === 'docente') {
 
-            $materias = Materia::withCount('unidades')
-                ->where(
-                    'docente_id',
-                    $request->user()->id
-                )
-                ->orderBy('id', 'asc')
-                ->get();
-
-            return response()->json(
-                $materias
-            );
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | ALUMNO
-        |--------------------------------------------------------------------------
-        |
-        | Por ahora mostramos materias activas.
-        | Más adelante filtraremos por grupos/asignaciones.
-        |
-        */
-
-        $materias = Materia::withCount('unidades')
-            ->where('activa', true)
+        $materias = Materia::withCount([
+                'unidades',
+                'grupos',
+            ])
+            ->where(
+                'docente_id',
+                $request->user()->id
+            )
             ->orderBy('id', 'asc')
             ->get();
-
 
         return response()->json(
             $materias
         );
     }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ALUMNO
+    |--------------------------------------------------------------------------
+    */
+
+    $materias = Materia::withCount([
+            'unidades',
+            'grupos',
+        ])
+        ->where('activa', true)
+        ->orderBy('id', 'asc')
+        ->get();
+
+
+    return response()->json(
+        $materias
+    );
+}
 
 
     /*
