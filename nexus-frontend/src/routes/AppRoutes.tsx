@@ -14,6 +14,12 @@ import Login from "../pages/auth/Login";
 import DashboardAlumno
     from "../pages/alumno/DashboardAlumno";
 
+import UnidadesAlumno
+    from "../pages/alumno/UnidadesAlumno";
+
+import ContenidoTemaAlumno
+    from "../pages/alumno/ContenidoTemaAlumno";
+
 import DashboardAlumnoLayout
     from "../layouts/DashboardAlumnoLayout";
 
@@ -21,6 +27,9 @@ import DashboardAlumnoLayout
 // =====================================================
 // DOCENTE
 // =====================================================
+
+import ContenidoTema
+    from "../pages/docente/ContenidoTema";
 
 import DashboardDocenteLayout
     from "../layouts/DashboardDocenteLayout";
@@ -33,6 +42,9 @@ import Materias
 
 import Unidades
     from "../pages/docente/Unidades";
+
+import Temas
+    from "../pages/docente/Temas";
 
 import Grupos
     from "../pages/docente/Grupos";
@@ -82,12 +94,65 @@ export default function AppRoutes() {
                     }
                 >
 
+
+                    {/* ---------------------------------------------
+                        GALAXIA / INICIO
+                    --------------------------------------------- */}
+
                     <Route
                         index
                         element={
                             <DashboardAlumno />
                         }
                     />
+
+
+                    {/* ---------------------------------------------
+                        MATERIAS DEL ALUMNO
+                    --------------------------------------------- */}
+
+                    <Route
+                        path="materias/:materiaId"
+                        element={
+                            <UnidadesAlumno />
+                        }
+                    />
+
+
+                    {/* ---------------------------------------------
+                        UNIDAD → ESPACIO DE ESTUDIO
+                        
+                        Al seleccionar una unidad ya NO pasamos
+                        por una pantalla independiente de temas.
+
+                        Se abre directamente:
+                        ContenidoTemaAlumno
+                    --------------------------------------------- */}
+
+                    <Route
+                        path="materias/:materiaId/unidades/:unidadId"
+                        element={
+                            <ContenidoTemaAlumno />
+                        }
+                    />
+
+
+                    {/* ---------------------------------------------
+                        CONTENIDO DE UN TEMA ESPECÍFICO
+                        
+                        Esta ruta se mantiene para:
+                        - cambiar entre temas
+                        - anterior / siguiente
+                        - enlaces directos
+                    --------------------------------------------- */}
+
+                    <Route
+                        path="materias/:materiaId/unidades/:unidadId/temas/:temaId"
+                        element={
+                            <ContenidoTemaAlumno />
+                        }
+                    />
+
 
                 </Route>
 
@@ -129,13 +194,40 @@ export default function AppRoutes() {
 
 
                     {/* ---------------------------------------------
-                        UNIDADES DE UNA MATERIA
+                        MATERIA
                     --------------------------------------------- */}
 
                     <Route
                         path="materias/:materiaId"
                         element={
                             <Unidades />
+                        }
+                    />
+
+
+                    {/* ---------------------------------------------
+                        UNIDADES DE LA MATERIA
+                    --------------------------------------------- */}
+
+                    <Route
+                        path="materias/:materiaId/unidades"
+                        element={
+                            <Unidades />
+                        }
+                    />
+
+
+                    {/* ---------------------------------------------
+                        TEMAS DE UNA UNIDAD
+                        
+                        Esta pantalla SÍ se mantiene para el docente,
+                        porque aquí administra los temas.
+                    --------------------------------------------- */}
+
+                    <Route
+                        path="materias/:materiaId/unidades/:unidadId"
+                        element={
+                            <Temas />
                         }
                     />
 
@@ -196,6 +288,18 @@ export default function AppRoutes() {
                         path="configuracion"
                         element={
                             <Configuracion />
+                        }
+                    />
+
+
+                    {/* ---------------------------------------------
+                        CONTENIDO DE UN TEMA
+                    --------------------------------------------- */}
+
+                    <Route
+                        path="materias/:materiaId/unidades/:unidadId/temas/:temaId"
+                        element={
+                            <ContenidoTema />
                         }
                     />
 

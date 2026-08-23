@@ -9,6 +9,10 @@ import {
     Users,
 } from "lucide-react";
 
+import {
+    useNavigate,
+} from "react-router-dom";
+
 
 import GalaxyBackground
     from "../../components/alumno/GalaxyBackground";
@@ -40,6 +44,7 @@ import type {
 } from "../../api/materias";
 
 
+
 /*
 |--------------------------------------------------------------------------
 | POSICIÓN DE LA GALAXIA
@@ -53,6 +58,7 @@ interface GalaxyPosition {
     y: number;
 
 }
+
 
 
 /*
@@ -84,6 +90,7 @@ interface GrupoAlumno {
 }
 
 
+
 /*
 |--------------------------------------------------------------------------
 | DASHBOARD ALUMNO
@@ -91,6 +98,16 @@ interface GrupoAlumno {
 */
 
 export default function DashboardAlumno() {
+
+    /*
+    |--------------------------------------------------------------------------
+    | NAVEGACIÓN
+    |--------------------------------------------------------------------------
+    */
+
+    const navigate =
+        useNavigate();
+
 
 
     /*
@@ -105,6 +122,7 @@ export default function DashboardAlumno() {
     ] = useState<Materia[]>([]);
 
 
+
     /*
     |--------------------------------------------------------------------------
     | GRUPOS DEL ALUMNO
@@ -115,6 +133,7 @@ export default function DashboardAlumno() {
         grupos,
         setGrupos,
     ] = useState<GrupoAlumno[]>([]);
+
 
 
     /*
@@ -129,6 +148,7 @@ export default function DashboardAlumno() {
     ] = useState<GalaxyPosition[]>([]);
 
 
+
     /*
     |--------------------------------------------------------------------------
     | ESTADOS
@@ -141,12 +161,14 @@ export default function DashboardAlumno() {
     ] = useState(true);
 
 
+
     const [
         error,
         setError,
     ] = useState<string | null>(
         null
     );
+
 
 
     /*
@@ -159,6 +181,7 @@ export default function DashboardAlumno() {
         mostrarModalGrupo,
         setMostrarModalGrupo,
     ] = useState(false);
+
 
 
     const [
@@ -187,6 +210,7 @@ export default function DashboardAlumno() {
     ] = useState<string | null>(
         null
     );
+
 
 
     /*
@@ -235,6 +259,7 @@ export default function DashboardAlumno() {
                     );
 
 
+
                     /*
                     |--------------------------------------------------------------------------
                     | OBTENER GRUPOS ACEPTADOS
@@ -258,6 +283,7 @@ export default function DashboardAlumno() {
                     }
 
 
+
                     /*
                     |--------------------------------------------------------------------------
                     | ASEGURAR ARRAY
@@ -276,6 +302,7 @@ export default function DashboardAlumno() {
                     setGrupos(
                         gruposAlumno
                     );
+
 
 
                     /*
@@ -307,6 +334,7 @@ export default function DashboardAlumno() {
                         "📚 Materias encontradas:",
                         materiasEncontradas
                     );
+
 
 
                     /*
@@ -343,6 +371,7 @@ export default function DashboardAlumno() {
                         );
 
 
+
                     /*
                     |--------------------------------------------------------------------------
                     | SOLO MATERIAS ACTIVAS
@@ -367,6 +396,7 @@ export default function DashboardAlumno() {
                     setMaterias(
                         materiasActivas
                     );
+
 
 
                     /*
@@ -443,6 +473,7 @@ export default function DashboardAlumno() {
     }, []);
 
 
+
     /*
     |--------------------------------------------------------------------------
     | SOLICITAR UNIRSE A GRUPO
@@ -456,6 +487,7 @@ export default function DashboardAlumno() {
                 codigoGrupo
                     .trim()
                     .toUpperCase();
+
 
 
             /*
@@ -473,6 +505,7 @@ export default function DashboardAlumno() {
                 return;
 
             }
+
 
 
             try {
@@ -498,6 +531,7 @@ export default function DashboardAlumno() {
                 );
 
 
+
                 /*
                 |--------------------------------------------------------------------------
                 | ENVIAR AL BACKEND
@@ -516,6 +550,7 @@ export default function DashboardAlumno() {
                 );
 
 
+
                 /*
                 |--------------------------------------------------------------------------
                 | MENSAJE DE ÉXITO
@@ -526,6 +561,7 @@ export default function DashboardAlumno() {
                     respuesta?.message ||
                     "Solicitud enviada correctamente."
                 );
+
 
 
                 /*
@@ -558,6 +594,7 @@ export default function DashboardAlumno() {
                 );
 
 
+
                 /*
                 |--------------------------------------------------------------------------
                 | MENSAJE DEL BACKEND
@@ -579,6 +616,7 @@ export default function DashboardAlumno() {
             }
 
         };
+
 
 
     /*
@@ -628,6 +666,7 @@ export default function DashboardAlumno() {
                     230;
 
 
+
                 /*
                 |--------------------------------------------------------------------------
                 | MOBILE
@@ -650,6 +689,7 @@ export default function DashboardAlumno() {
                         );
 
                 }
+
 
 
                 /*
@@ -676,6 +716,7 @@ export default function DashboardAlumno() {
                 }
 
 
+
                 /*
                 |--------------------------------------------------------------------------
                 | DESKTOP
@@ -698,6 +739,7 @@ export default function DashboardAlumno() {
                         );
 
                 }
+
 
 
                 /*
@@ -778,6 +820,7 @@ export default function DashboardAlumno() {
     }, [materias]);
 
 
+
     /*
     |--------------------------------------------------------------------------
     | COLORES PARA LAS CONEXIONES
@@ -792,6 +835,7 @@ export default function DashboardAlumno() {
                 materia.color ||
                 "#8B5CF6"
         );
+
 
 
     /*
@@ -862,6 +906,7 @@ export default function DashboardAlumno() {
         );
 
     }
+
 
 
     /*
@@ -957,6 +1002,7 @@ export default function DashboardAlumno() {
     }
 
 
+
     /*
     |--------------------------------------------------------------------------
     | DASHBOARD
@@ -1002,6 +1048,7 @@ export default function DashboardAlumno() {
 
                 )
             }
+
 
 
             {/* =====================================================
@@ -1072,6 +1119,10 @@ export default function DashboardAlumno() {
                                                 materia
                                             );
 
+                                            navigate(
+                                                `/dashboard/alumno/materias/${materia.id}`
+                                            );
+
                                         }}
 
                                     />
@@ -1086,6 +1137,7 @@ export default function DashboardAlumno() {
 
                 )
             }
+
 
 
             {/* =====================================================
@@ -1171,11 +1223,13 @@ export default function DashboardAlumno() {
             }
 
 
+
             {/* =====================================================
                 NÚCLEO
             ===================================================== */}
 
             <GalaxyCenter />
+
 
 
             {/* =====================================================
@@ -1254,6 +1308,7 @@ export default function DashboardAlumno() {
             </button>
 
 
+
             {/* =====================================================
                 MODAL UNIRSE A GRUPO
             ===================================================== */}
@@ -1328,6 +1383,7 @@ export default function DashboardAlumno() {
                             />
 
 
+
                             {/* =================================================
                                 CERRAR
                             ================================================= */}
@@ -1366,6 +1422,7 @@ export default function DashboardAlumno() {
                             </button>
 
 
+
                             {/* =================================================
                                 ICONO
                             ================================================= */}
@@ -1389,6 +1446,7 @@ export default function DashboardAlumno() {
                                 />
 
                             </div>
+
 
 
                             {/* =================================================
@@ -1422,6 +1480,7 @@ export default function DashboardAlumno() {
                                 solicitar acceso a su grupo.
 
                             </p>
+
 
 
                             {/* =================================================
@@ -1527,6 +1586,7 @@ export default function DashboardAlumno() {
                             </div>
 
 
+
                             {/* =================================================
                                 ERROR
                             ================================================= */}
@@ -1556,6 +1616,7 @@ export default function DashboardAlumno() {
                             }
 
 
+
                             {/* =================================================
                                 ÉXITO
                             ================================================= */}
@@ -1583,6 +1644,7 @@ export default function DashboardAlumno() {
 
                                 )
                             }
+
 
 
                             {/* =================================================

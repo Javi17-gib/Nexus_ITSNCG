@@ -24,6 +24,7 @@ class ContenidoController extends Controller
         return null;
     }
 
+
     /**
      * Listar contenidos
      */
@@ -35,6 +36,7 @@ class ContenidoController extends Controller
                 ->get()
         );
     }
+
 
     /**
      * Crear contenido
@@ -65,6 +67,7 @@ class ContenidoController extends Controller
         ], 201);
     }
 
+
     /**
      * Ver contenido
      */
@@ -83,8 +86,33 @@ class ContenidoController extends Controller
 
         }
 
-        return response()->json($contenido);
+        /*
+        |--------------------------------------------------------------------------
+        | AGREGAR URL A LOS ARCHIVOS
+        |--------------------------------------------------------------------------
+        */
+
+        $contenido->archivos =
+            $contenido->archivos->map(
+                function ($archivo) {
+
+                    return [
+                        ...$archivo->toArray(),
+
+                        'url' => asset(
+                            'storage/' . $archivo->ruta
+                        ),
+                    ];
+
+                }
+            );
+
+
+        return response()->json(
+            $contenido
+        );
     }
+
 
     /**
      * Actualizar contenido
@@ -106,18 +134,33 @@ class ContenidoController extends Controller
         }
 
         $request->validate([
-            'titulo' => 'sometimes|string|max:255',
+            'titulo' => 'sometimes|required|string|max:255',
             'contenido' => 'nullable|string',
             'tipo' => 'nullable|in:texto,pdf,imagen,youtube,video,archivo'
         ]);
 
-        $contenido->update($request->all());
+        $datos = [];
+
+        if ($request->has('titulo')) {
+            $datos['titulo'] = $request->titulo;
+        }
+
+        if ($request->has('contenido')) {
+            $datos['contenido'] = $request->contenido;
+        }
+
+        if ($request->has('tipo')) {
+            $datos['tipo'] = $request->tipo;
+        }
+
+        $contenido->update($datos);
 
         return response()->json([
             'message' => 'Contenido actualizado correctamente',
             'contenido' => $contenido
         ]);
     }
+
 
     /**
      * Eliminar contenido
@@ -145,16 +188,50 @@ class ContenidoController extends Controller
         ]);
     }
 
+
     /**
      * Contenidos por tema
      */
     public function porTema($temaId)
     {
-        $contenidos = Contenido::where('tema_id', $temaId)
-            ->with('archivos')
-            ->orderBy('id')
-            ->get();
+        $contenidos = Contenido::where(
+            'tema_id',
+            $temaId
+        )
+        ->with('archivos')
+        ->orderBy('id')
+        ->get()
+        ->map(function ($contenido) {
 
-        return response()->json($contenidos);
+            /*
+            |--------------------------------------------------------------------------
+            | AGREGAR URL A CADA ARCHIVO
+            |--------------------------------------------------------------------------
+            */
+
+            $contenido->archivos =
+                $contenido->archivos->map(
+                    function ($archivo) {
+
+                        return [
+                            ...$archivo->toArray(),
+
+                            'url' => asset(
+                                'storage/' . $archivo->ruta
+                            ),
+                        ];
+
+                    }
+                );
+
+
+            return $contenido;
+
+        });
+
+
+        return response()->json(
+            $contenidos
+        );
     }
 }

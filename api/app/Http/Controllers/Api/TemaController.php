@@ -19,6 +19,7 @@ class TemaController extends Controller
         return null;
     }
 
+
     /**
      * Listar temas
      */
@@ -30,6 +31,7 @@ class TemaController extends Controller
                 ->get()
         );
     }
+
 
     /**
      * Crear tema
@@ -44,7 +46,7 @@ class TemaController extends Controller
             'unidad_id' => 'required|exists:unidades,id',
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'orden' => 'nullable|integer'
+            'orden' => 'nullable|integer|min:1'
         ]);
 
         $tema = Tema::create([
@@ -59,6 +61,7 @@ class TemaController extends Controller
             'tema' => $tema
         ], 201);
     }
+
 
     /**
      * Ver tema
@@ -75,6 +78,7 @@ class TemaController extends Controller
 
         return response()->json($tema);
     }
+
 
     /**
      * Actualizar tema
@@ -93,13 +97,24 @@ class TemaController extends Controller
             ], 404);
         }
 
-        $tema->update($request->all());
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'orden' => 'nullable|integer|min:1'
+        ]);
+
+        $tema->update([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'orden' => $request->orden ?? $tema->orden
+        ]);
 
         return response()->json([
             'message' => 'Tema actualizado correctamente',
             'tema' => $tema
         ]);
     }
+
 
     /**
      * Eliminar tema
@@ -124,6 +139,7 @@ class TemaController extends Controller
             'message' => 'Tema eliminado correctamente'
         ]);
     }
+
 
     /**
      * Temas por unidad

@@ -1,7 +1,7 @@
 import {
     ArrowLeft,
     Plus,
-    Layers3,
+    BookOpen,
     Pencil,
     Trash2,
     Loader2,
@@ -20,28 +20,29 @@ import {
 } from "react-router-dom";
 
 import {
-    getUnidadesMateriaRequest,
-    crearUnidadRequest,
-    actualizarUnidadRequest,
-    eliminarUnidadRequest,
-} from "../../api/unidades";
+    getTemasUnidadRequest,
+    crearTemaRequest,
+    actualizarTemaRequest,
+    eliminarTemaRequest,
+} from "../../api/temas";
 
 import type {
-    Unidad,
-} from "../../api/unidades";
+    Tema,
+} from "../../api/temas";
 
 
-export default function Unidades() {
+export default function Temas() {
 
     const navigate = useNavigate();
 
     const {
         materiaId,
+        unidadId,
     } = useParams();
 
 
-    const [unidades, setUnidades] =
-        useState<Unidad[]>([]);
+    const [temas, setTemas] =
+        useState<Tema[]>([]);
 
     const [loading, setLoading] =
         useState(true);
@@ -69,15 +70,16 @@ export default function Unidades() {
 
     /*
     |--------------------------------------------------------------------------
-    | CARGAR UNIDADES
+    | CARGAR TEMAS
     |--------------------------------------------------------------------------
     */
 
-    const cargarUnidades = async () => {
+    const cargarTemas = async () => {
 
-        if (!materiaId) {
+        if (!unidadId) {
+
             setError(
-                "No se encontró la materia."
+                "No se encontró la unidad."
             );
 
             setLoading(false);
@@ -94,24 +96,24 @@ export default function Unidades() {
 
 
             const data =
-                await getUnidadesMateriaRequest(
-                    Number(materiaId)
+                await getTemasUnidadRequest(
+                    Number(unidadId)
                 );
 
 
-            setUnidades(data);
+            setTemas(data);
 
         } catch (error: any) {
 
             console.error(
-                "Error al cargar unidades:",
+                "Error al cargar temas:",
                 error
             );
 
 
             setError(
                 error?.response?.data?.message ||
-                "No se pudieron cargar las unidades."
+                "No se pudieron cargar los temas."
             );
 
         } finally {
@@ -131,25 +133,25 @@ export default function Unidades() {
 
     useEffect(() => {
 
-        cargarUnidades();
+        cargarTemas();
 
-    }, [materiaId]);
+    }, [unidadId]);
 
 
     /*
     |--------------------------------------------------------------------------
-    | NUEVA UNIDAD
+    | NUEVO TEMA
     |--------------------------------------------------------------------------
     */
 
-    const abrirNuevaUnidad = () => {
+    const abrirNuevoTema = () => {
 
         setEditingId(null);
 
         setForm({
             nombre: "",
             descripcion: "",
-            orden: unidades.length + 1,
+            orden: temas.length + 1,
         });
 
         setError("");
@@ -161,23 +163,23 @@ export default function Unidades() {
 
     /*
     |--------------------------------------------------------------------------
-    | EDITAR
+    | EDITAR TEMA
     |--------------------------------------------------------------------------
     */
 
-    const editarUnidad = (
-        unidad: Unidad
+    const editarTema = (
+        tema: Tema
     ) => {
 
         setEditingId(
-            unidad.id
+            tema.id
         );
 
         setForm({
-            nombre: unidad.nombre,
+            nombre: tema.nombre,
             descripcion:
-                unidad.descripcion || "",
-            orden: unidad.orden,
+                tema.descripcion || "",
+            orden: tema.orden,
         });
 
         setError("");
@@ -189,16 +191,27 @@ export default function Unidades() {
 
     /*
     |--------------------------------------------------------------------------
-    | GUARDAR
+    | GUARDAR TEMA
     |--------------------------------------------------------------------------
     */
 
-    const guardarUnidad = async () => {
+    const guardarTema = async () => {
 
         if (!form.nombre.trim()) {
 
             setError(
-                "El nombre de la unidad es obligatorio."
+                "El nombre del tema es obligatorio."
+            );
+
+            return;
+
+        }
+
+
+        if (!unidadId) {
+
+            setError(
+                "No se encontró la unidad."
             );
 
             return;
@@ -219,11 +232,9 @@ export default function Unidades() {
             |--------------------------------------------------------------------------
             */
 
-            if (
-                editingId !== null
-            ) {
+            if (editingId !== null) {
 
-                await actualizarUnidadRequest(
+                await actualizarTemaRequest(
                     editingId,
                     {
                         nombre:
@@ -248,20 +259,10 @@ export default function Unidades() {
 
             else {
 
-                if (!materiaId) {
+                await crearTemaRequest({
 
-                    setError(
-                        "No se encontró la materia."
-                    );
-
-                    return;
-
-                }
-
-
-                await crearUnidadRequest({
-                    materia_id:
-                        Number(materiaId),
+                    unidad_id:
+                        Number(unidadId),
 
                     nombre:
                         form.nombre.trim(),
@@ -271,6 +272,7 @@ export default function Unidades() {
 
                     orden:
                         form.orden,
+
                 });
 
             }
@@ -281,26 +283,26 @@ export default function Unidades() {
             setEditingId(null);
 
 
-            await cargarUnidades();
-
-
             setForm({
                 nombre: "",
                 descripcion: "",
                 orden: 1,
             });
 
+
+            await cargarTemas();
+
         } catch (error: any) {
 
             console.error(
-                "Error al guardar unidad:",
+                "Error al guardar tema:",
                 error
             );
 
 
             setError(
                 error?.response?.data?.message ||
-                "No se pudo guardar la unidad."
+                "No se pudo guardar el tema."
             );
 
         } finally {
@@ -314,17 +316,17 @@ export default function Unidades() {
 
     /*
     |--------------------------------------------------------------------------
-    | ELIMINAR
+    | ELIMINAR TEMA
     |--------------------------------------------------------------------------
     */
 
-    const eliminarUnidad = async (
+    const eliminarTema = async (
         id: number
     ) => {
 
         const confirmar =
             window.confirm(
-                "¿Seguro que deseas eliminar esta unidad?"
+                "¿Seguro que deseas eliminar este tema?"
             );
 
 
@@ -338,30 +340,30 @@ export default function Unidades() {
             setError("");
 
 
-            await eliminarUnidadRequest(
+            await eliminarTemaRequest(
                 id
             );
 
 
-            setUnidades(
+            setTemas(
                 actuales =>
                     actuales.filter(
-                        unidad =>
-                            unidad.id !== id
+                        tema =>
+                            tema.id !== id
                     )
             );
 
         } catch (error: any) {
 
             console.error(
-                "Error al eliminar unidad:",
+                "Error al eliminar tema:",
                 error
             );
 
 
             setError(
                 error?.response?.data?.message ||
-                "No se pudo eliminar la unidad."
+                "No se pudo eliminar el tema."
             );
 
         }
@@ -421,7 +423,7 @@ export default function Unidades() {
                 />
 
                 <p className="mt-4 text-sm">
-                    Cargando unidades...
+                    Cargando temas...
                 </p>
 
             </div>
@@ -462,7 +464,7 @@ export default function Unidades() {
                     <button
                         onClick={() =>
                             navigate(
-                                "/dashboard/docente/materias"
+                                `/dashboard/docente/materias/${materiaId}`
                             )
                         }
                         className="
@@ -481,7 +483,7 @@ export default function Unidades() {
                             size={17}
                         />
 
-                        Volver a materias
+                        Volver a unidades
 
                     </button>
 
@@ -509,7 +511,7 @@ export default function Unidades() {
                             "
                         >
 
-                            <Layers3
+                            <BookOpen
                                 size={20}
                                 className="
                                     text-violet-400
@@ -528,7 +530,7 @@ export default function Unidades() {
                                 font-semibold
                             "
                         >
-                            Contenido académico
+                            Unidad de aprendizaje
                         </span>
 
                     </div>
@@ -542,7 +544,7 @@ export default function Unidades() {
                             text-[var(--nexus-text)]
                         "
                     >
-                        Unidades
+                        Temas
                     </h1>
 
 
@@ -552,8 +554,8 @@ export default function Unidades() {
                             text-[var(--nexus-text-secondary)]
                         "
                     >
-                        Organiza el contenido de esta materia
-                        por unidades de aprendizaje.
+                        Organiza los temas que forman parte
+                        de esta unidad.
                     </p>
 
                 </div>
@@ -561,7 +563,7 @@ export default function Unidades() {
 
                 <button
                     onClick={
-                        abrirNuevaUnidad
+                        abrirNuevoTema
                     }
                     className="
                         inline-flex
@@ -584,7 +586,7 @@ export default function Unidades() {
                         size={20}
                     />
 
-                    Nueva unidad
+                    Nuevo tema
 
                 </button>
 
@@ -616,23 +618,15 @@ export default function Unidades() {
                         className="mt-0.5 shrink-0"
                     />
 
-                    <div className="flex-1">
-
-                        <p className="text-sm font-medium">
-                            {error}
-                        </p>
-
-                    </div>
+                    <p className="flex-1 text-sm">
+                        {error}
+                    </p>
 
 
                     <button
                         onClick={() =>
                             setError("")
                         }
-                        className="
-                            text-red-400
-                            hover:text-[var(--nexus-text)]
-                        "
                     >
 
                         <X
@@ -647,10 +641,10 @@ export default function Unidades() {
 
 
             {/* =========================================================
-                UNIDADES
+                LISTA DE TEMAS
             ========================================================= */}
 
-            {unidades.length > 0 ? (
+            {temas.length > 0 ? (
 
                 <div
                     className="
@@ -662,12 +656,12 @@ export default function Unidades() {
                     "
                 >
 
-                    {unidades.map(
-                        (unidad) => (
+                    {temas.map(
+                        (tema) => (
 
                             <div
                                 key={
-                                    unidad.id
+                                    tema.id
                                 }
                                 className="
                                     group
@@ -709,7 +703,7 @@ export default function Unidades() {
                                         "
                                     >
 
-                                        {unidad.orden}
+                                        {tema.orden}
 
                                     </div>
 
@@ -724,8 +718,8 @@ export default function Unidades() {
 
                                         <button
                                             onClick={() =>
-                                                editarUnidad(
-                                                    unidad
+                                                editarTema(
+                                                    tema
                                                 )
                                             }
                                             className="
@@ -752,8 +746,8 @@ export default function Unidades() {
 
                                         <button
                                             onClick={() =>
-                                                eliminarUnidad(
-                                                    unidad.id
+                                                eliminarTema(
+                                                    tema.id
                                                 )
                                             }
                                             className="
@@ -791,7 +785,7 @@ export default function Unidades() {
                                             font-semibold
                                         "
                                     >
-                                        Unidad {unidad.orden}
+                                        Tema {tema.orden}
                                     </p>
 
 
@@ -803,7 +797,7 @@ export default function Unidades() {
                                             text-[var(--nexus-text)]
                                         "
                                     >
-                                        {unidad.nombre}
+                                        {tema.nombre}
                                     </h2>
 
 
@@ -818,7 +812,7 @@ export default function Unidades() {
                                         "
                                     >
                                         {
-                                            unidad.descripcion ||
+                                            tema.descripcion ||
                                             "Sin descripción."
                                         }
                                     </p>
@@ -826,10 +820,10 @@ export default function Unidades() {
                                 </div>
 
 
-                                <button
+                               <button
     onClick={() =>
         navigate(
-            `/dashboard/docente/materias/${materiaId}/unidades/${unidad.id}`
+            `/dashboard/docente/materias/${materiaId}/unidades/${unidadId}/temas/${tema.id}`
         )
     }
     className="
@@ -848,7 +842,7 @@ export default function Unidades() {
         transition-all
     "
 >
-    Entrar a la unidad
+    Entrar al tema
 </button>
 
                             </div>
@@ -897,7 +891,7 @@ export default function Unidades() {
                             "
                         >
 
-                            <Layers3
+                            <BookOpen
                                 size={28}
                                 className="
                                     text-violet-400
@@ -915,7 +909,7 @@ export default function Unidades() {
                                 text-[var(--nexus-text)]
                             "
                         >
-                            Aún no hay unidades
+                            Aún no hay temas
                         </h2>
 
 
@@ -927,15 +921,15 @@ export default function Unidades() {
                                 text-[var(--nexus-text-muted)]
                             "
                         >
-                            Crea la primera unidad para
-                            comenzar a organizar el contenido
-                            de esta materia.
+                            Crea el primer tema para comenzar
+                            a desarrollar el contenido de esta
+                            unidad.
                         </p>
 
 
                         <button
                             onClick={
-                                abrirNuevaUnidad
+                                abrirNuevoTema
                             }
                             className="
                                 mt-6
@@ -957,7 +951,7 @@ export default function Unidades() {
                                 size={18}
                             />
 
-                            Crear unidad
+                            Crear tema
 
                         </button>
 
@@ -1035,8 +1029,8 @@ export default function Unidades() {
                                     "
                                 >
                                     {editingId !== null
-                                        ? "Editar unidad"
-                                        : "Nueva unidad"}
+                                        ? "Editar tema"
+                                        : "Nuevo tema"}
                                 </h2>
 
                                 <p
@@ -1046,8 +1040,7 @@ export default function Unidades() {
                                         mt-1
                                     "
                                 >
-                                    Organiza una parte del
-                                    contenido de la materia.
+                                    Agrega un tema a esta unidad.
                                 </p>
 
                             </div>
@@ -1069,8 +1062,6 @@ export default function Unidades() {
                                     justify-center
                                     text-[var(--nexus-text-muted)]
                                     hover:text-[var(--nexus-text)]
-                                    hover:bg-black/5
-                                    dark:hover:bg-white/5
                                 "
                             >
 
@@ -1099,7 +1090,7 @@ export default function Unidades() {
                                         mb-2
                                     "
                                 >
-                                    Nombre de la unidad
+                                    Nombre del tema
                                 </label>
 
 
@@ -1115,7 +1106,7 @@ export default function Unidades() {
                                                 e.target.value,
                                         })
                                     }
-                                    placeholder="Ej. Fundamentos de redes"
+                                    placeholder="Ej. Modelo OSI"
                                     disabled={
                                         saving
                                     }
@@ -1178,7 +1169,7 @@ export default function Unidades() {
                                                 e.target.value,
                                         })
                                     }
-                                    placeholder="Describe brevemente qué aprenderán los estudiantes..."
+                                    placeholder="Describe brevemente este tema..."
                                     rows={4}
                                     disabled={
                                         saving
@@ -1218,7 +1209,7 @@ export default function Unidades() {
                                         mb-2
                                     "
                                 >
-                                    Número de unidad
+                                    Número de tema
                                 </label>
 
 
@@ -1292,8 +1283,6 @@ export default function Unidades() {
                                     font-medium
                                     text-[var(--nexus-text-secondary)]
                                     hover:text-[var(--nexus-text)]
-                                    hover:bg-black/5
-                                    dark:hover:bg-white/5
                                 "
                             >
                                 Cancelar
@@ -1302,7 +1291,7 @@ export default function Unidades() {
 
                             <button
                                 onClick={
-                                    guardarUnidad
+                                    guardarTema
                                 }
                                 disabled={
                                     saving ||
@@ -1338,7 +1327,7 @@ export default function Unidades() {
 
                                 {editingId !== null
                                     ? "Guardar cambios"
-                                    : "Crear unidad"}
+                                    : "Crear tema"}
 
                             </button>
 
@@ -1353,5 +1342,4 @@ export default function Unidades() {
         </div>
 
     );
-
 }

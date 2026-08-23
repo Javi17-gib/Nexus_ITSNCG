@@ -40,7 +40,7 @@ export default function DashboardAlumnoLayout() {
                     flex-1
                     min-h-0
                     w-full
-                    overflow-visible
+                    overflow-hidden
                 "
             >
 
