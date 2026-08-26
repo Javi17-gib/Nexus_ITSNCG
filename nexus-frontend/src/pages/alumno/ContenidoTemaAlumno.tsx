@@ -899,6 +899,8 @@ export default function ContenidoTemaAlumno() {
                 ];
 
 
+            setRecursoSeleccionado(null);
+
             navigate(
                 `/dashboard/alumno/materias/${materiaId}/unidades/${unidadId}/temas/${nuevoTema.id}`
             );
@@ -1868,7 +1870,7 @@ export default function ContenidoTemaAlumno() {
                                 <div
                                     className="
                                         flex
-                                        min-h-[330px]
+                                        min-h-[220px]
                                         flex-col
                                         items-center
                                         justify-center
@@ -2044,34 +2046,79 @@ export default function ContenidoTemaAlumno() {
                                                 "
                                             >
 
-                                                {contenido.tipo ===
-                                                    "texto" && (
+                                                {contenido.tipo === "texto" && (
 
-                                                    <div
-                                                        className="
-                                                            rounded-xl
-                                                            border
-                                                            border-white/[0.05]
-                                                            bg-white/[0.018]
-                                                            p-4
-                                                        "
-                                                    >
+    <div
+        className="
+            nexus-rich-content
+            rounded-xl
+            border
+            border-white/[0.04]
+            bg-white/[0.012]
+            px-4
+            py-4
+            text-[15px]
+            leading-7
+            text-slate-300
 
-                                                        <p
-                                                            className="
-                                                                whitespace-pre-wrap
-                                                                text-sm
-                                                                leading-7
-                                                                text-slate-300
-                                                            "
-                                                        >
-                                                            {contenido.contenido ||
-                                                                "Este contenido no tiene texto."}
-                                                        </p>
+            [&_p]:mb-4
+            [&_p:last-child]:mb-0
 
-                                                    </div>
+            [&_h1]:mb-4
+            [&_h1]:mt-6
+            [&_h1]:text-2xl
+            [&_h1]:font-black
+            [&_h1]:text-white
 
-                                                )}
+            [&_h2]:mb-3
+            [&_h2]:mt-5
+            [&_h2]:text-xl
+            [&_h2]:font-black
+            [&_h2]:text-white
+
+            [&_h3]:mb-2
+            [&_h3]:mt-4
+            [&_h3]:text-lg
+            [&_h3]:font-bold
+            [&_h3]:text-white
+
+            [&_strong]:font-bold
+            [&_em]:italic
+            [&_u]:underline
+            [&_s]:line-through
+
+            [&_ul]:my-4
+            [&_ul]:list-disc
+            [&_ul]:pl-6
+
+            [&_ol]:my-4
+            [&_ol]:list-decimal
+            [&_ol]:pl-6
+
+            [&_li]:mb-1
+
+            [&_blockquote]:my-4
+            [&_blockquote]:border-l-2
+            [&_blockquote]:border-violet-500
+            [&_blockquote]:pl-4
+            [&_blockquote]:italic
+            [&_blockquote]:text-slate-400
+
+            [&_a]:text-violet-400
+            [&_a]:underline
+            [&_a]:underline-offset-2
+
+            [&_mark]:rounded
+            [&_mark]:px-1
+        "
+        dangerouslySetInnerHTML={{
+            __html:
+                contenido.contenido ||
+                "<p>Este contenido no tiene texto.</p>",
+        }}
+    />
+
+)}
 
 
                                                 {contenido.tipo ===

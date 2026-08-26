@@ -11,7 +11,8 @@ export type TipoArchivo =
     | "pdf"
     | "imagen"
     | "video"
-    | "audio";
+    | "audio"
+    | "archivo";
 
 
 /*
@@ -36,7 +37,8 @@ export interface ArchivoContenido {
         | "pdf"
         | "imagen"
         | "video"
-        | "audio";
+        | "audio"
+        | "archivo";
 
     tamano?: number | null;
 
@@ -52,8 +54,7 @@ export interface ArchivoContenido {
 | SUBIR ARCHIVO
 |--------------------------------------------------------------------------
 |
-| Se utiliza cuando el contenido es NUEVO y todavía no tiene
-| un archivo asociado.
+| Se utiliza cuando el contenido todavía no tiene un archivo.
 |
 */
 
@@ -72,31 +73,20 @@ export async function subirArchivoRequest(
 
 
     formData.append(
-
         "contenido_id",
-
-        String(
-            contenidoId
-        )
-
+        String(contenidoId)
     );
 
 
     formData.append(
-
         "archivo",
-
         archivo
-
     );
 
 
     formData.append(
-
         "tipo",
-
         tipo
-
     );
 
 
@@ -191,15 +181,16 @@ export async function getArchivoRequest(
 |
 | IMPORTANTE:
 |
-| Aquí NO creamos otro archivo.
+| Esta función NO crea otro registro.
 |
-| Mandamos el nuevo archivo al ID del archivo existente.
+| Envía el nuevo archivo al ID existente.
 |
 | Laravel:
 |
-| 1. Guarda el archivo nuevo.
+| 1. Guarda el nuevo archivo.
 | 2. Actualiza el registro existente.
-| 3. Elimina físicamente el archivo anterior.
+| 3. Guarda el nuevo tamaño.
+| 4. Elimina físicamente el archivo anterior.
 |
 */
 
@@ -250,11 +241,10 @@ export async function actualizarArchivoRequest(
 
     /*
     |--------------------------------------------------------------------------
-    | METHOD SPOOFING PARA LARAVEL
+    | METHOD SPOOFING
     |--------------------------------------------------------------------------
     |
-    | En lugar de mandar PUT directamente con multipart/form-data,
-    | mandamos POST y Laravel lo interpreta como PUT.
+    | Laravel recibe esta petición como PUT.
     |
     */
 
@@ -301,11 +291,10 @@ export async function actualizarArchivoRequest(
 
 /*
 |--------------------------------------------------------------------------
-| ACTUALIZAR SOLO NOMBRE Y TIPO
+| ACTUALIZAR SOLO DATOS DEL ARCHIVO
 |--------------------------------------------------------------------------
 |
-| Esta función se conserva por si en algún momento quieres
-| editar únicamente los datos del archivo sin reemplazarlo.
+| Sirve para cambiar nombre o tipo sin reemplazar el archivo físico.
 |
 */
 

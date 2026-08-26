@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Archivo;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
 
 class ArchivoController extends Controller
 {
@@ -69,7 +68,7 @@ class ArchivoController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | CREAR ARCHIVO
+    | CREAR / SUBIR ARCHIVO
     |--------------------------------------------------------------------------
     */
 
@@ -80,6 +79,12 @@ class ArchivoController extends Controller
         }
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDACIÓN
+        |--------------------------------------------------------------------------
+        */
+
         $request->validate([
 
             'contenido_id' =>
@@ -89,10 +94,16 @@ class ArchivoController extends Controller
                 'required|file|max:20480',
 
             'tipo' =>
-                'required|in:pdf,imagen,video,audio',
+                'required|in:pdf,imagen,video,audio,archivo',
 
         ]);
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | OBTENER ARCHIVO
+        |--------------------------------------------------------------------------
+        */
 
         $file =
             $request->file('archivo');
@@ -113,6 +124,12 @@ class ArchivoController extends Controller
 
         try {
 
+            /*
+            |--------------------------------------------------------------------------
+            | CREAR REGISTRO
+            |--------------------------------------------------------------------------
+            */
+
             $archivo =
                 Archivo::create([
 
@@ -128,8 +145,17 @@ class ArchivoController extends Controller
                     'tipo' =>
                         $request->tipo,
 
+                    'tamano' =>
+                        $file->getSize(),
+
                 ]);
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | RESPUESTA
+            |--------------------------------------------------------------------------
+            */
 
             return response()->json([
 
@@ -155,7 +181,8 @@ class ArchivoController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | SI FALLA LA BD, ELIMINAR ARCHIVO FÍSICO
+            | SI FALLA LA BD
+            | ELIMINAR ARCHIVO FÍSICO
             |--------------------------------------------------------------------------
             */
 
@@ -167,6 +194,11 @@ class ArchivoController extends Controller
 
                 'message' =>
                     'No se pudo guardar el archivo',
+
+                'error' =>
+                    config('app.debug')
+                        ? $e->getMessage()
+                        : null,
 
             ], 500);
 
@@ -263,7 +295,7 @@ class ArchivoController extends Controller
                 'sometimes|required|string|max:255',
 
             'tipo' =>
-                'sometimes|required|in:pdf,imagen,video,audio',
+                'sometimes|required|in:pdf,imagen,video,audio,archivo',
 
             'archivo' =>
                 'nullable|file|max:20480',
@@ -273,7 +305,7 @@ class ArchivoController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | GUARDAR RUTA ANTERIOR
+        | RUTA ANTERIOR
         |--------------------------------------------------------------------------
         */
 
@@ -289,7 +321,7 @@ class ArchivoController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | ¿VIENE UN ARCHIVO NUEVO?
+            | SI VIENE UN ARCHIVO NUEVO
             |--------------------------------------------------------------------------
             */
 
@@ -301,7 +333,7 @@ class ArchivoController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | GUARDAR NUEVO ARCHIVO PRIMERO
+                | GUARDAR NUEVO ARCHIVO
                 |--------------------------------------------------------------------------
                 */
 
@@ -323,10 +355,9 @@ class ArchivoController extends Controller
 
 
                 /*
-                | Si el usuario mandó nombre manualmente
-                | lo respetamos.
-                |
-                | Si no, usamos el nombre real del nuevo archivo.
+                |--------------------------------------------------------------------------
+                | NOMBRE
+                |--------------------------------------------------------------------------
                 */
 
                 if ($request->filled('nombre')) {
@@ -356,12 +387,28 @@ class ArchivoController extends Controller
                 }
 
 
+                /*
+                |--------------------------------------------------------------------------
+                | TAMAÑO
+                |--------------------------------------------------------------------------
+                */
+
+                $archivo->tamano =
+                    $file->getSize();
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | GUARDAR
+                |--------------------------------------------------------------------------
+                */
+
                 $archivo->save();
 
 
                 /*
                 |--------------------------------------------------------------------------
-                | AHORA SÍ ELIMINAMOS EL ARCHIVO ANTERIOR
+                | ELIMINAR ARCHIVO ANTERIOR
                 |--------------------------------------------------------------------------
                 */
 
@@ -371,7 +418,9 @@ class ArchivoController extends Controller
                 ) {
 
                     Storage::disk('public')
-                        ->delete($rutaAnterior);
+                        ->delete(
+                            $rutaAnterior
+                        );
 
                 }
 
@@ -382,7 +431,7 @@ class ArchivoController extends Controller
                 |--------------------------------------------------------------------------
                 | NO SE SUBIÓ ARCHIVO NUEVO
                 |
-                | Solo actualizar nombre/tipo
+                | SOLO ACTUALIZAR DATOS
                 |--------------------------------------------------------------------------
                 */
 
@@ -451,14 +500,17 @@ class ArchivoController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | SI FALLA, ELIMINAR EL NUEVO ARCHIVO
+            | SI FALLA
+            | ELIMINAR ARCHIVO NUEVO
             |--------------------------------------------------------------------------
             */
 
             if ($rutaNueva) {
 
                 Storage::disk('public')
-                    ->delete($rutaNueva);
+                    ->delete(
+                        $rutaNueva
+                    );
 
             }
 
@@ -495,6 +547,12 @@ class ArchivoController extends Controller
         }
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | BUSCAR ARCHIVO
+        |--------------------------------------------------------------------------
+        */
+
         $archivo =
             Archivo::find($id);
 
@@ -529,7 +587,7 @@ class ArchivoController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | ELIMINAR REGISTRO BD
+        | ELIMINAR REGISTRO
         |--------------------------------------------------------------------------
         */
 

@@ -43,6 +43,10 @@ import {
 } from "../../api/archivos";
 
 
+import RichTextEditor
+    from "../../components/docente/RichTextEditor";
+
+
 /*
 |--------------------------------------------------------------------------
 | INFORMACIÓN DE TIPOS
@@ -644,7 +648,8 @@ export default function ContenidoTema() {
                         form.tipo as
                             "pdf" |
                             "imagen" |
-                            "video"
+                            "video" |
+                            "archivo"
 
                     );
 
@@ -668,7 +673,8 @@ export default function ContenidoTema() {
                         form.tipo as
                             "pdf" |
                             "imagen" |
-                            "video"
+                            "video" |
+                            "archivo"
 
                     );
 
@@ -1415,19 +1421,68 @@ export default function ContenidoTema() {
                                         ) : item.contenido ? (
 
                                             <div
-                                                className="
-                                                    whitespace-pre-wrap
-                                                    text-sm
-                                                    leading-7
-                                                    text-[var(--nexus-text-secondary)]
-                                                "
-                                            >
+    className="
+        nexus-rich-preview
+        text-sm
+        leading-7
+        text-[var(--nexus-text-secondary)]
 
-                                                {
-                                                    item.contenido
-                                                }
+        [&_p]:mb-4
+        [&_p:last-child]:mb-0
 
-                                            </div>
+        [&_h1]:mt-5
+        [&_h1]:mb-3
+        [&_h1]:text-2xl
+        [&_h1]:font-black
+        [&_h1]:text-[var(--nexus-text)]
+
+        [&_h2]:mt-5
+        [&_h2]:mb-3
+        [&_h2]:text-xl
+        [&_h2]:font-black
+        [&_h2]:text-[var(--nexus-text)]
+
+        [&_h3]:mt-4
+        [&_h3]:mb-2
+        [&_h3]:text-lg
+        [&_h3]:font-bold
+        [&_h3]:text-[var(--nexus-text)]
+
+        [&_strong]:font-bold
+        [&_em]:italic
+        [&_u]:underline
+        [&_s]:line-through
+
+        [&_ul]:my-4
+        [&_ul]:list-disc
+        [&_ul]:pl-6
+
+        [&_ol]:my-4
+        [&_ol]:list-decimal
+        [&_ol]:pl-6
+
+        [&_li]:mb-1
+
+        [&_blockquote]:my-4
+        [&_blockquote]:border-l-2
+        [&_blockquote]:border-violet-500
+        [&_blockquote]:pl-4
+        [&_blockquote]:italic
+        [&_blockquote]:text-[var(--nexus-text-muted)]
+
+        [&_a]:text-violet-400
+        [&_a]:underline
+        [&_a]:underline-offset-2
+
+        [&_mark]:rounded
+        [&_mark]:px-1
+    "
+    dangerouslySetInnerHTML={{
+        __html:
+            item.contenido ||
+            "<p>Este contenido no tiene texto.</p>",
+    }}
+/>
 
                                         ) : (
 
@@ -1944,7 +1999,21 @@ export default function ContenidoTema() {
                             BODY
                         ================================================= */}
 
-                        <div className="p-6 space-y-6">
+                        <div
+    className="
+        p-6
+        space-y-6
+        max-h-[calc(100vh-220px)]
+        overflow-y-auto
+        pr-2
+
+        [&::-webkit-scrollbar]:w-1.5
+        [&::-webkit-scrollbar-track]:bg-transparent
+        [&::-webkit-scrollbar-thumb]:bg-violet-500/30
+        [&::-webkit-scrollbar-thumb]:rounded-full
+        hover:[&::-webkit-scrollbar-thumb]:bg-violet-500/50
+    "
+>
 
 
                             {/* =================================================
@@ -2182,16 +2251,20 @@ export default function ContenidoTema() {
 
                                 ) : (
 
-                                    <textarea
+                                    <RichTextEditor
                                         value={
                                             form.contenido
                                         }
-                                        onChange={(e) =>
+                                        onChange={(
+                                            contenido
+                                        ) =>
                                             setForm({
                                                 ...form,
-                                                contenido:
-                                                    e.target.value,
+                                                contenido,
                                             })
+                                        }
+                                        disabled={
+                                            saving
                                         }
                                         placeholder={
                                             form.tipo ===
@@ -2199,28 +2272,6 @@ export default function ContenidoTema() {
                                                 ? "Escribe el contenido educativo..."
                                                 : "Puedes agregar una descripción opcional..."
                                         }
-                                        rows={6}
-                                        disabled={
-                                            saving
-                                        }
-                                        className="
-                                            w-full
-                                            rounded-xl
-                                            bg-[var(--nexus-bg)]
-                                            border
-                                            border-[var(--nexus-border)]
-                                            px-4
-                                            py-3
-                                            text-sm
-                                            leading-6
-                                            text-[var(--nexus-text)]
-                                            placeholder:text-[var(--nexus-text-muted)]
-                                            outline-none
-                                            resize-none
-                                            focus:border-violet-500/50
-                                            focus:ring-2
-                                            focus:ring-violet-500/10
-                                        "
                                     />
 
                                 )}
@@ -2236,6 +2287,7 @@ export default function ContenidoTema() {
                                 "pdf",
                                 "imagen",
                                 "video",
+                                "archivo",
                             ].includes(
                                 form.tipo
                             ) && (
