@@ -355,7 +355,7 @@ export default function Sidebar() {
                                 text-[var(--nexus-text)]
                             "
                         >
-                            NEXUS
+                            ITS
                         </h1>
 
                         <p

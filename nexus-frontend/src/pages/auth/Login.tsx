@@ -75,7 +75,7 @@ export default function Login() {
       // ================= LOGIN CORRECTO =================
       await Swal.fire({
         icon: "success",
-        title: "¡Bienvenido a NEXUS!",
+        title: "¡Bienvenido a ITSNCG!",
         text: `Hola ${res?.user?.nombre || ""}, has iniciado sesión correctamente.`,
         background: "#111118",
         color: "#fff",
@@ -212,7 +212,7 @@ export default function Login() {
 
       Swal.fire({
         title: "Creando tu cuenta...",
-        text: "Estamos preparando tu cuenta de NEXUS.",
+        text: "Estamos preparando tu cuenta de ITSNCG.",
         allowOutsideClick: false,
         allowEscapeKey: false,
         showConfirmButton: false,
@@ -234,7 +234,7 @@ export default function Login() {
       await Swal.fire({
         icon: "success",
         title: "¡Cuenta creada!",
-        text: "Tu cuenta en NEXUS fue creada correctamente.",
+        text: "Tu cuenta en ITSNCG fue creada correctamente.",
         background: "#111118",
         color: "#fff",
         confirmButtonColor: "#7c3aed",
@@ -335,7 +335,7 @@ export default function Login() {
             <div className="relative w-28 h-28 rounded-[28px] bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 flex items-center justify-center shadow-[0_0_120px_rgba(139,92,246,0.65)]">
 
               <span className="text-white text-6xl font-black select-none">
-                N
+                ITS
               </span>
 
             </div>
@@ -343,11 +343,11 @@ export default function Login() {
           </div>
 
           <h1 className="mt-6 text-6xl font-black tracking-[14px] text-white">
-            NEXUS
+            ITSNCG
           </h1>
 
           <p className="mt-3 text-slate-400 text-lg font-light">
-            Academic Experience Reimagined
+            Una Experiencia Académica Reinventada
           </p>
 
           <div className="mt-8 w-[340px] flex flex-col items-center">
@@ -355,7 +355,7 @@ export default function Login() {
             <div className="w-full h-px bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
 
             <p className="mt-5 text-slate-500 uppercase tracking-[6px] text-xs font-semibold">
-              In Collaboration With
+              En Colaboracion Con
             </p>
 
             <img
@@ -370,11 +370,11 @@ export default function Login() {
           <div className="mt-8">
 
             <p className="text-lg text-slate-400">
-              The Future of Learning
+              El Futuro De Aprendizaje
             </p>
 
             <p className="mt-1 text-3xl font-bold text-white">
-              Starts Here
+              Comineza Aqui
             </p>
 
           </div>

@@ -486,7 +486,7 @@ export default function Topbar() {
 
                 <input
                     type="text"
-                    placeholder="Buscar en NEXUS..."
+                    placeholder="Buscar en ITS..."
                     className="
                         w-[260px]
                         lg:w-[360px]
