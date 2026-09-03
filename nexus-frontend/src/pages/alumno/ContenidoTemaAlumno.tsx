@@ -11,8 +11,11 @@ import {
     FileText,
     Film,
     FolderOpen,
+    Lightbulb,
     Loader2,
+    LockKeyhole,
     PlayCircle,
+    Puzzle,
     StickyNote,
     Video,
 } from "lucide-react";
@@ -45,6 +48,14 @@ import {
 import type {
     Contenido,
 } from "../../api/contenidos";
+
+import {
+    obtenerRetosRequest,
+} from "../../api/retos";
+
+import type {
+    Reto,
+} from "../../api/retos";
 
 
 /*
@@ -120,6 +131,55 @@ function normalizarUrl(
     }
 
     return url;
+}
+
+
+function normalizarRetoImagenUrl(
+    ruta?: string | null
+) {
+
+    if (!ruta) {
+        return "";
+    }
+
+    const valor = ruta.trim();
+
+    if (!valor) {
+        return "";
+    }
+
+    // Si Laravel ya devuelve una URL completa, usarla tal cual.
+    if (
+        valor.startsWith("http://") ||
+        valor.startsWith("https://")
+    ) {
+        return valor;
+    }
+
+    const baseUrl =
+        api.defaults.baseURL ||
+        window.location.origin;
+
+    const backendOrigin =
+        baseUrl
+            .replace(/\/api\/?$/, "")
+            .replace(/\/$/, "");
+
+    // Normaliza rutas como:
+    // retos/archivo.jpg
+    // /retos/archivo.jpg
+    // storage/retos/archivo.jpg
+    // /storage/retos/archivo.jpg
+    const limpia =
+        valor
+            .replace(/^\/+/, "")
+            .replace(/^storage\/+/, "");
+
+    return (
+        backendOrigin +
+        "/storage/" +
+        limpia
+    );
 }
 
 
@@ -387,6 +447,22 @@ export default function ContenidoTemaAlumno() {
         null
     );
 
+    /*
+    |--------------------------------------------------------------------------
+    | RETOS DEL TEMA
+    |--------------------------------------------------------------------------
+    */
+
+    const [
+        retos,
+        setRetos,
+    ] = useState<Reto[]>([]);
+
+    const [
+        loadingRetos,
+        setLoadingRetos,
+    ] = useState(false);
+
 
     /*
     |--------------------------------------------------------------------------
@@ -518,6 +594,7 @@ export default function ContenidoTemaAlumno() {
                     setTemaActual(null);
 
                     setContenidos([]);
+                    setRetos([]);
 
                     setError(
                         "Esta unidad todavía no tiene temas disponibles."
@@ -650,6 +727,52 @@ export default function ContenidoTemaAlumno() {
                     ? contenidosData as ContenidoAlumno[]
                     : []
             );
+
+            // =====================================================
+            // CARGAR RETOS DEL TEMA
+            // =====================================================
+
+            setLoadingRetos(true);
+
+            try {
+
+                const retosData =
+                    await obtenerRetosRequest(
+                        idTema
+                    );
+
+                if (montado) {
+
+                    setRetos(
+                        Array.isArray(retosData)
+                            ? retosData.filter(
+                                (reto): reto is Reto =>
+                                    Boolean(reto) &&
+                                    reto.activo !== false
+                            )
+                            : []
+                    );
+
+                }
+
+            } catch (retoError) {
+
+                console.error(
+                    "❌ Error al cargar los retos del tema:",
+                    retoError
+                );
+
+                if (montado) {
+                    setRetos([]);
+                }
+
+            } finally {
+
+                if (montado) {
+                    setLoadingRetos(false);
+                }
+
+            }
 
 
         } catch (
@@ -900,6 +1023,7 @@ export default function ContenidoTemaAlumno() {
 
 
             setRecursoSeleccionado(null);
+            setRetos([]);
 
             navigate(
                 `/dashboard/alumno/materias/${materiaId}/unidades/${unidadId}/temas/${nuevoTema.id}`
@@ -2411,6 +2535,727 @@ export default function ContenidoTemaAlumno() {
                             )}
 
                         </div>
+
+
+                        {/* =================================================
+                            RETOS DEL TEMA
+                        ================================================= */}
+
+                        <section
+                            className="
+                                mt-2
+                                border-t
+                                border-white/[0.05]
+                                px-4
+                                py-5
+                                sm:px-5
+                            "
+                        >
+
+                            <div
+                                className="
+                                    mb-4
+                                    flex
+                                    items-center
+                                    justify-between
+                                    gap-3
+                                "
+                            >
+
+                                <div
+                                    className="
+                                        flex
+                                        min-w-0
+                                        items-center
+                                        gap-3
+                                    "
+                                >
+
+                                    <div
+                                        className="
+                                            flex
+                                            h-9
+                                            w-9
+                                            shrink-0
+                                            items-center
+                                            justify-center
+                                            rounded-xl
+                                            border
+                                            border-violet-500/20
+                                            bg-violet-500/10
+                                            text-violet-400
+                                        "
+                                    >
+                                        <Puzzle size={17} />
+                                    </div>
+
+                                    <div className="min-w-0">
+
+                                        <p
+                                            className="
+                                                text-[9px]
+                                                font-black
+                                                uppercase
+                                                tracking-[1.8px]
+                                                text-violet-400
+                                            "
+                                        >
+                                            Práctica
+                                        </p>
+
+                                        <h3
+                                            className="
+                                                mt-0.5
+                                                text-base
+                                                font-black
+                                                text-white
+                                            "
+                                        >
+                                            Retos
+                                        </h3>
+
+                                    </div>
+
+                                </div>
+
+                                {!loadingRetos && retos.length > 0 && (
+                                    <span
+                                        className="
+                                            flex
+                                            h-7
+                                            min-w-7
+                                            items-center
+                                            justify-center
+                                            rounded-full
+                                            border
+                                            border-violet-500/20
+                                            bg-violet-500/10
+                                            px-2
+                                            text-[9px]
+                                            font-black
+                                            text-violet-300
+                                        "
+                                    >
+                                        {retos.length}
+                                    </span>
+                                )}
+
+                            </div>
+
+
+                            {loadingRetos ? (
+
+                                <div
+                                    className="
+                                        flex
+                                        items-center
+                                        justify-center
+                                        gap-2
+                                        rounded-2xl
+                                        border
+                                        border-white/[0.06]
+                                        bg-white/[0.012]
+                                        px-4
+                                        py-8
+                                    "
+                                >
+
+                                    <Loader2
+                                        size={16}
+                                        className="animate-spin text-violet-400"
+                                    />
+
+                                    <span
+                                        className="
+                                            text-xs
+                                            font-medium
+                                            text-slate-500
+                                        "
+                                    >
+                                        Preparando los retos...
+                                    </span>
+
+                                </div>
+
+                            ) : retos.length === 0 ? (
+
+                                <div
+                                    className="
+                                        rounded-2xl
+                                        border
+                                        border-dashed
+                                        border-white/10
+                                        bg-white/[0.012]
+                                        px-5
+                                        py-8
+                                        text-center
+                                    "
+                                >
+
+                                    <div
+                                        className="
+                                            mx-auto
+                                            flex
+                                            h-12
+                                            w-12
+                                            items-center
+                                            justify-center
+                                            rounded-2xl
+                                            border
+                                            border-white/[0.06]
+                                            bg-white/[0.02]
+                                            text-slate-600
+                                        "
+                                    >
+                                        <Puzzle size={20} />
+                                    </div>
+
+                                    <p
+                                        className="
+                                            mt-3
+                                            text-sm
+                                            font-bold
+                                            text-slate-400
+                                        "
+                                    >
+                                        Aún no hay retos
+                                    </p>
+
+                                    <p
+                                        className="
+                                            mx-auto
+                                            mt-1
+                                            max-w-md
+                                            text-[11px]
+                                            leading-5
+                                            text-slate-600
+                                        "
+                                    >
+                                        Cuando el docente agregue un reto a este
+                                        tema, aparecerá aquí para que puedas
+                                        resolverlo en tu cuaderno.
+                                    </p>
+
+                                </div>
+
+                            ) : (
+
+                                <div className="space-y-4">
+
+                                    {retos
+                                        .filter(
+                                            (reto): reto is Reto =>
+                                                Boolean(reto)
+                                        )
+                                        .map(
+                                            (reto, index) => {
+
+                                                const imagenReto =
+                                                    reto.imagen_reto
+                                                        ? normalizarRetoImagenUrl(
+                                                            reto.imagen_reto
+                                                        )
+                                                        : "";
+
+                                                const imagenSolucion =
+                                                    reto.imagen_solucion
+                                                        ? normalizarRetoImagenUrl(
+                                                            reto.imagen_solucion
+                                                        )
+                                                        : "";
+
+                                                const tieneSolucion =
+                                                    Boolean(
+                                                        reto.mostrar_solucion &&
+                                                        (
+                                                            reto.solucion ||
+                                                            imagenSolucion
+                                                        )
+                                                    );
+
+                                                return (
+
+                                                    <article
+                                                        key={reto.id}
+                                                        className="
+                                                            overflow-hidden
+                                                            rounded-2xl
+                                                            border
+                                                            border-white/[0.07]
+                                                            bg-black/15
+                                                        "
+                                                    >
+
+                                                        {/* CABECERA DEL RETO */}
+
+                                                        <div
+                                                            className="
+                                                                flex
+                                                                items-start
+                                                                gap-3
+                                                                border-b
+                                                                border-white/[0.05]
+                                                                px-4
+                                                                py-3.5
+                                                            "
+                                                        >
+
+                                                            <div
+                                                                className="
+                                                                    flex
+                                                                    h-9
+                                                                    w-9
+                                                                    shrink-0
+                                                                    items-center
+                                                                    justify-center
+                                                                    rounded-xl
+                                                                    border
+                                                                    border-violet-500/20
+                                                                    bg-violet-500/10
+                                                                    text-violet-400
+                                                                "
+                                                            >
+                                                                <Puzzle size={17} />
+                                                            </div>
+
+                                                            <div className="min-w-0 flex-1">
+
+                                                                <div
+                                                                    className="
+                                                                        flex
+                                                                        flex-wrap
+                                                                        items-center
+                                                                        gap-2
+                                                                    "
+                                                                >
+
+                                                                    <span
+                                                                        className="
+                                                                            text-[9px]
+                                                                            font-black
+                                                                            uppercase
+                                                                            tracking-[1.6px]
+                                                                            text-violet-400
+                                                                        "
+                                                                    >
+                                                                        Reto {index + 1}
+                                                                    </span>
+
+                                                                    {reto.mostrar_solucion && (
+                                                                        <span
+                                                                            className="
+                                                                                inline-flex
+                                                                                items-center
+                                                                                gap-1
+                                                                                rounded-full
+                                                                                border
+                                                                                border-emerald-500/15
+                                                                                bg-emerald-500/10
+                                                                                px-2
+                                                                                py-0.5
+                                                                                text-[8px]
+                                                                                font-bold
+                                                                                text-emerald-300
+                                                                            "
+                                                                        >
+                                                                            <Lightbulb size={10} />
+                                                                            Solución disponible
+                                                                        </span>
+                                                                    )}
+
+                                                                </div>
+
+                                                                <h4
+                                                                    className="
+                                                                        mt-1
+                                                                        break-words
+                                                                        text-sm
+                                                                        font-black
+                                                                        leading-5
+                                                                        text-white
+                                                                    "
+                                                                >
+                                                                    {reto.titulo}
+                                                                </h4>
+
+                                                            </div>
+
+                                                        </div>
+
+
+                                                        {/* CONTENIDO DEL RETO */}
+
+                                                        <div className="p-4 sm:p-5">
+
+                                                            <div
+                                                                className="
+                                                                    rounded-xl
+                                                                    border
+                                                                    border-white/[0.04]
+                                                                    bg-white/[0.012]
+                                                                    px-4
+                                                                    py-4
+                                                                    text-[14px]
+                                                                    leading-7
+                                                                    text-slate-300
+
+                                                                    [&_p]:mb-3
+                                                                    [&_p:last-child]:mb-0
+
+                                                                    [&_h1]:mb-3
+                                                                    [&_h1]:mt-5
+                                                                    [&_h1]:text-xl
+                                                                    [&_h1]:font-black
+                                                                    [&_h1]:text-white
+
+                                                                    [&_h2]:mb-2
+                                                                    [&_h2]:mt-4
+                                                                    [&_h2]:text-lg
+                                                                    [&_h2]:font-black
+                                                                    [&_h2]:text-white
+
+                                                                    [&_h3]:mb-2
+                                                                    [&_h3]:mt-3
+                                                                    [&_h3]:text-base
+                                                                    [&_h3]:font-bold
+                                                                    [&_h3]:text-white
+
+                                                                    [&_strong]:font-bold
+                                                                    [&_em]:italic
+                                                                    [&_u]:underline
+                                                                    [&_s]:line-through
+
+                                                                    [&_ul]:my-3
+                                                                    [&_ul]:list-disc
+                                                                    [&_ul]:pl-6
+
+                                                                    [&_ol]:my-3
+                                                                    [&_ol]:list-decimal
+                                                                    [&_ol]:pl-6
+
+                                                                    [&_li]:mb-1
+
+                                                                    [&_blockquote]:my-3
+                                                                    [&_blockquote]:border-l-2
+                                                                    [&_blockquote]:border-violet-500
+                                                                    [&_blockquote]:pl-4
+                                                                    [&_blockquote]:italic
+                                                                    [&_blockquote]:text-slate-400
+
+                                                                    [&_a]:text-violet-400
+                                                                    [&_a]:underline
+                                                                    [&_a]:underline-offset-2
+
+                                                                    [&_mark]:rounded
+                                                                    [&_mark]:px-1
+                                                                "
+                                                                dangerouslySetInnerHTML={{
+                                                                    __html:
+                                                                        reto.descripcion ||
+                                                                        "<p>Este reto no tiene una descripción.</p>",
+                                                                }}
+                                                            />
+
+
+                                                            {imagenReto && (
+
+                                                                <div className="mt-4 overflow-hidden rounded-xl border border-white/[0.06] bg-black/20">
+
+                                                                    <img
+                                                                        src={imagenReto}
+                                                                        alt={`Imagen del reto: ${reto.titulo}`}
+                                                                        className="
+                                                                            max-h-[520px]
+                                                                            w-full
+                                                                            object-contain
+                                                                            bg-black/30
+                                                                        "
+                                                                    />
+
+                                                                </div>
+
+                                                            )}
+
+
+                                                            <div
+                                                                className="
+                                                                    mt-4
+                                                                    flex
+                                                                    items-center
+                                                                    gap-2
+                                                                    rounded-xl
+                                                                    border
+                                                                    border-violet-500/10
+                                                                    bg-violet-500/[0.04]
+                                                                    px-3.5
+                                                                    py-3
+                                                                "
+                                                            >
+
+                                                                <StickyNote
+                                                                    size={15}
+                                                                    className="shrink-0 text-violet-400"
+                                                                />
+
+                                                                <p
+                                                                    className="
+                                                                        text-[11px]
+                                                                        font-medium
+                                                                        leading-5
+                                                                        text-slate-400
+                                                                    "
+                                                                >
+                                                                    Resuelve este reto en tu cuaderno.
+                                                                </p>
+
+                                                            </div>
+
+
+                                                            {/* SOLUCIÓN */}
+
+                                                            {tieneSolucion ? (
+
+                                                                <div
+                                                                    className="
+                                                                        mt-5
+                                                                        overflow-hidden
+                                                                        rounded-2xl
+                                                                        border
+                                                                        border-emerald-500/15
+                                                                        bg-emerald-500/[0.025]
+                                                                    "
+                                                                >
+
+                                                                    <div
+                                                                        className="
+                                                                            flex
+                                                                            items-center
+                                                                            gap-2.5
+                                                                            border-b
+                                                                            border-emerald-500/10
+                                                                            px-4
+                                                                            py-3
+                                                                        "
+                                                                    >
+
+                                                                        <div
+                                                                            className="
+                                                                                flex
+                                                                                h-8
+                                                                                w-8
+                                                                                items-center
+                                                                                justify-center
+                                                                                rounded-lg
+                                                                                bg-emerald-500/10
+                                                                                text-emerald-300
+                                                                            "
+                                                                        >
+                                                                            <Lightbulb size={15} />
+                                                                        </div>
+
+                                                                        <div>
+
+                                                                            <p
+                                                                                className="
+                                                                                    text-[9px]
+                                                                                    font-black
+                                                                                    uppercase
+                                                                                    tracking-[1.6px]
+                                                                                    text-emerald-400
+                                                                                "
+                                                                            >
+                                                                                Solución
+                                                                            </p>
+
+                                                                            <p
+                                                                                className="
+                                                                                    mt-0.5
+                                                                                    text-[10px]
+                                                                                    text-slate-500
+                                                                                "
+                                                                            >
+                                                                                El docente habilitó la solución de este reto.
+                                                                            </p>
+
+                                                                        </div>
+
+                                                                    </div>
+
+
+                                                                    <div className="p-4 sm:p-5">
+
+                                                                        {reto.solucion && (
+                                                                            <div
+                                                                                className="
+                                                                                    nexus-rich-content
+                                                                                    text-[14px]
+                                                                                    leading-7
+                                                                                    text-slate-300
+
+                                                                                    [&_p]:mb-3
+                                                                                    [&_p:last-child]:mb-0
+
+                                                                                    [&_h1]:mb-3
+                                                                                    [&_h1]:mt-5
+                                                                                    [&_h1]:text-xl
+                                                                                    [&_h1]:font-black
+                                                                                    [&_h1]:text-white
+
+                                                                                    [&_h2]:mb-2
+                                                                                    [&_h2]:mt-4
+                                                                                    [&_h2]:text-lg
+                                                                                    [&_h2]:font-black
+                                                                                    [&_h2]:text-white
+
+                                                                                    [&_h3]:mb-2
+                                                                                    [&_h3]:mt-3
+                                                                                    [&_h3]:text-base
+                                                                                    [&_h3]:font-bold
+                                                                                    [&_h3]:text-white
+
+                                                                                    [&_strong]:font-bold
+                                                                                    [&_em]:italic
+                                                                                    [&_u]:underline
+                                                                                    [&_s]:line-through
+
+                                                                                    [&_ul]:my-3
+                                                                                    [&_ul]:list-disc
+                                                                                    [&_ul]:pl-6
+
+                                                                                    [&_ol]:my-3
+                                                                                    [&_ol]:list-decimal
+                                                                                    [&_ol]:pl-6
+
+                                                                                    [&_li]:mb-1
+
+                                                                                    [&_blockquote]:my-3
+                                                                                    [&_blockquote]:border-l-2
+                                                                                    [&_blockquote]:border-emerald-500/70
+                                                                                    [&_blockquote]:pl-4
+                                                                                    [&_blockquote]:italic
+                                                                                    [&_blockquote]:text-slate-400
+
+                                                                                    [&_a]:text-violet-400
+                                                                                    [&_a]:underline
+                                                                                    [&_a]:underline-offset-2
+                                                                                "
+                                                                                dangerouslySetInnerHTML={{
+                                                                                    __html:
+                                                                                        reto.solucion,
+                                                                                }}
+                                                                            />
+                                                                        )}
+
+
+                                                                        {imagenSolucion && (
+
+                                                                            <div
+                                                                                className={`
+                                                                                    ${reto.solucion ? "mt-4" : ""}
+                                                                                    overflow-hidden
+                                                                                    rounded-xl
+                                                                                    border
+                                                                                    border-white/[0.06]
+                                                                                    bg-black/20
+                                                                                `}
+                                                                            >
+
+                                                                                <img
+                                                                                    src={imagenSolucion}
+                                                                                    alt={`Imagen de la solución: ${reto.titulo}`}
+                                                                                    className="
+                                                                                        max-h-[520px]
+                                                                                        w-full
+                                                                                        object-contain
+                                                                                        bg-black/30
+                                                                                    "
+                                                                                />
+
+                                                                            </div>
+
+                                                                        )}
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            ) : (
+
+                                                                <div
+                                                                    className="
+                                                                        mt-5
+                                                                        flex
+                                                                        items-center
+                                                                        gap-3
+                                                                        rounded-xl
+                                                                        border
+                                                                        border-white/[0.06]
+                                                                        bg-white/[0.015]
+                                                                        px-4
+                                                                        py-3.5
+                                                                    "
+                                                                >
+
+                                                                    <div
+                                                                        className="
+                                                                            flex
+                                                                            h-8
+                                                                            w-8
+                                                                            shrink-0
+                                                                            items-center
+                                                                            justify-center
+                                                                            rounded-lg
+                                                                            bg-white/[0.035]
+                                                                            text-slate-500
+                                                                        "
+                                                                    >
+                                                                        <LockKeyhole size={15} />
+                                                                    </div>
+
+                                                                    <div>
+
+                                                                        <p
+                                                                            className="
+                                                                                text-[11px]
+                                                                                font-bold
+                                                                                text-slate-300
+                                                                            "
+                                                                        >
+                                                                            Solución oculta
+                                                                        </p>
+
+                                                                        <p
+                                                                            className="
+                                                                                mt-0.5
+                                                                                text-[10px]
+                                                                                leading-4
+                                                                                text-slate-600
+                                                                            "
+                                                                        >
+                                                                            El docente todavía no ha habilitado la solución.
+                                                                        </p>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            )}
+
+                                                        </div>
+
+                                                    </article>
+
+                                                );
+
+                                            }
+                                        )}
+
+                                </div>
+
+                            )}
+
+                        </section>
+
 
                     </main>
 

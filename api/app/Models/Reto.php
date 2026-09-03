@@ -9,20 +9,59 @@ class Reto extends Model
 {
     use HasFactory;
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | CAMPOS ASIGNABLES
+    |--------------------------------------------------------------------------
+    */
+
     protected $fillable = [
+
         'tema_id',
+
         'titulo',
+
         'descripcion',
-        'tipo',
-        'archivo_reto',
-        'archivo_solucion',
+
+        'imagen_reto',
+
+        'solucion',
+
+        'imagen_solucion',
+
         'mostrar_solucion',
-        'activo'
+
+        'activo',
+
     ];
 
-    // 🔗 Relación: un reto pertenece a un tema
+
+    /*
+    |--------------------------------------------------------------------------
+    | CONVERSIONES
+    |--------------------------------------------------------------------------
+    */
+
+    protected $casts = [
+
+        'mostrar_solucion' => 'boolean',
+
+        'activo' => 'boolean',
+
+    ];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELACIÓN CON TEMA
+    |--------------------------------------------------------------------------
+    */
+
     public function tema()
     {
-        return $this->belongsTo(Tema::class);
+        return $this->belongsTo(
+            Tema::class
+        );
     }
 }

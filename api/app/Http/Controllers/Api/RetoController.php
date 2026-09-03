@@ -3,174 +3,634 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Reto;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class RetoController extends Controller
 {
-    /**
-     * Listar retos por tema
-     */
-    public function index($tema_id)
-    {
-        $retos = Reto::where('tema_id', $tema_id)
-            ->where('activo', true)
+
+    /*
+    |--------------------------------------------------------------------------
+    | LISTAR RETOS DE UN TEMA
+    |--------------------------------------------------------------------------
+    */
+
+    public function index(
+        Request $request,
+        $tema_id
+    ) {
+
+        $retos = Reto::where(
+                'tema_id',
+                $tema_id
+            )
+            ->where(
+                'activo',
+                true
+            )
             ->latest()
             ->get();
 
-        return response()->json($retos);
+
+        /*
+        |--------------------------------------------------------------------------
+        | PROTEGER SOLUCIÓN PARA ALUMNOS
+        |--------------------------------------------------------------------------
+        |
+        | Si el docente no ha activado la solución,
+        | el alumno no recibe su contenido.
+        |
+        */
+
+        if (
+            $request->user() &&
+            $request->user()->rol === 'alumno'
+        ) {
+
+            $retos->transform(
+                function ($reto) {
+
+                    if (
+                        !$reto->mostrar_solucion
+                    ) {
+
+                        $reto->solucion = null;
+
+                        $reto->imagen_solucion = null;
+
+                    }
+
+                    return $reto;
+                }
+            );
+        }
+
+
+        return response()->json(
+            $retos
+        );
     }
 
-    /**
-     * Crear reto
-     */
-    public function store(Request $request)
-    {
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREAR RETO
+    |--------------------------------------------------------------------------
+    */
+
+    public function store(
+        Request $request
+    ) {
+
         $request->validate([
-            'tema_id' => 'required|exists:temas,id',
-            'titulo' => 'required|string|max:255',
-            'tipo' => 'required|in:archivo,interactivo',
+
+            'tema_id' =>
+                'required|exists:temas,id',
+
+            'titulo' =>
+                'required|string|max:255',
+
+            'descripcion' =>
+                'nullable|string',
+
+            'solucion' =>
+                'nullable|string',
+
+            'mostrar_solucion' =>
+                'nullable|boolean',
+
+            'activo' =>
+                'nullable|boolean',
+
+            'imagen_reto' =>
+                'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
+
+            'imagen_solucion' =>
+                'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
+
         ]);
+
 
         $reto = new Reto();
 
-        $reto->tema_id = $request->tema_id;
-        $reto->titulo = $request->titulo;
-        $reto->descripcion = $request->descripcion;
-        $reto->tipo = $request->tipo;
-        $reto->mostrar_solucion = $request->mostrar_solucion ?? false;
-        $reto->activo = true;
 
-        if ($request->hasFile('archivo_reto')) {
-            $reto->archivo_reto = $request->file('archivo_reto')
-                ->store('retos', 'public');
+        /*
+        |--------------------------------------------------------------------------
+        | DATOS PRINCIPALES
+        |--------------------------------------------------------------------------
+        */
+
+        $reto->tema_id =
+            $request->tema_id;
+
+        $reto->titulo =
+            $request->titulo;
+
+        $reto->descripcion =
+            $request->descripcion;
+
+        $reto->solucion =
+            $request->solucion;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | VISIBILIDAD
+        |--------------------------------------------------------------------------
+        */
+
+        $reto->mostrar_solucion =
+            $request->boolean(
+                'mostrar_solucion',
+                false
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ACTIVO
+        |--------------------------------------------------------------------------
+        */
+
+        $reto->activo =
+            $request->has('activo')
+                ? $request->boolean('activo')
+                : true;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | IMAGEN DEL RETO
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $request->hasFile(
+                'imagen_reto'
+            )
+        ) {
+
+            $reto->imagen_reto =
+                $request
+                    ->file('imagen_reto')
+                    ->store(
+                        'retos',
+                        'public'
+                    );
         }
 
-        if ($request->hasFile('archivo_solucion')) {
-            $reto->archivo_solucion = $request->file('archivo_solucion')
-                ->store('soluciones', 'public');
+
+        /*
+        |--------------------------------------------------------------------------
+        | IMAGEN DE LA SOLUCIÓN
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $request->hasFile(
+                'imagen_solucion'
+            )
+        ) {
+
+            $reto->imagen_solucion =
+                $request
+                    ->file('imagen_solucion')
+                    ->store(
+                        'soluciones-retos',
+                        'public'
+                    );
         }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GUARDAR
+        |--------------------------------------------------------------------------
+        */
 
         $reto->save();
 
+
         return response()->json([
-            'message' => 'Reto creado correctamente',
-            'reto' => $reto
+
+            'message' =>
+                'Reto creado correctamente',
+
+            'reto' =>
+                $reto,
+
         ], 201);
     }
 
-    /**
-     * Ver un reto
-     */
-    public function show($id)
-    {
-        $reto = Reto::with('tema')->find($id);
+
+    /*
+    |--------------------------------------------------------------------------
+    | MOSTRAR UN RETO
+    |--------------------------------------------------------------------------
+    */
+
+    public function show(
+        Request $request,
+        $id
+    ) {
+
+        $reto = Reto::with(
+            'tema'
+        )->find($id);
+
 
         if (!$reto) {
+
             return response()->json([
-                'message' => 'Reto no encontrado'
+
+                'message' =>
+                    'Reto no encontrado',
+
             ], 404);
         }
 
-        return response()->json($reto);
+
+        /*
+        |--------------------------------------------------------------------------
+        | OCULTAR SOLUCIÓN
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $request->user() &&
+            $request->user()->rol === 'alumno' &&
+            !$reto->mostrar_solucion
+        ) {
+
+            $reto->solucion = null;
+
+            $reto->imagen_solucion = null;
+        }
+
+
+        return response()->json(
+            $reto
+        );
     }
 
-    /**
-     * Actualizar reto
-     */
-    public function update(Request $request, $id)
-    {
+
+    /*
+    |--------------------------------------------------------------------------
+    | ACTUALIZAR RETO
+    |--------------------------------------------------------------------------
+    */
+
+    public function update(
+        Request $request,
+        $id
+    ) {
+
         $reto = Reto::find($id);
 
+
         if (!$reto) {
+
             return response()->json([
-                'message' => 'Reto no encontrado'
+
+                'message' =>
+                    'Reto no encontrado',
+
             ], 404);
         }
 
+
         $request->validate([
-            'titulo' => 'sometimes|string|max:255',
-            'tipo' => 'sometimes|in:archivo,interactivo',
+
+            'titulo' =>
+                'sometimes|string|max:255',
+
+            'descripcion' =>
+                'nullable|string',
+
+            'solucion' =>
+                'nullable|string',
+
+            'mostrar_solucion' =>
+                'sometimes|boolean',
+
+            'activo' =>
+                'sometimes|boolean',
+
+            'imagen_reto' =>
+                'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
+
+            'imagen_solucion' =>
+                'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
+
         ]);
 
-        if ($request->has('titulo')) {
-            $reto->titulo = $request->titulo;
+
+        /*
+        |--------------------------------------------------------------------------
+        | TÍTULO
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $request->has('titulo')
+        ) {
+
+            $reto->titulo =
+                $request->titulo;
         }
 
-        if ($request->has('descripcion')) {
-            $reto->descripcion = $request->descripcion;
+
+        /*
+        |--------------------------------------------------------------------------
+        | DESCRIPCIÓN
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $request->has('descripcion')
+        ) {
+
+            $reto->descripcion =
+                $request->descripcion;
         }
 
-        if ($request->has('tipo')) {
-            $reto->tipo = $request->tipo;
+
+        /*
+        |--------------------------------------------------------------------------
+        | SOLUCIÓN
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $request->has('solucion')
+        ) {
+
+            $reto->solucion =
+                $request->solucion;
         }
 
-        if ($request->has('mostrar_solucion')) {
-            $reto->mostrar_solucion = $request->mostrar_solucion;
+
+        /*
+        |--------------------------------------------------------------------------
+        | MOSTRAR SOLUCIÓN
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $request->has(
+                'mostrar_solucion'
+            )
+        ) {
+
+            $reto->mostrar_solucion =
+                $request->boolean(
+                    'mostrar_solucion'
+                );
         }
 
-        if ($request->has('activo')) {
-            $reto->activo = $request->activo;
+
+        /*
+        |--------------------------------------------------------------------------
+        | ACTIVO
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $request->has('activo')
+        ) {
+
+            $reto->activo =
+                $request->boolean(
+                    'activo'
+                );
         }
 
-        if ($request->hasFile('archivo_reto')) {
 
-            if ($reto->archivo_reto) {
-                Storage::disk('public')
-                    ->delete($reto->archivo_reto);
+        /*
+        |--------------------------------------------------------------------------
+        | REEMPLAZAR IMAGEN DEL RETO
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $request->hasFile(
+                'imagen_reto'
+            )
+        ) {
+
+            if (
+                $reto->imagen_reto
+            ) {
+
+                Storage::disk(
+                    'public'
+                )->delete(
+                    $reto->imagen_reto
+                );
             }
 
-            $reto->archivo_reto = $request->file('archivo_reto')
-                ->store('retos', 'public');
+
+            $reto->imagen_reto =
+                $request
+                    ->file('imagen_reto')
+                    ->store(
+                        'retos',
+                        'public'
+                    );
         }
 
-        if ($request->hasFile('archivo_solucion')) {
 
-            if ($reto->archivo_solucion) {
-                Storage::disk('public')
-                    ->delete($reto->archivo_solucion);
+        /*
+        |--------------------------------------------------------------------------
+        | REEMPLAZAR IMAGEN DE SOLUCIÓN
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $request->hasFile(
+                'imagen_solucion'
+            )
+        ) {
+
+            if (
+                $reto->imagen_solucion
+            ) {
+
+                Storage::disk(
+                    'public'
+                )->delete(
+                    $reto->imagen_solucion
+                );
             }
 
-            $reto->archivo_solucion = $request->file('archivo_solucion')
-                ->store('soluciones', 'public');
+
+            $reto->imagen_solucion =
+                $request
+                    ->file('imagen_solucion')
+                    ->store(
+                        'soluciones-retos',
+                        'public'
+                    );
         }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GUARDAR CAMBIOS
+        |--------------------------------------------------------------------------
+        */
 
         $reto->save();
 
+
         return response()->json([
-            'message' => 'Reto actualizado correctamente',
-            'reto' => $reto
+
+            'message' =>
+                'Reto actualizado correctamente',
+
+            'reto' =>
+                $reto,
+
         ]);
     }
 
-    /**
-     * Eliminar reto
-     */
-    public function destroy($id)
-    {
+
+    /*
+    |--------------------------------------------------------------------------
+    | ACTIVAR / OCULTAR SOLUCIÓN
+    |--------------------------------------------------------------------------
+    */
+
+    public function cambiarSolucion(
+        Request $request,
+        $id
+    ) {
+
         $reto = Reto::find($id);
 
+
         if (!$reto) {
+
             return response()->json([
-                'message' => 'Reto no encontrado'
+
+                'message' =>
+                    'Reto no encontrado',
+
             ], 404);
         }
 
-        if ($reto->archivo_reto) {
-            Storage::disk('public')
-                ->delete($reto->archivo_reto);
+
+        $request->validate([
+
+            'mostrar_solucion' =>
+                'required|boolean',
+
+        ]);
+
+
+        $reto->mostrar_solucion =
+            $request->boolean(
+                'mostrar_solucion'
+            );
+
+
+        $reto->save();
+
+
+        return response()->json([
+
+            'message' =>
+                $reto->mostrar_solucion
+
+                    ? 'Solución mostrada a los alumnos'
+
+                    : 'Solución oculta para los alumnos',
+
+            'mostrar_solucion' =>
+                $reto->mostrar_solucion,
+
+            'reto' =>
+                $reto,
+
+        ]);
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ELIMINAR RETO
+    |--------------------------------------------------------------------------
+    */
+
+    public function destroy(
+        $id
+    ) {
+
+        $reto = Reto::find($id);
+
+
+        if (!$reto) {
+
+            return response()->json([
+
+                'message' =>
+                    'Reto no encontrado',
+
+            ], 404);
         }
 
-        if ($reto->archivo_solucion) {
-            Storage::disk('public')
-                ->delete($reto->archivo_solucion);
+
+        /*
+        |--------------------------------------------------------------------------
+        | ELIMINAR IMAGEN DEL RETO
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $reto->imagen_reto
+        ) {
+
+            Storage::disk(
+                'public'
+            )->delete(
+                $reto->imagen_reto
+            );
         }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ELIMINAR IMAGEN DE SOLUCIÓN
+        |--------------------------------------------------------------------------
+        */
+
+        if (
+            $reto->imagen_solucion
+        ) {
+
+            Storage::disk(
+                'public'
+            )->delete(
+                $reto->imagen_solucion
+            );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ELIMINAR RETO
+        |--------------------------------------------------------------------------
+        */
 
         $reto->delete();
 
+
         return response()->json([
-            'message' => 'Reto eliminado correctamente'
+
+            'message' =>
+                'Reto eliminado correctamente',
+
         ]);
     }
 }

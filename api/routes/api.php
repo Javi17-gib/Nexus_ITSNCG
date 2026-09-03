@@ -243,20 +243,27 @@ Route::get(
 
 
     /*
-    |--------------------------------------------------------------------------
-    | RETOS
-    |--------------------------------------------------------------------------
-    */
+|--------------------------------------------------------------------------
+| RETOS
+|--------------------------------------------------------------------------
+*/
 
-    Route::apiResource(
-        'retos',
-        RetoController::class
-    );
+Route::apiResource(
+    'retos',
+    RetoController::class
+);
 
-    Route::get(
-        '/temas/{tema}/retos',
-        [RetoController::class, 'index']
-    );
+
+Route::get(
+    '/temas/{tema}/retos',
+    [RetoController::class, 'index']
+);
+
+
+Route::patch(
+    '/retos/{id}/solucion',
+    [RetoController::class, 'cambiarSolucion']
+);
 
 
     /*
