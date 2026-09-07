@@ -39,9 +39,13 @@ import {
 } from "../../api/grupos";
 
 
+import {
+    getMateriasRequest,
+} from "../../api/materias";
+
 import type {
     Materia,
-} from "../../api/materias";
+} from "../../types/materia";
 
 
 

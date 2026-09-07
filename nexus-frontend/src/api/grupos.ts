@@ -305,17 +305,20 @@ export async function unirseGrupoRequest(
 |--------------------------------------------------------------------------
 */
 
-export async function getMisGruposRequest() {
+export async function getMisGruposRequest(): Promise<Grupo[]> {
 
     const response =
-        await api.get(
+        await api.get<Grupo[]>(
             "/mis-grupos"
         );
+
 
     console.log(
         "📚 Mis grupos:",
         response.data
     );
 
+
     return response.data;
+
 }

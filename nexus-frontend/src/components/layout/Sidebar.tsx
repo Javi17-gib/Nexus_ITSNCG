@@ -339,7 +339,7 @@ export default function Sidebar() {
                                 font-black
                             "
                         >
-                            N
+                            ITS
                         </span>
 
                     </div>
@@ -355,7 +355,7 @@ export default function Sidebar() {
                                 text-[var(--nexus-text)]
                             "
                         >
-                            ITS
+                            Panel
                         </h1>
 
                         <p

@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\ArchivoController;
 use App\Http\Controllers\Api\RetoController;
 use App\Http\Controllers\Api\EstadisticaController;
 use App\Http\Controllers\Api\ChatbotController;
+use App\Http\Controllers\Api\ReporteController;
 
 
 /*
@@ -308,6 +309,24 @@ Route::patch(
         '/dashboard/docente',
         [EstadisticaController::class, 'dashboardDocente']
     );
+
+    /*
+/*
+|--------------------------------------------------------------------------
+| REPORTES
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/reportes/grupo/{grupoId}/actividad',
+    [ReporteController::class, 'actividadGrupo']
+);
+
+
+Route::get(
+    '/reportes/grupo/{grupoId}/pdf',
+    [ReporteController::class, 'descargarPdf']
+);
 
 
     /*

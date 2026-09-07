@@ -27,6 +27,15 @@ import {
     getUnidadesMateriaRequest,
 } from "../../api/unidades";
 
+import {
+    getMisGruposRequest,
+    type Grupo,
+} from "../../api/grupos";
+
+import {
+    registrarVisitaRequest,
+} from "../../api/estadisticas";
+
 import type {
     Materia,
 } from "../../types/materia";
@@ -95,6 +104,67 @@ export default function UnidadesAlumno() {
 
                 const id =
                     Number(materiaId);
+
+
+                // =====================================================
+                // REGISTRAR VISITA DEL ALUMNO
+                // =====================================================
+                //
+                // Buscamos cuál de los grupos aceptados del alumno
+                // corresponde a la materia actual.
+                //
+                // Si encontramos el grupo, registramos la entrada.
+                // El backend evita duplicar la visita del mismo alumno
+                // para la misma materia y grupo durante el mismo día.
+                //
+                // IMPORTANTE:
+                // Si ocurre un error al registrar la visita, NO detenemos
+                // la carga de la materia ni de las unidades.
+                // =====================================================
+
+                try {
+
+                    const gruposAlumno =
+                        await getMisGruposRequest();
+
+
+                    const grupoMateria =
+                        gruposAlumno.find(
+                            (grupo: Grupo) =>
+                                Number(grupo.materia_id) === id
+                        );
+
+
+                    if (grupoMateria) {
+
+                        await registrarVisitaRequest({
+                            materia_id: id,
+                            grupo_id: Number(
+                                grupoMateria.id
+                            ),
+                        });
+
+
+                        console.log(
+                            "📊 Entrada a la materia registrada correctamente"
+                        );
+
+                    } else {
+
+                        console.warn(
+                            "⚠️ No se encontró un grupo del alumno para esta materia."
+                        );
+
+                    }
+
+                } catch (errorVisita) {
+
+                    console.error(
+                        "❌ Error al registrar la visita:",
+                        errorVisita
+                    );
+
+                }
 
 
                 const [

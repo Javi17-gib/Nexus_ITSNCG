@@ -13,15 +13,35 @@ class Estadistica extends Model
         'fecha_ingreso'
     ];
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | CASTS
+    |--------------------------------------------------------------------------
+    */
+
+    protected $casts = [
+        'fecha_ingreso' => 'datetime',
+    ];
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | RELACIONES
+    |--------------------------------------------------------------------------
+    */
+
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+
     public function materia()
     {
         return $this->belongsTo(Materia::class);
     }
+
 
     public function grupo()
     {
