@@ -75,4 +75,61 @@ class AuthController extends Controller
     {
         return response()->json($request->user());
     }
+
+    public function updateProfile(Request $request)
+{
+    $user = $request->user();
+
+    $validated = $request->validate([
+        'nombre' => ['required', 'string', 'max:100'],
+        'apellido_paterno' => ['required', 'string', 'max:100'],
+        'apellido_materno' => ['nullable', 'string', 'max:100'],
+        'correo' => [
+            'required',
+            'email',
+            'max:150',
+            'unique:users,correo,' . $user->id,
+        ],
+        'foto_perfil' => [
+            'nullable',
+            'image',
+            'mimes:jpg,jpeg,png,webp',
+            'max:5120',
+        ],
+    ]);
+
+    $user->nombre = $validated['nombre'];
+    $user->apellido_paterno = $validated['apellido_paterno'];
+    $user->apellido_materno = $validated['apellido_materno'];
+    $user->correo = $validated['correo'];
+
+    if ($request->hasFile('foto_perfil')) {
+
+        // Eliminar foto anterior si existe
+        if ($user->foto_perfil) {
+            $rutaAnterior = storage_path(
+                'app/public/' . $user->foto_perfil
+            );
+
+            if (file_exists($rutaAnterior)) {
+                unlink($rutaAnterior);
+            }
+        }
+
+        // Guardar nueva foto
+        $ruta = $request->file('foto_perfil')->store(
+            'perfiles',
+            'public'
+        );
+
+        $user->foto_perfil = $ruta;
+    }
+
+    $user->save();
+
+    return response()->json([
+        'message' => 'Perfil actualizado correctamente',
+        'user' => $user,
+    ]);
+}
 }

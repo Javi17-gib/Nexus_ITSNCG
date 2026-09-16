@@ -25,6 +25,8 @@ interface AuthContextType {
 
     register: (data: RegisterData) => Promise<any>;
 
+    updateProfile: (data: FormData) => Promise<User>;
+
     logout: () => Promise<void>;
 
 }
@@ -34,12 +36,14 @@ export const AuthContext =
         {} as AuthContextType
     );
 
-// 🔥 HOOK CORRECTO
 export const useAuth = () => {
+
     const context = useContext(AuthContext);
 
     if (!context) {
-        throw new Error("useAuth debe usarse dentro de AuthProvider");
+        throw new Error(
+            "useAuth debe usarse dentro de AuthProvider"
+        );
     }
 
     return context;
@@ -72,28 +76,46 @@ export function AuthProvider({
 
     }, []);
 
-    // 🔥 LOGIN CORREGIDO
-    const login = async (data: LoginData) => {
+    // LOGIN
+    const login = async (
+        data: LoginData
+    ) => {
 
         const response =
             await authService.login(data);
 
         setUser(response.user);
 
-        return response; // 🔥 IMPORTANTE
+        return response;
     };
 
-    // 🔥 REGISTER CORREGIDO
-    const register = async (data: RegisterData) => {
+    // REGISTER
+    const register = async (
+        data: RegisterData
+    ) => {
 
         const response =
             await authService.register(data);
 
         setUser(response.user);
 
-        return response; // 🔥 IMPORTANTE
+        return response;
     };
 
+    // ACTUALIZAR PERFIL
+    const updateProfile = async (
+        data: FormData
+    ): Promise<User> => {
+
+        const response =
+            await authService.updateProfile(data);
+
+        setUser(response.user);
+
+        return response.user;
+    };
+
+    // LOGOUT
     const logout = async () => {
 
         await authService.logout();
@@ -111,6 +133,7 @@ export function AuthProvider({
                 loading,
                 login,
                 register,
+                updateProfile,
                 logout,
             }}
 

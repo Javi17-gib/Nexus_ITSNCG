@@ -42,3 +42,22 @@ export async function getUserRequest(): Promise<User> {
 
     return response.data;
 }
+
+export async function updateProfileRequest(
+    data: FormData
+): Promise<AuthResponse> {
+
+    data.append("_method", "PUT");
+
+    const response = await api.post<AuthResponse>(
+        "/user/profile",
+        data,
+        {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        }
+    );
+
+    return response.data;
+}

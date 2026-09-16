@@ -25,6 +25,8 @@ import {
     useTheme,
 } from "../../context/ThemeContext";
 
+import api from "../../api/axios";
+
 
 export default function TopbarAlumno() {
 
@@ -120,6 +122,54 @@ export default function TopbarAlumno() {
 
     /*
     |--------------------------------------------------------------------------
+    | URL DE FOTO DE PERFIL
+    |--------------------------------------------------------------------------
+    */
+
+    const normalizarFotoUrl = (
+        ruta?: string | null
+    ) => {
+
+        if (!ruta) return "";
+
+        const valor =
+            ruta.trim();
+
+        if (!valor) return "";
+
+        if (
+            valor.startsWith("http://") ||
+            valor.startsWith("https://")
+        ) {
+
+            return valor;
+
+        }
+
+        const baseUrl =
+            api.defaults.baseURL ||
+            window.location.origin;
+
+        const backendOrigin =
+            baseUrl
+                .replace(/\/api\/?$/, "")
+                .replace(/\/$/, "");
+
+        const limpia =
+            valor
+                .replace(/^\/+/, "")
+                .replace(/^storage\/+/, "");
+
+        return (
+            backendOrigin +
+            "/storage/" +
+            limpia
+        );
+    };
+
+
+    /*
+    |--------------------------------------------------------------------------
     | CERRAR SESIÓN
     |--------------------------------------------------------------------------
     */
@@ -195,6 +245,12 @@ export default function TopbarAlumno() {
 
         };
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | RETURN
+    |--------------------------------------------------------------------------
+    */
 
     return (
 
@@ -282,7 +338,7 @@ export default function TopbarAlumno() {
                             "
                         >
 
-                            N
+                            ITS
 
                         </span>
 
@@ -296,23 +352,12 @@ export default function TopbarAlumno() {
                         "
                     >
 
-                        <p
-                            className="
-                                text-base
-                                font-black
-                                tracking-[0.18em]
-                                text-white
-                            "
-                        >
-
-                            NEXUS
-
-                        </p>
+                       
 
 
                         <p
                             className="
-                                text-[9px]
+                                text-[12px]
                                 uppercase
                                 tracking-[0.18em]
                                 text-violet-300/60
@@ -713,6 +758,7 @@ export default function TopbarAlumno() {
                                 w-10
                                 h-10
                                 rounded-full
+                                overflow-hidden
                                 flex
                                 items-center
                                 justify-center
@@ -725,17 +771,35 @@ export default function TopbarAlumno() {
                             "
                         >
 
-                            <span
-                                className="
-                                    text-sm
-                                    font-bold
-                                    text-white
-                                "
-                            >
+                            {user?.foto_perfil ? (
 
-                                {inicial}
+                                <img
+                                    src={normalizarFotoUrl(
+                                        user.foto_perfil
+                                    )}
+                                    alt="Foto de perfil"
+                                    className="
+                                        w-full
+                                        h-full
+                                        object-cover
+                                    "
+                                />
 
-                            </span>
+                            ) : (
+
+                                <span
+                                    className="
+                                        text-sm
+                                        font-bold
+                                        text-white
+                                    "
+                                >
+
+                                    {inicial}
+
+                                </span>
+
+                            )}
 
                         </div>
 
@@ -875,11 +939,10 @@ export default function TopbarAlumno() {
 
                                 <button
                                     type="button"
-                                    onClick={() =>
-                                        setMenuAbierto(
-                                            false
-                                        )
-                                    }
+                                   onClick={() => {
+                                    setMenuAbierto(false);
+                                    navigate("/dashboard/alumno/configuracion");
+                                }}
                                     className="
                                         w-full
                                         flex
@@ -901,42 +964,6 @@ export default function TopbarAlumno() {
                                     />
 
                                     Mi perfil
-
-                                </button>
-
-
-                                {/* =================================================
-                                    CONFIGURACIÓN
-                                ================================================= */}
-
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        setMenuAbierto(
-                                            false
-                                        )
-                                    }
-                                    className="
-                                        w-full
-                                        flex
-                                        items-center
-                                        gap-3
-                                        px-3
-                                        py-2.5
-                                        rounded-xl
-                                        text-sm
-                                        text-slate-300
-                                        hover:text-white
-                                        hover:bg-white/[0.05]
-                                        transition-all
-                                    "
-                                >
-
-                                    <Settings
-                                        size={17}
-                                    />
-
-                                    Configuración
 
                                 </button>
 

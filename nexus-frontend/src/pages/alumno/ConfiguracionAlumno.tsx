@@ -13,49 +13,73 @@ import {
     Save,
     User,
     XCircle,
+    ArrowLeft,
 } from "lucide-react";
+
+import {
+    useNavigate,
+} from "react-router-dom";
 
 import { useAuth } from "../../context/AuthContext";
 
 import api from "../../api/axios";
 
-export default function Configuracion() {
 
-    const { user, updateProfile } = useAuth();
+export default function ConfiguracionAlumno() {
+
+    const {
+        user,
+        updateProfile,
+    } = useAuth();
+
+
+    const navigate =
+        useNavigate();
+
 
     const fileInputRef =
         useRef<HTMLInputElement | null>(null);
 
+
     const [nombre, setNombre] =
         useState("");
+
 
     const [apellidoPaterno, setApellidoPaterno] =
         useState("");
 
+
     const [apellidoMaterno, setApellidoMaterno] =
         useState("");
+
 
     const [correo, setCorreo] =
         useState("");
 
+
     const [foto, setFoto] =
         useState<File | null>(null);
+
 
     const [preview, setPreview] =
         useState("");
 
+
     const [guardando, setGuardando] =
         useState(false);
+
 
     const [mensaje, setMensaje] =
         useState("");
 
+
     const [error, setError] =
         useState("");
 
+
     /*
     |--------------------------------------------------------------------------
-    | CARGAR INFORMACIÓN ACTUAL DEL USUARIO
+    | CARGAR DATOS DEL USUARIO
     |--------------------------------------------------------------------------
     */
 
@@ -63,17 +87,26 @@ export default function Configuracion() {
 
         if (!user) return;
 
-        setNombre(user.nombre || "");
+
+        setNombre(
+            user.nombre || ""
+        );
+
 
         setApellidoPaterno(
             user.apellido_paterno || ""
         );
 
+
         setApellidoMaterno(
             user.apellido_materno || ""
         );
 
-        setCorreo(user.correo || "");
+
+        setCorreo(
+            user.correo || ""
+        );
+
 
         if (user.foto_perfil) {
 
@@ -91,9 +124,10 @@ export default function Configuracion() {
 
     }, [user]);
 
+
     /*
     |--------------------------------------------------------------------------
-    | URL DE FOTO DE PERFIL
+    | NORMALIZAR URL DE FOTO
     |--------------------------------------------------------------------------
     */
 
@@ -103,37 +137,49 @@ export default function Configuracion() {
 
         if (!ruta) return "";
 
-        const valor = ruta.trim();
+
+        const valor =
+            ruta.trim();
+
 
         if (!valor) return "";
+
 
         if (
             valor.startsWith("http://") ||
             valor.startsWith("https://")
         ) {
+
             return valor;
+
         }
+
 
         const baseUrl =
             api.defaults.baseURL ||
             window.location.origin;
+
 
         const backendOrigin =
             baseUrl
                 .replace(/\/api\/?$/, "")
                 .replace(/\/$/, "");
 
+
         const limpia =
             valor
                 .replace(/^\/+/, "")
                 .replace(/^storage\/+/, "");
+
 
         return (
             backendOrigin +
             "/storage/" +
             limpia
         );
+
     }
+
 
     /*
     |--------------------------------------------------------------------------
@@ -148,20 +194,21 @@ export default function Configuracion() {
         const archivo =
             event.target.files?.[0];
 
+
         if (!archivo) return;
 
+
         setError("");
+
         setMensaje("");
 
-        /*
-        | TIPOS PERMITIDOS
-        */
 
         const tiposPermitidos = [
             "image/jpeg",
             "image/png",
             "image/webp",
         ];
+
 
         if (
             !tiposPermitidos.includes(
@@ -174,11 +221,9 @@ export default function Configuracion() {
             );
 
             return;
+
         }
 
-        /*
-        | TAMAÑO MÁXIMO: 5 MB
-        */
 
         if (
             archivo.size >
@@ -190,31 +235,34 @@ export default function Configuracion() {
             );
 
             return;
+
         }
+
 
         setFoto(archivo);
 
-        /*
-        | VISTA PREVIA
-        */
 
         const objectUrl =
             URL.createObjectURL(
                 archivo
             );
 
+
         setPreview(objectUrl);
+
     };
+
 
     /*
     |--------------------------------------------------------------------------
-    | CANCELAR FOTO SELECCIONADA
+    | CANCELAR FOTO
     |--------------------------------------------------------------------------
     */
 
     const cancelarFoto = () => {
 
         setFoto(null);
+
 
         if (user?.foto_perfil) {
 
@@ -230,12 +278,16 @@ export default function Configuracion() {
 
         }
 
+
         if (fileInputRef.current) {
 
-            fileInputRef.current.value = "";
+            fileInputRef.current.value =
+                "";
 
         }
+
     };
+
 
     /*
     |--------------------------------------------------------------------------
@@ -249,12 +301,11 @@ export default function Configuracion() {
 
         event.preventDefault();
 
+
         setMensaje("");
+
         setError("");
 
-        /*
-        | VALIDACIONES
-        */
 
         if (!nombre.trim()) {
 
@@ -263,7 +314,9 @@ export default function Configuracion() {
             );
 
             return;
+
         }
+
 
         if (!apellidoPaterno.trim()) {
 
@@ -272,7 +325,9 @@ export default function Configuracion() {
             );
 
             return;
+
         }
+
 
         if (!correo.trim()) {
 
@@ -281,34 +336,42 @@ export default function Configuracion() {
             );
 
             return;
+
         }
 
+
         setGuardando(true);
+
 
         try {
 
             const formData =
                 new FormData();
 
+
             formData.append(
                 "nombre",
                 nombre.trim()
             );
+
 
             formData.append(
                 "apellido_paterno",
                 apellidoPaterno.trim()
             );
 
+
             formData.append(
                 "apellido_materno",
                 apellidoMaterno.trim()
             );
 
+
             formData.append(
                 "correo",
                 correo.trim()
             );
+
 
             if (foto) {
 
@@ -319,11 +382,14 @@ export default function Configuracion() {
 
             }
 
+
             await updateProfile(
                 formData
             );
 
+
             setFoto(null);
+
 
             if (
                 fileInputRef.current
@@ -333,6 +399,7 @@ export default function Configuracion() {
                     "";
 
             }
+
 
             setMensaje(
                 "Tu perfil se actualizó correctamente."
@@ -345,8 +412,10 @@ export default function Configuracion() {
                 err
             );
 
+
             const errores =
                 err?.response?.data?.errors;
+
 
             if (errores) {
 
@@ -354,6 +423,7 @@ export default function Configuracion() {
                     Object.values(
                         errores
                     )[0];
+
 
                 if (
                     Array.isArray(
@@ -388,6 +458,7 @@ export default function Configuracion() {
                 setError(
                     "Ocurrió un error al actualizar tu perfil."
                 );
+
             }
 
         } finally {
@@ -395,7 +466,9 @@ export default function Configuracion() {
             setGuardando(false);
 
         }
+
     };
+
 
     /*
     |--------------------------------------------------------------------------
@@ -407,20 +480,31 @@ export default function Configuracion() {
         `${nombre?.charAt(0) || ""}${apellidoPaterno?.charAt(0) || ""}`
     ).toUpperCase();
 
+
     return (
 
         <div
-            className="
-                min-h-full
-                w-full
-                overflow-y-auto
-                px-4
-                py-6
-                sm:px-6
-                lg:px-8
-                bg-[var(--nexus-bg)]
-            "
-        >
+    className="
+        h-full
+        w-full
+        overflow-y-scroll
+        overflow-x-hidden
+        bg-[var(--nexus-bg)]
+        px-4
+        py-6
+        sm:px-6
+        lg:px-8
+
+        [scrollbar-width:thin]
+        [scrollbar-color:rgba(139,92,246,0.55)_transparent]
+
+        [&::-webkit-scrollbar]:w-2
+        [&::-webkit-scrollbar-track]:bg-transparent
+        [&::-webkit-scrollbar-thumb]:rounded-full
+        [&::-webkit-scrollbar-thumb]:bg-violet-500/40
+        hover:[&::-webkit-scrollbar-thumb]:bg-violet-500/70
+    "
+>
 
             <div
                 className="
@@ -429,6 +513,46 @@ export default function Configuracion() {
                     max-w-5xl
                 "
             >
+
+                {/* =========================================================
+                    REGRESAR
+                ========================================================= */}
+
+                <button
+                    type="button"
+                    onClick={() => {
+                        navigate(
+                            "/dashboard/alumno"
+                        );
+                    }}
+                    className="
+                        mb-5
+                        inline-flex
+                        items-center
+                        gap-2
+                        rounded-xl
+                        border
+                        border-[var(--nexus-border)]
+                        bg-[var(--nexus-surface)]
+                        px-4
+                        py-2.5
+                        text-sm
+                        font-medium
+                        text-[var(--nexus-text-secondary)]
+                        transition
+                        hover:bg-[var(--nexus-surface-2)]
+                        hover:text-[var(--nexus-text)]
+                    "
+                >
+
+                    <ArrowLeft
+                        size={17}
+                    />
+
+                    Regresar
+
+                </button>
+
 
                 {/* =========================================================
                     ENCABEZADO
@@ -458,6 +582,7 @@ export default function Configuracion() {
 
                     </div>
 
+
                     <h1
                         className="
                             text-2xl
@@ -470,6 +595,7 @@ export default function Configuracion() {
                         Configuración
                     </h1>
 
+
                     <p
                         className="
                             mt-1
@@ -479,14 +605,14 @@ export default function Configuracion() {
                         "
                     >
                         Administra la información que
-                        aparece en tu perfil de NEXUS.
+                        aparece en tu perfil de ITSNCG.
                     </p>
 
                 </div>
 
 
                 {/* =========================================================
-                    CONTENIDO
+                    TARJETA
                 ========================================================= */}
 
                 <form
@@ -502,7 +628,7 @@ export default function Configuracion() {
                 >
 
                     {/* =====================================================
-                        PERFIL
+                        FOTO DE PERFIL
                     ===================================================== */}
 
                     <div
@@ -524,8 +650,6 @@ export default function Configuracion() {
                                 sm:items-center
                             "
                         >
-
-                            {/* FOTO */}
 
                             <div
                                 className="
@@ -583,8 +707,6 @@ export default function Configuracion() {
                                 </div>
 
 
-                                {/* BOTÓN CÁMARA */}
-
                                 <button
                                     type="button"
                                     onClick={() =>
@@ -617,6 +739,7 @@ export default function Configuracion() {
 
                                 </button>
 
+
                                 <input
                                     ref={fileInputRef}
                                     type="file"
@@ -630,8 +753,6 @@ export default function Configuracion() {
                             </div>
 
 
-                            {/* INFORMACIÓN FOTO */}
-
                             <div>
 
                                 <h2
@@ -643,6 +764,7 @@ export default function Configuracion() {
                                 >
                                     Foto de perfil
                                 </h2>
+
 
                                 <p
                                     className="
@@ -656,6 +778,7 @@ export default function Configuracion() {
                                     navegación de NEXUS.
                                 </p>
 
+
                                 <p
                                     className="
                                         mt-2
@@ -665,6 +788,7 @@ export default function Configuracion() {
                                 >
                                     JPG, PNG o WEBP · Máximo 5 MB
                                 </p>
+
 
                                 {foto && (
 
@@ -704,7 +828,7 @@ export default function Configuracion() {
 
 
                     {/* =====================================================
-                        DATOS PERSONALES
+                        INFORMACIÓN PERSONAL
                     ===================================================== */}
 
                     <div
@@ -726,6 +850,7 @@ export default function Configuracion() {
                             >
                                 Información personal
                             </h2>
+
 
                             <p
                                 className="
@@ -755,7 +880,7 @@ export default function Configuracion() {
                             <div>
 
                                 <label
-                                    htmlFor="nombre"
+                                    htmlFor="nombreAlumno"
                                     className="
                                         mb-2
                                         block
@@ -766,6 +891,7 @@ export default function Configuracion() {
                                 >
                                     Nombre
                                 </label>
+
 
                                 <div className="relative">
 
@@ -781,8 +907,9 @@ export default function Configuracion() {
                                         "
                                     />
 
+
                                     <input
-                                        id="nombre"
+                                        id="nombreAlumno"
                                         type="text"
                                         value={nombre}
                                         onChange={(e) =>
@@ -822,7 +949,7 @@ export default function Configuracion() {
                             <div>
 
                                 <label
-                                    htmlFor="apellidoPaterno"
+                                    htmlFor="apellidoPaternoAlumno"
                                     className="
                                         mb-2
                                         block
@@ -834,8 +961,9 @@ export default function Configuracion() {
                                     Apellido paterno
                                 </label>
 
+
                                 <input
-                                    id="apellidoPaterno"
+                                    id="apellidoPaternoAlumno"
                                     type="text"
                                     value={
                                         apellidoPaterno
@@ -874,7 +1002,7 @@ export default function Configuracion() {
                             <div>
 
                                 <label
-                                    htmlFor="apellidoMaterno"
+                                    htmlFor="apellidoMaternoAlumno"
                                     className="
                                         mb-2
                                         block
@@ -886,8 +1014,9 @@ export default function Configuracion() {
                                     Apellido materno
                                 </label>
 
+
                                 <input
-                                    id="apellidoMaterno"
+                                    id="apellidoMaternoAlumno"
                                     type="text"
                                     value={
                                         apellidoMaterno
@@ -926,7 +1055,7 @@ export default function Configuracion() {
                             <div>
 
                                 <label
-                                    htmlFor="correo"
+                                    htmlFor="correoAlumno"
                                     className="
                                         mb-2
                                         block
@@ -937,6 +1066,7 @@ export default function Configuracion() {
                                 >
                                     Correo electrónico
                                 </label>
+
 
                                 <div className="relative">
 
@@ -952,8 +1082,9 @@ export default function Configuracion() {
                                         "
                                     />
 
+
                                     <input
-                                        id="correo"
+                                        id="correoAlumno"
                                         type="email"
                                         value={correo}
                                         onChange={(e) =>
@@ -1038,6 +1169,7 @@ export default function Configuracion() {
 
                             )}
 
+
                             {error && (
 
                                 <div
@@ -1076,7 +1208,7 @@ export default function Configuracion() {
 
 
                     {/* =====================================================
-                        FOOTER / GUARDAR
+                        GUARDAR
                     ===================================================== */}
 
                     <div
@@ -1122,6 +1254,7 @@ export default function Configuracion() {
                             {guardando ? (
 
                                 <>
+
                                     <span
                                         className="
                                             h-4
@@ -1141,6 +1274,7 @@ export default function Configuracion() {
                             ) : (
 
                                 <>
+
                                     <Save
                                         size={17}
                                     />
@@ -1160,5 +1294,7 @@ export default function Configuracion() {
             </div>
 
         </div>
+
     );
+
 }

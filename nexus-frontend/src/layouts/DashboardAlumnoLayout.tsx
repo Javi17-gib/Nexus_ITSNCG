@@ -24,14 +24,14 @@ export default function DashboardAlumnoLayout() {
         >
 
             {/* =====================================================
-                TOPBAR ALUMNO
+                TOPBAR DEL ALUMNO
             ===================================================== */}
 
             <TopbarAlumno />
 
 
             {/* =====================================================
-                CONTENIDO
+                CONTENIDO PRINCIPAL
             ===================================================== */}
 
             <main
@@ -50,7 +50,7 @@ export default function DashboardAlumnoLayout() {
 
 
             {/* =====================================================
-                CHATBOT NEXUS
+                CHATBOT
             ===================================================== */}
 
             <ChatbotAlumno />

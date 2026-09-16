@@ -3,6 +3,7 @@ import {
     registerRequest,
     logoutRequest,
     getUserRequest,
+    updateProfileRequest,
 } from "../api/auth";
 
 import type {
@@ -58,6 +59,21 @@ class AuthService {
 
         return await getUserRequest();
 
+    }
+
+    async updateProfile(
+        data: FormData
+    ): Promise<AuthResponse> {
+
+        const response =
+            await updateProfileRequest(data);
+
+        localStorage.setItem(
+            "user",
+            JSON.stringify(response.user)
+        );
+
+        return response;
     }
 
     getStoredUser(): User | null {

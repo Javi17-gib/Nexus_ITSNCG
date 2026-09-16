@@ -4,7 +4,8 @@ import {
     Route,
 } from "react-router-dom";
 
-import Login from "../pages/auth/Login";
+import Login
+    from "../pages/auth/Login";
 
 
 // =====================================================
@@ -22,6 +23,9 @@ import ContenidoTemaAlumno
 
 import DashboardAlumnoLayout
     from "../layouts/DashboardAlumnoLayout";
+
+import ConfiguracionAlumno
+    from "../pages/alumno/ConfiguracionAlumno";
 
 
 // =====================================================
@@ -62,14 +66,16 @@ import Configuracion
     from "../pages/docente/Configuracion";
 
 
+// =====================================================
+// RUTAS
+// =====================================================
+
 export default function AppRoutes() {
 
     return (
-
         <BrowserRouter>
 
             <Routes>
-
 
                 {/* =================================================
                     LOGIN
@@ -84,7 +90,7 @@ export default function AppRoutes() {
 
 
                 {/* =================================================
-                    DASHBOARD ALUMNO
+                    ALUMNO
                 ================================================= */}
 
                 <Route
@@ -94,10 +100,11 @@ export default function AppRoutes() {
                     }
                 >
 
+                    {/* =================================================
+                        INICIO / GALAXIA
 
-                    {/* ---------------------------------------------
-                        GALAXIA / INICIO
-                    --------------------------------------------- */}
+                        /dashboard/alumno
+                    ================================================= */}
 
                     <Route
                         index
@@ -107,9 +114,25 @@ export default function AppRoutes() {
                     />
 
 
-                    {/* ---------------------------------------------
-                        MATERIAS DEL ALUMNO
-                    --------------------------------------------- */}
+                    {/* =================================================
+                        CONFIGURACIÓN DEL ALUMNO
+
+                        /dashboard/alumno/configuracion
+                    ================================================= */}
+
+                    <Route
+                        path="configuracion"
+                        element={
+                            <ConfiguracionAlumno />
+                        }
+                    />
+
+
+                    {/* =================================================
+                        MATERIAS
+
+                        /dashboard/alumno/materias/:materiaId
+                    ================================================= */}
 
                     <Route
                         path="materias/:materiaId"
@@ -119,15 +142,12 @@ export default function AppRoutes() {
                     />
 
 
-                    {/* ---------------------------------------------
-                        UNIDAD → ESPACIO DE ESTUDIO
-                        
-                        Al seleccionar una unidad ya NO pasamos
-                        por una pantalla independiente de temas.
+                    {/* =================================================
+                        UNIDAD
 
-                        Se abre directamente:
-                        ContenidoTemaAlumno
-                    --------------------------------------------- */}
+                        /dashboard/alumno/materias/:materiaId/
+                        unidades/:unidadId
+                    ================================================= */}
 
                     <Route
                         path="materias/:materiaId/unidades/:unidadId"
@@ -137,14 +157,12 @@ export default function AppRoutes() {
                     />
 
 
-                    {/* ---------------------------------------------
-                        CONTENIDO DE UN TEMA ESPECÍFICO
-                        
-                        Esta ruta se mantiene para:
-                        - cambiar entre temas
-                        - anterior / siguiente
-                        - enlaces directos
-                    --------------------------------------------- */}
+                    {/* =================================================
+                        TEMA
+
+                        /dashboard/alumno/materias/:materiaId/
+                        unidades/:unidadId/temas/:temaId
+                    ================================================= */}
 
                     <Route
                         path="materias/:materiaId/unidades/:unidadId/temas/:temaId"
@@ -153,12 +171,11 @@ export default function AppRoutes() {
                         }
                     />
 
-
                 </Route>
 
 
                 {/* =================================================
-                    DASHBOARD DOCENTE
+                    DOCENTE
                 ================================================= */}
 
                 <Route
@@ -168,10 +185,9 @@ export default function AppRoutes() {
                     }
                 >
 
-
-                    {/* ---------------------------------------------
+                    {/* =================================================
                         INICIO
-                    --------------------------------------------- */}
+                    ================================================= */}
 
                     <Route
                         index
@@ -181,9 +197,9 @@ export default function AppRoutes() {
                     />
 
 
-                    {/* ---------------------------------------------
+                    {/* =================================================
                         MATERIAS
-                    --------------------------------------------- */}
+                    ================================================= */}
 
                     <Route
                         path="materias"
@@ -193,9 +209,9 @@ export default function AppRoutes() {
                     />
 
 
-                    {/* ---------------------------------------------
+                    {/* =================================================
                         MATERIA
-                    --------------------------------------------- */}
+                    ================================================= */}
 
                     <Route
                         path="materias/:materiaId"
@@ -205,9 +221,9 @@ export default function AppRoutes() {
                     />
 
 
-                    {/* ---------------------------------------------
-                        UNIDADES DE LA MATERIA
-                    --------------------------------------------- */}
+                    {/* =================================================
+                        UNIDADES
+                    ================================================= */}
 
                     <Route
                         path="materias/:materiaId/unidades"
@@ -217,12 +233,9 @@ export default function AppRoutes() {
                     />
 
 
-                    {/* ---------------------------------------------
-                        TEMAS DE UNA UNIDAD
-                        
-                        Esta pantalla SÍ se mantiene para el docente,
-                        porque aquí administra los temas.
-                    --------------------------------------------- */}
+                    {/* =================================================
+                        TEMAS
+                    ================================================= */}
 
                     <Route
                         path="materias/:materiaId/unidades/:unidadId"
@@ -232,9 +245,9 @@ export default function AppRoutes() {
                     />
 
 
-                    {/* ---------------------------------------------
+                    {/* =================================================
                         GRUPOS
-                    --------------------------------------------- */}
+                    ================================================= */}
 
                     <Route
                         path="grupos"
@@ -244,9 +257,9 @@ export default function AppRoutes() {
                     />
 
 
-                    {/* ---------------------------------------------
+                    {/* =================================================
                         CONTENIDO
-                    --------------------------------------------- */}
+                    ================================================= */}
 
                     <Route
                         path="contenido"
@@ -256,9 +269,9 @@ export default function AppRoutes() {
                     />
 
 
-                    {/* ---------------------------------------------
+                    {/* =================================================
                         RETOS
-                    --------------------------------------------- */}
+                    ================================================= */}
 
                     <Route
                         path="retos"
@@ -268,9 +281,9 @@ export default function AppRoutes() {
                     />
 
 
-                    {/* ---------------------------------------------
+                    {/* =================================================
                         REPORTES
-                    --------------------------------------------- */}
+                    ================================================= */}
 
                     <Route
                         path="reportes"
@@ -280,9 +293,11 @@ export default function AppRoutes() {
                     />
 
 
-                    {/* ---------------------------------------------
-                        CONFIGURACIÓN
-                    --------------------------------------------- */}
+                    {/* =================================================
+                        CONFIGURACIÓN DOCENTE
+
+                        /dashboard/docente/configuracion
+                    ================================================= */}
 
                     <Route
                         path="configuracion"
@@ -292,9 +307,12 @@ export default function AppRoutes() {
                     />
 
 
-                    {/* ---------------------------------------------
-                        CONTENIDO DE UN TEMA
-                    --------------------------------------------- */}
+                    {/* =================================================
+                        CONTENIDO DE TEMA
+
+                        /dashboard/docente/materias/:materiaId/
+                        unidades/:unidadId/temas/:temaId
+                    ================================================= */}
 
                     <Route
                         path="materias/:materiaId/unidades/:unidadId/temas/:temaId"
@@ -303,14 +321,10 @@ export default function AppRoutes() {
                         }
                     />
 
-
                 </Route>
-
 
             </Routes>
 
         </BrowserRouter>
-
     );
-
 }

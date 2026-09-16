@@ -129,7 +129,43 @@ export default function Topbar() {
             ?.charAt(0)
             ?.toUpperCase() || "D";
 
+    const normalizarFotoUrl = (
+    ruta?: string | null
+) => {
 
+    if (!ruta) return "";
+
+    const valor = ruta.trim();
+
+    if (!valor) return "";
+
+    if (
+        valor.startsWith("http://") ||
+        valor.startsWith("https://")
+    ) {
+        return valor;
+    }
+
+    const baseUrl =
+        api.defaults.baseURL ||
+        window.location.origin;
+
+    const backendOrigin =
+        baseUrl
+            .replace(/\/api\/?$/, "")
+            .replace(/\/$/, "");
+
+    const limpia =
+        valor
+            .replace(/^\/+/, "")
+            .replace(/^storage\/+/, "");
+
+    return (
+        backendOrigin +
+        "/storage/" +
+        limpia
+    );
+};
     /*
     |--------------------------------------------------------------------------
     | OBTENER NOTIFICACIONES
@@ -1142,26 +1178,37 @@ export default function Topbar() {
                     ================================================= */}
 
                     <div
-                        className="
-                            w-10
-                            h-10
-                            rounded-full
-                            bg-gradient-to-br
-                            from-violet-600
-                            to-blue-600
-                            flex
-                            items-center
-                            justify-center
-                            text-white
-                            font-bold
-                            shadow-[0_0_20px_rgba(124,58,237,0.2)]
-                            shrink-0
-                        "
-                    >
-
-                        {inicial}
-
-                    </div>
+    className="
+        w-10
+        h-10
+        rounded-full
+        overflow-hidden
+        bg-gradient-to-br
+        from-violet-600
+        to-blue-600
+        flex
+        items-center
+        justify-center
+        text-white
+        font-bold
+        shadow-[0_0_20px_rgba(124,58,237,0.2)]
+        shrink-0
+    "
+>
+    {user?.foto_perfil ? (
+        <img
+            src={normalizarFotoUrl(user.foto_perfil)}
+            alt="Foto de perfil"
+            className="
+                w-full
+                h-full
+                object-cover
+            "
+        />
+    ) : (
+        inicial
+    )}
+</div>
 
 
                     {/* =================================================

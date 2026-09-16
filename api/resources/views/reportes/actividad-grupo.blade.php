@@ -1,2970 +1,935 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
-
-
-    <title>
-
-        Reporte Ejecutivo de Actividad - ITS
-
-    </title>
-
+    <title>Reporte académico - ITSNCG</title>
 
     <style>
-
-        /*
-        |--------------------------------------------------------------------------
-        | CONFIGURACIÓN GENERAL
-        |--------------------------------------------------------------------------
-        */
-
         @page {
-
-            margin:
-
-                22px
-                28px
-                48px
-                28px;
-
+            size: A4;
+            margin: 15mm 15mm 16mm 15mm;
         }
 
+        * { box-sizing: border-box; }
 
-        * {
-
-            box-sizing: border-box;
-
-        }
-
+        html, body { margin: 0; padding: 0; }
 
         body {
-
-            margin: 0;
-
-            padding: 0;
-
-            font-family:
-                DejaVu Sans,
-                sans-serif;
-
-            font-size: 9px;
-
-            color: #27272a;
-
-            background: #ffffff;
-
+            font-family: DejaVu Sans, sans-serif;
+            color: #202124;
+            background: #fff;
+            font-size: 8.5px;
+            line-height: 1.35;
         }
 
+        table { width: 100%; border-collapse: collapse; }
+        td, th { vertical-align: top; }
+        .muted { color: #8b8e96; }
+        .purple { color: #6d35d4; }
 
-        /*
-        |--------------------------------------------------------------------------
-        | COLORES
-        |--------------------------------------------------------------------------
-        */
-
-        .purple {
-
-            color: #6d28d9;
-
-        }
-
-
-        .muted {
-
-            color: #71717a;
-
-        }
-
-
-        .green {
-
-            color: #15803d;
-
-        }
-
-
-        .orange {
-
-            color: #c2410c;
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | HEADER PRINCIPAL
-        |--------------------------------------------------------------------------
-        */
-
+        /* =============================
+           ENCABEZADO
+        ============================= */
         .header {
-
-            width: 100%;
-
-            border-bottom:
-
-                3px solid
-                #6d28d9;
-
-            padding-bottom: 15px;
-
-            margin-bottom: 18px;
-
+            border-bottom: 3px solid #6d35d4;
+            padding-bottom: 9px;
         }
 
-
-        .header-table {
-
-            width: 100%;
-
-            border-collapse: collapse;
-
-        }
-
-
-        .header-table td {
-
-            border: none;
-
+        .header-brand {
+            width: 66px;
             vertical-align: middle;
-
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | LOGO ITS
-        |--------------------------------------------------------------------------
-        */
-
-        .logo-container {
-
-            width: 80px;
-
-        }
-
-
-        .logo {
-
-            width: 58px;
-
-            height: 58px;
-
-            border:
-
-                2px solid
-                #6d28d9;
-
-            text-align: center;
-
-            line-height: 58px;
-
-            color: #6d28d9;
-
-            font-size: 16px;
-
+        .brand-box {
+            display: inline-block;
+            background: #17131f;
+            color: #fff;
+            padding: 8px 9px;
+            font-size: 8px;
             font-weight: bold;
-
             letter-spacing: 1px;
-
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | TÍTULO
-        |--------------------------------------------------------------------------
-        */
-
-        .header-kicker {
-
-            color: #7c3aed;
-
-            font-size: 7px;
-
-            text-transform: uppercase;
-
-            letter-spacing: 1.5px;
-
-            margin-bottom: 5px;
-
+        .header-main {
+            vertical-align: middle;
+            padding-left: 3px;
         }
 
-
-        .header-title {
-
-            font-size: 22px;
-
+        .eyebrow {
+            color: #6d35d4;
+            font-size: 6.7px;
             font-weight: bold;
-
-            color: #18181b;
-
-            letter-spacing: .3px;
-
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
         }
 
-
-        .header-subtitle {
-
-            margin-top: 5px;
-
-            font-size: 9px;
-
-            color: #71717a;
-
+        .title {
+            color: #17181b;
+            font-size: 19px;
+            font-weight: bold;
+            line-height: 1.1;
+            margin-top: 2px;
         }
 
+        .subtitle {
+            color: #777b84;
+            font-size: 7.4px;
+            margin-top: 3px;
+        }
 
-        /*
-        |--------------------------------------------------------------------------
-        | FECHA REPORTE
-        |--------------------------------------------------------------------------
-        */
-
-        .report-date {
-
-            width: 120px;
-
+        .header-meta {
+            width: 126px;
             text-align: right;
-
+            vertical-align: middle;
         }
 
-
-        .report-date-label {
-
-            font-size: 7px;
-
+        .meta-label {
+            color: #999ca3;
+            font-size: 6px;
             text-transform: uppercase;
-
-            color: #a1a1aa;
-
-            letter-spacing: 1px;
-
+            letter-spacing: .7px;
         }
 
-
-        .report-date-value {
-
-            margin-top: 5px;
-
-            color: #6d28d9;
-
-            font-size: 10px;
-
+        .meta-value {
+            color: #25262a;
+            font-size: 7.6px;
             font-weight: bold;
-
+            margin-top: 2px;
         }
 
+        .meta-gap { height: 5px; }
 
-        /*
-        |--------------------------------------------------------------------------
-        | CONTEXTO
-        |--------------------------------------------------------------------------
-        */
+        /* =============================
+           IDENTIDAD
+        ============================= */
+        .identity { margin-top: 12px; }
 
-        .context {
-
-            width: 100%;
-
-            border-collapse: collapse;
-
-            margin-bottom: 20px;
-
-            border:
-
-                1px solid
-                #e4e4e7;
-
+        .identity-main {
+            width: 66%;
+            padding-right: 15px;
         }
 
-
-        .context td {
-
-            width: 25%;
-
-            padding:
-
-                10px
-                12px;
-
-            border-right:
-
-                1px solid
-                #e4e4e7;
-
-            vertical-align: top;
-
+        .identity-side {
+            width: 34%;
+            border-left: 1px solid #dedfe4;
+            padding-left: 13px;
         }
 
-
-        .context td:last-child {
-
-            border-right: none;
-
+        .group-name {
+            color: #17181b;
+            font-size: 17px;
+            font-weight: bold;
         }
 
+        .subject {
+            color: #6d35d4;
+            font-size: 8.5px;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .description {
+            color: #777b84;
+            font-size: 7px;
+            margin-top: 5px;
+        }
+
+        .context-row + .context-row {
+            border-top: 1px solid #eeeeef;
+            margin-top: 5px;
+            padding-top: 5px;
+        }
 
         .context-label {
-
-            font-size: 7px;
-
+            color: #999ca3;
+            font-size: 5.8px;
             text-transform: uppercase;
-
-            letter-spacing: .8px;
-
-            color: #a1a1aa;
-
-            margin-bottom: 5px;
-
+            letter-spacing: .65px;
         }
-
 
         .context-value {
-
-            font-size: 9px;
-
+            color: #303136;
+            font-size: 7.6px;
             font-weight: bold;
-
-            color: #27272a;
-
+            margin-top: 2px;
         }
 
+        /* =============================
+           SECCIONES
+        ============================= */
+        .section { margin-top: 13px; }
 
-        /*
-        |--------------------------------------------------------------------------
-        | SECCIONES
-        |--------------------------------------------------------------------------
-        */
-
-        .section {
-
-            margin-top: 18px;
-
-            margin-bottom: 8px;
-
+        .section-head {
+            border-bottom: 1px solid #e2e3e7;
+            padding-bottom: 5px;
+            margin-bottom: 7px;
         }
-
-
-        .section-table {
-
-            width: 100%;
-
-            border-collapse: collapse;
-
-        }
-
-
-        .section-table td {
-
-            border: none;
-
-            vertical-align: middle;
-
-        }
-
 
         .section-number {
-
-            width: 35px;
-
-            color: #7c3aed;
-
-            font-size: 8px;
-
-            font-weight: bold;
-
-        }
-
-
-        .section-title {
-
-            font-size: 14px;
-
-            color: #18181b;
-
-            font-weight: bold;
-
-        }
-
-
-        .section-description {
-
-            text-align: right;
-
-            color: #a1a1aa;
-
+            width: 25px;
+            color: #6d35d4;
             font-size: 7px;
-
+            font-weight: bold;
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | KPI
-        |--------------------------------------------------------------------------
-        */
-
-        .kpi-table {
-
-            width: 100%;
-
-            border-collapse: separate;
-
-            border-spacing: 6px;
-
-            margin-left: -6px;
-
-            margin-right: -6px;
-
+        .section-name {
+            color: #202124;
+            font-size: 11.5px;
+            font-weight: bold;
         }
 
+        .section-caption {
+            text-align: right;
+            color: #9699a1;
+            font-size: 6.3px;
+        }
 
-        .kpi-table td {
-
+        /* =============================
+           MÉTRICAS
+        ============================= */
+        .metric-cell {
             width: 25%;
-
-            border:
-
-                1px solid
-                #e4e4e7;
-
-            padding: 12px;
-
-            vertical-align: top;
-
+            padding-right: 6px;
         }
 
+        .metric-cell:last-child { padding-right: 0; }
 
-        .kpi-label {
+        .metric {
+            min-height: 64px;
+            background: #fafafb;
+            border: 1px solid #e0e1e5;
+            border-top: 2px solid #6d35d4;
+            padding: 8px 9px;
+        }
 
-            font-size: 7px;
-
-            color: #a1a1aa;
-
+        .metric-label {
+            color: #8e9199;
+            font-size: 5.9px;
             text-transform: uppercase;
-
             letter-spacing: .7px;
-
         }
 
-
-        .kpi-number {
-
-            margin-top: 7px;
-
-            font-size: 24px;
-
+        .metric-value {
+            color: #17181b;
+            font-size: 19px;
             font-weight: bold;
-
-            color: #2e1065;
-
             line-height: 1;
-
-        }
-
-
-        .kpi-footer {
-
-            margin-top: 9px;
-
-            padding-top: 7px;
-
-            border-top:
-
-                1px solid
-                #f4f4f5;
-
-            font-size: 7px;
-
-            color: #71717a;
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | PARTICIPACIÓN
-        |--------------------------------------------------------------------------
-        */
-
-        .participation {
-
-            width: 100%;
-
-            border-collapse: collapse;
-
-            border:
-
-                1px solid
-                #e4e4e7;
-
-            margin-top: 8px;
-
-        }
-
-
-        .participation td {
-
-            border: none;
-
-            vertical-align: top;
-
-            padding: 14px;
-
-        }
-
-
-        .participation-left {
-
-            width: 65%;
-
-            border-right:
-
-                1px solid
-                #e4e4e7 !important;
-
-        }
-
-
-        .participation-title {
-
-            font-size: 10px;
-
-            font-weight: bold;
-
-            color: #27272a;
-
-        }
-
-
-        .participation-text {
-
             margin-top: 4px;
+        }
 
-            color: #71717a;
+        .metric-note {
+            color: #858992;
+            font-size: 6.2px;
+            margin-top: 4px;
+        }
 
+        /* =============================
+           ACTIVIDAD
+        ============================= */
+        .activity-main {
+            width: 67%;
+            padding-right: 7px;
+        }
+
+        .activity-side {
+            width: 33%;
+            padding-left: 7px;
+        }
+
+        .panel {
+            border: 1px solid #dedfe4;
+            background: #fff;
+        }
+
+        .panel-head {
+            padding: 7px 9px;
+            border-bottom: 1px solid #e8e8ea;
+        }
+
+        .panel-kicker {
+            color: #6d35d4;
+            font-size: 5.8px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: .8px;
+        }
+
+        .panel-title {
+            color: #25262a;
             font-size: 8px;
-
-        }
-
-
-        .progress-bg {
-
-            width: 100%;
-
-            height: 12px;
-
-            margin-top: 12px;
-
-            background: #ede9fe;
-
-        }
-
-
-        .progress-fill {
-
-            height: 12px;
-
-            background: #6d28d9;
-
-        }
-
-
-        .progress-info {
-
-            margin-top: 7px;
-
-            font-size: 7px;
-
-            color: #71717a;
-
-        }
-
-
-        .participation-right {
-
-            width: 35%;
-
-            background: #fafafa;
-
-            text-align: center;
-
-        }
-
-
-        .participation-percent {
-
-            font-size: 30px;
-
             font-weight: bold;
-
-            color: #6d28d9;
-
+            margin-top: 2px;
         }
 
+        .panel-body { padding: 7px 9px; }
 
-        .participation-status {
+        .activity-row td { padding: 3.5px 0; }
 
-            margin-top: 6px;
-
-            font-size: 9px;
-
-            font-weight: bold;
-
-            color: #27272a;
-
+        .activity-date {
+            width: 65px;
+            color: #686b73;
+            font-size: 6.5px;
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | ACTIVIDAD POR DÍA
-        |--------------------------------------------------------------------------
-        */
-
-        .activity-box {
-
-            width: 100%;
-
-            border:
-
-                1px solid
-                #e4e4e7;
-
+        .bar-cell {
+            padding-left: 6px !important;
+            padding-right: 6px !important;
         }
-
-
-        .activity-header {
-
-            padding: 10px 12px;
-
-            background: #fafafa;
-
-            border-bottom:
-
-                1px solid
-                #e4e4e7;
-
-        }
-
-
-        .activity-title {
-
-            font-size: 10px;
-
-            font-weight: bold;
-
-            color: #27272a;
-
-        }
-
-
-        .activity-subtitle {
-
-            margin-top: 3px;
-
-            color: #a1a1aa;
-
-            font-size: 7px;
-
-        }
-
-
-        .chart-table {
-
-            width: 100%;
-
-            border-collapse: collapse;
-
-        }
-
-
-        .chart-table td {
-
-            border: none;
-
-            padding:
-
-                6px
-                10px;
-
-        }
-
-
-        .chart-date {
-
-            width: 100px;
-
-            font-size: 7px;
-
-            color: #52525b;
-
-        }
-
-
-        .chart-number {
-
-            width: 45px;
-
-            text-align: right;
-
-            font-weight: bold;
-
-            color: #6d28d9;
-
-        }
-
 
         .bar-bg {
-
-            width: 100%;
-
-            height: 10px;
-
-            background: #f4f4f5;
-
+            height: 6px;
+            background: #eeeef1;
         }
-
 
         .bar-fill {
-
-            height: 10px;
-
-            background: #7c3aed;
-
+            height: 6px;
+            background: #6d35d4;
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | INSIGHT
-        |--------------------------------------------------------------------------
-        */
-
-        .insight {
-
-            margin-top: 10px;
-
-            padding: 12px;
-
-            border:
-
-                1px solid
-                #ddd6fe;
-
-            background: #faf7ff;
-
-        }
-
-
-        .insight-label {
-
-            color: #7c3aed;
-
+        .activity-number {
+            width: 22px;
+            text-align: right;
+            color: #6d35d4;
             font-size: 7px;
+            font-weight: bold;
+        }
 
+        .activity-empty {
+            text-align: center;
+            padding: 10px 5px 9px;
+        }
+
+        .empty-number {
+            color: #d2c8e9;
+            font-size: 17px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .empty-title {
+            color: #52555c;
+            font-size: 7px;
+            font-weight: bold;
+            margin-top: 3px;
+        }
+
+        .empty-text {
+            color: #999ca3;
+            font-size: 6.2px;
+            margin-top: 2px;
+        }
+
+        /* PARTICIPACIÓN */
+        .participation-value {
+            color: #6d35d4;
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .participation-title {
+            color: #303136;
+            font-size: 7.5px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        .participation-text {
+            color: #777b84;
+            font-size: 6.5px;
+            margin-top: 3px;
+        }
+
+        .track {
+            height: 7px;
+            background: #ece8f8;
+            margin-top: 9px;
+        }
+
+        .fill {
+            height: 7px;
+            background: #6d35d4;
+        }
+
+        .participation-foot {
+            border-top: 1px solid #eeeeef;
+            margin-top: 7px;
+            padding-top: 6px;
+            color: #777b84;
+            font-size: 6px;
+        }
+
+        /* =============================
+           LECTURA
+        ============================= */
+        .reading {
+            margin-top: 7px;
+            background: #f7f5fb;
+            border-left: 3px solid #6d35d4;
+            padding: 7px 9px;
+        }
+
+        .reading-label {
+            color: #6d35d4;
+            font-size: 5.8px;
+            font-weight: bold;
             text-transform: uppercase;
+            letter-spacing: .7px;
+        }
 
+        .reading-title {
+            color: #303136;
+            font-size: 7.5px;
             font-weight: bold;
-
-            letter-spacing: 1px;
-
+            margin-top: 2px;
         }
 
-
-        .insight-title {
-
-            margin-top: 5px;
-
-            color: #2e1065;
-
-            font-size: 10px;
-
-            font-weight: bold;
-
+        .reading-text {
+            color: #656970;
+            font-size: 6.5px;
+            margin-top: 2px;
         }
 
-
-        .insight-text {
-
-            margin-top: 5px;
-
-            color: #52525b;
-
-            font-size: 8px;
-
-            line-height: 1.5;
-
+        /* =============================
+           RANKING
+        ============================= */
+        .ranking-table th {
+            background: #17131f;
+            color: #fff;
+            padding: 6px 7px;
+            text-align: left;
+            font-size: 5.8px;
+            text-transform: uppercase;
+            letter-spacing: .45px;
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | RANKING
-        |--------------------------------------------------------------------------
-        */
-
-        .ranking {
-
-            width: 100%;
-
-            border-collapse: separate;
-
-            border-spacing: 6px;
-
-            margin-left: -6px;
-
+        .ranking-table td {
+            border-bottom: 1px solid #e3e3e6;
+            padding: 6px 7px;
+            font-size: 6.8px;
         }
-
-
-        .ranking td {
-
-            width: 33.33%;
-
-            border:
-
-                1px solid
-                #e4e4e7;
-
-            padding: 11px;
-
-            vertical-align: top;
-
-        }
-
 
         .ranking-position {
-
-            font-size: 7px;
-
+            width: 42px;
+            color: #6d35d4;
             font-weight: bold;
-
-            color: #7c3aed;
-
         }
-
 
         .ranking-name {
-
-            margin-top: 7px;
-
-            font-size: 9px;
-
+            color: #303136;
             font-weight: bold;
-
-            color: #27272a;
-
         }
 
-
-        .ranking-number {
-
-            margin-top: 7px;
-
-            font-size: 18px;
-
+        .ranking-visits {
+            width: 70px;
+            color: #6d35d4;
             font-weight: bold;
-
-            color: #5b21b6;
-
+            text-align: right;
         }
 
-
-        .ranking-label {
-
-            font-size: 7px;
-
-            color: #a1a1aa;
-
+        /* =============================
+           DETALLE
+        ============================= */
+        .detail-summary td {
+            width: 33.33%;
+            border: 1px solid #dedfe4;
+            padding: 6px 8px;
         }
 
+        .detail-summary td + td { border-left: 0; }
 
-        /*
-        |--------------------------------------------------------------------------
-        | TABLA ALUMNOS
-        |--------------------------------------------------------------------------
-        */
-
-        .students-table {
-
-            width: 100%;
-
-            border-collapse: collapse;
-
-            margin-top: 8px;
-
-            table-layout: fixed;
-
-        }
-
-
-        .students-table thead {
-
-            display: table-header-group;
-
-        }
-
-
-        .students-table tbody {
-
-            display: table-row-group;
-
-        }
-
-
-        .students-table tr {
-
-            page-break-inside: avoid;
-
-        }
-
-
-        .students-table th {
-
-            background: #2e1065;
-
-            color: #ffffff;
-
-            padding:
-
-                8px
-                5px;
-
-            font-size: 6.5px;
-
+        .detail-summary-label {
+            color: #92959d;
+            font-size: 5.8px;
             text-transform: uppercase;
-
             letter-spacing: .4px;
-
-            text-align: left;
-
         }
 
-
-        .students-table td {
-
-            border-bottom:
-
-                1px solid
-                #e4e4e7;
-
-            padding:
-
-                7px
-                5px;
-
-            font-size: 7px;
-
-            vertical-align: middle;
-
-            line-height: 1.25;
-
-            word-wrap: break-word;
-
-        }
-
-
-        .students-table tr:nth-child(even) {
-
-            background: #fafafa;
-
-        }
-
-
-        .student-number {
-
-            text-align: center;
-
-            color: #7c3aed;
-
+        .detail-summary-value {
+            color: #25262a;
+            font-size: 9px;
             font-weight: bold;
-
+            margin-top: 2px;
         }
 
+        .students {
+            margin-top: 7px;
+            table-layout: fixed;
+        }
+
+        .students thead { display: table-header-group; }
+        .students tr { page-break-inside: avoid; }
+
+        .students th {
+            background: #17131f;
+            color: #fff;
+            padding: 6px 5px;
+            text-align: left;
+            font-size: 5.5px;
+            text-transform: uppercase;
+            letter-spacing: .35px;
+        }
+
+        .students td {
+            border-bottom: 1px solid #e2e3e6;
+            padding: 6px 5px;
+            color: #4d5057;
+            font-size: 6.2px;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+
+        .students tbody tr:nth-child(even) { background: #fafafb; }
+
+        .col-num { width: 5%; text-align: center; }
+        .col-student { width: 24%; }
+        .col-mail { width: 24%; }
+        .col-visits { width: 9%; text-align: center; }
+        .col-last { width: 23%; }
+        .col-status { width: 15%; text-align: center; }
 
         .student-name {
-
-            font-size: 8px;
-
+            color: #202124;
             font-weight: bold;
-
-            color: #27272a;
-
+            font-size: 6.6px;
         }
-
 
         .student-role {
-
-            margin-top: 2px;
-
-            font-size: 6px;
-
-            color: #a1a1aa;
-
+            color: #9699a1;
+            font-size: 5.5px;
+            margin-top: 1px;
         }
 
-
-        .center {
-
-            text-align: center;
-
-        }
-
-
-        .visit-number {
-
-            color: #6d28d9;
-
-            font-size: 9px;
-
+        .visit-value {
+            color: #6d35d4;
             font-weight: bold;
-
+            font-size: 8px;
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | BADGES
-        |--------------------------------------------------------------------------
-        */
-
-        .badge-active {
-
+        .status {
             display: inline-block;
-
-            padding:
-
-                3px
-                6px;
-
-            font-size: 6px;
-
+            padding: 2px 4px;
+            font-size: 5.2px;
             font-weight: bold;
-
-            color: #166534;
-
-            background: #dcfce7;
-
+            border: 1px solid #dedfe4;
         }
 
-
-        .badge-inactive {
-
-            display: inline-block;
-
-            padding:
-
-                3px
-                6px;
-
-            font-size: 6px;
-
-            font-weight: bold;
-
-            color: #71717a;
-
-            background: #f4f4f5;
-
+        .status-active {
+            background: #f0f8f3;
+            color: #287247;
+            border-color: #cfe6d7;
         }
 
+        .status-none {
+            background: #f5f5f6;
+            color: #777b84;
+        }
 
-        /*
-        |--------------------------------------------------------------------------
-        | EMPTY
-        |--------------------------------------------------------------------------
-        */
-
-        .empty {
-
-            padding: 15px !important;
-
+        .no-students {
             text-align: center;
-
-            color: #a1a1aa;
-
-            font-style: italic;
-
+            padding: 12px;
+            color: #8c8f97;
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | FOOTER
-        |--------------------------------------------------------------------------
-        */
-
+        /* =============================
+           PIE
+        ============================= */
         .footer {
-
-            position: fixed;
-
-            bottom: -32px;
-
-            left: 0;
-
-            width: 100%;
-
-            padding-top: 7px;
-
-            border-top:
-
-                1px solid
-                #e4e4e7;
-
-            font-size: 6.5px;
-
-            color: #a1a1aa;
-
+            margin-top: 11px;
+            padding-top: 5px;
+            border-top: 1px solid #dedfe4;
+            color: #9b9ea5;
+            font-size: 5.5px;
         }
 
-
-        .footer-left {
-
-            float: left;
-
-        }
-
-
-        .footer-right {
-
-            float: right;
-
-        }
-
-
-        .footer strong {
-
-            color: #6d28d9;
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | CONTROL DE PAGINACIÓN
-        |--------------------------------------------------------------------------
-        */
-
-        .keep-together {
-
-            page-break-inside: avoid;
-
-        }
-
+        .footer-left { float: left; }
+        .footer-right { float: right; }
+        .footer strong { color: #6d35d4; }
     </style>
-
 </head>
-
 
 <body>
 
-
 @php
+    $actividad = $actividadPorDia ?? [];
+    $listaAlumnos = collect($alumnos ?? []);
 
+    $totalAlumnosFinal = $totalAlumnos ?? $listaAlumnos->count();
 
-    /*
-    |--------------------------------------------------------------------------
-    | DATOS GENERALES
-    |--------------------------------------------------------------------------
-    */
+    $alumnosActivosFinal = $alumnosActivos ?? $listaAlumnos
+        ->filter(function ($alumno) {
+            return (int) ($alumno['total_visitas'] ?? 0) > 0;
+        })
+        ->count();
 
-    $actividad =
+    $totalVisitasFinal = $totalVisitas ?? $listaAlumnos->sum(function ($alumno) {
+        return (int) ($alumno['total_visitas'] ?? 0);
+    });
 
-        $actividadPorDia
-        ?? [];
+    $promedioFinal = $totalAlumnosFinal > 0
+        ? round($totalVisitasFinal / $totalAlumnosFinal, 1)
+        : 0;
 
+    $porcentajeActivos = $totalAlumnosFinal > 0
+        ? round(($alumnosActivosFinal / $totalAlumnosFinal) * 100)
+        : 0;
 
-    $listaAlumnos =
-
-        collect(
-            $alumnos
-            ?? []
-        );
-
-
-    $totalAlumnosFinal =
-
-        $totalAlumnos
-        ?? $listaAlumnos->count();
-
-
-    $alumnosActivosFinal =
-
-        $alumnosActivos
-        ?? $listaAlumnos
-            ->filter(
-                function ($alumno) {
-
-                    return
-                        ($alumno['total_visitas'] ?? 0) > 0;
-
-                }
-            )
-            ->count();
-
-
-    $totalVisitasFinal =
-
-        $totalVisitas
-        ?? $listaAlumnos
-            ->sum(
-                'total_visitas'
-            );
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | PROMEDIO
-    |--------------------------------------------------------------------------
-    */
-
-    if (
-        $totalAlumnosFinal > 0
-    ) {
-
-        $promedioFinal =
-
-            round(
-                $totalVisitasFinal
-                /
-                $totalAlumnosFinal,
-                1
-            );
-
+    if ($porcentajeActivos >= 80) {
+        $nivelParticipacion = 'Alta participación';
+        $mensajeParticipacion = 'La mayoría del grupo presenta actividad.';
+    } elseif ($porcentajeActivos >= 60) {
+        $nivelParticipacion = 'Buena participación';
+        $mensajeParticipacion = 'Una parte importante del grupo presenta actividad.';
+    } elseif ($porcentajeActivos >= 30) {
+        $nivelParticipacion = 'Participación moderada';
+        $mensajeParticipacion = 'Existe actividad, aunque puede reforzarse.';
+    } else {
+        $nivelParticipacion = 'Sin actividad suficiente';
+        $mensajeParticipacion = 'La actividad registrada es limitada.';
     }
-
-    else {
-
-        $promedioFinal = 0;
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | PORCENTAJE ACTIVOS
-    |--------------------------------------------------------------------------
-    */
-
-    if (
-        $totalAlumnosFinal > 0
-    ) {
-
-        $porcentajeActivos =
-
-            round(
-                (
-                    $alumnosActivosFinal
-                    /
-                    $totalAlumnosFinal
-                )
-                *
-                100
-            );
-
-    }
-
-    else {
-
-        $porcentajeActivos = 0;
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | NIVEL PARTICIPACIÓN
-    |--------------------------------------------------------------------------
-    */
-
-    if (
-        $porcentajeActivos >= 80
-    ) {
-
-        $nivelParticipacion =
-            'Excelente participación';
-
-        $mensajeParticipacion =
-            'El grupo presenta una participación académica sobresaliente.';
-
-
-    }
-
-    elseif (
-        $porcentajeActivos >= 60
-    ) {
-
-        $nivelParticipacion =
-            'Buena participación';
-
-        $mensajeParticipacion =
-            'La mayoría de los alumnos mantiene actividad académica.';
-
-
-    }
-
-    elseif (
-        $porcentajeActivos >= 30
-    ) {
-
-        $nivelParticipacion =
-            'Participación moderada';
-
-        $mensajeParticipacion =
-            'Existe actividad, aunque algunos alumnos requieren seguimiento.';
-
-
-    }
-
-    else {
-
-        $nivelParticipacion =
-            'Participación baja';
-
-        $mensajeParticipacion =
-            'Se recomienda reforzar el seguimiento académico del grupo.';
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | ACTIVIDAD MÁS ALTA
-    |--------------------------------------------------------------------------
-    */
 
     $maxVisitasDia = 0;
-
-    $fechaMayorActividad =
-        null;
-
-
-    foreach (
-        $actividad
-        as $item
-    ) {
-
-
-        $visitasItem =
-
-            (int)
-            (
-                $item['visitas']
-                ?? 0
-            );
-
-
-        if (
-            $visitasItem
-            >
-            $maxVisitasDia
-        ) {
-
-            $maxVisitasDia =
-                $visitasItem;
-
-
-            $fechaMayorActividad =
-
-                $item['fecha']
-                ?? null;
-
+    foreach ($actividad as $item) {
+        $visitasItem = (int) ($item['visitas'] ?? 0);
+        if ($visitasItem > $maxVisitasDia) {
+            $maxVisitasDia = $visitasItem;
         }
-
-
     }
 
-
-    /*
-    |--------------------------------------------------------------------------
-    | RANKING
-    |--------------------------------------------------------------------------
-    */
-
-    $ranking =
-
-        $listaAlumnos
-        ->sortByDesc(
-            function ($alumno) {
-
-                return
-                    $alumno['total_visitas']
-                    ?? 0;
-
-            }
-        )
+    $ranking = $listaAlumnos
+        ->sortByDesc(function ($alumno) {
+            return (int) ($alumno['total_visitas'] ?? 0);
+        })
         ->take(3)
         ->values();
 
+    $formatearFecha = function ($fecha) {
+        if (empty($fecha)) return null;
 
-    /*
-    |--------------------------------------------------------------------------
-    | FORMATEAR FECHA
-    |--------------------------------------------------------------------------
-    */
+        try {
+            $carbon = \Carbon\Carbon::parse($fecha)->timezone('America/Chihuahua');
 
-    $formatearFecha =
+            $meses = [
+                1 => 'ene', 2 => 'feb', 3 => 'mar', 4 => 'abr',
+                5 => 'may', 6 => 'jun', 7 => 'jul', 8 => 'ago',
+                9 => 'sep', 10 => 'oct', 11 => 'nov', 12 => 'dic',
+            ];
 
-        function ($fecha) {
+            $hora = $carbon->format('g:i');
+            $periodoHora = $carbon->hour >= 12 ? 'p.m.' : 'a.m.';
 
-
-            if (
-                empty($fecha)
-            ) {
-
-                return null;
-
-            }
-
-
-            try {
-
-
-                $carbon =
-
-                    \Carbon\Carbon::parse(
-                        $fecha
-                    )
-                    ->timezone(
-                        'America/Chihuahua'
-                    );
-
-
-                $meses = [
-
-                    1 => 'ene',
-                    2 => 'feb',
-                    3 => 'mar',
-                    4 => 'abr',
-                    5 => 'may',
-                    6 => 'jun',
-                    7 => 'jul',
-                    8 => 'ago',
-                    9 => 'sep',
-                    10 => 'oct',
-                    11 => 'nov',
-                    12 => 'dic',
-
-                ];
-
-
-                $hora =
-
-                    $carbon
-                    ->format(
-                        'g:i'
-                    );
-
-
-                $periodoHora =
-
-                    $carbon->hour >= 12
-                        ? 'p.m.'
-                        : 'a.m.';
-
-
-                return
-
-                    $carbon->day
-
-                    . ' '
-
-                    . $meses[
-                        $carbon->month
-                    ]
-
-                    . ' '
-
-                    . $carbon->year
-
-                    . ', '
-
-                    . $hora
-
-                    . ' '
-
-                    . $periodoHora;
-
-
-            }
-
-            catch (
-                \Exception $e
-            ) {
-
-                return $fecha;
-
-            }
-
-
-        };
-
-
+            return $carbon->day . ' ' . $meses[$carbon->month] . ' ' . $carbon->year
+                . ' · ' . $hora . ' ' . $periodoHora;
+        } catch (\Exception $e) {
+            return $fecha;
+        }
+    };
 @endphp
 
-
-
-<!-- =====================================================
-     HEADER
-===================================================== -->
-
-<div class="header">
-
-
-    <table class="header-table">
-
-        <tr>
-
-
-            <!-- LOGO -->
-
-            <td
-                class="logo-container"
-            >
-
-                <div class="logo">
-
-                    ITS
-
-                </div>
-
-            </td>
-
-
-
-            <!-- TITULO -->
-
-            <td>
-
-
-                <div class="header-kicker">
-
-                    Instituto Tecnológico Superior
-
-                </div>
-
-
-                <div class="header-title">
-
-                    Reporte Ejecutivo de Actividad
-
-                </div>
-
-
-                <div class="header-subtitle">
-
-                    Análisis académico y participación estudiantil
-
-                </div>
-
-
-            </td>
-
-
-
-            <!-- FECHA -->
-
-            <td
-                class="report-date"
-            >
-
-
-                <div
-                    class="report-date-label"
-                >
-
-                    Reporte generado
-
-                </div>
-
-
-                <div
-                    class="report-date-value"
-                >
-
-                    {{
-                        now()
-                        ->timezone(
-                            'America/Chihuahua'
-                        )
-                        ->format(
-                            'd/m/Y'
-                        )
-                    }}
-
-                </div>
-
-
-            </td>
-
-
-        </tr>
-
-    </table>
-
-
-</div>
-
-
-
-<!-- =====================================================
-     INFORMACIÓN DEL GRUPO
-===================================================== -->
-
-<table class="context">
-
+<!-- ENCABEZADO -->
+<table class="header">
     <tr>
-
-
-        <!-- GRUPO -->
-
-        <td>
-
-
-            <div class="context-label">
-
-                Grupo
-
-            </div>
-
-
-            <div class="context-value">
-
-                {{
-                    $grupo->nombre
-                    ?? 'Sin grupo'
-                }}
-
-            </div>
-
-
+        <td class="header-brand">
+            <span class="brand-box">ITS</span>
         </td>
 
-
-
-        <!-- MATERIA -->
-
-        <td>
-
-
-            <div class="context-label">
-
-                Materia
-
-            </div>
-
-
-            <div class="context-value">
-
-                {{
-                    $grupo->materia->nombre
-                    ?? 'Sin materia'
-                }}
-
-            </div>
-
-
+        <td class="header-main">
+            <div class="eyebrow">ITSNCG · Reporte académico</div>
+            <div class="title">Actividad del grupo</div>
+            <div class="subtitle">Resumen de participación y accesos registrados en la plataforma.</div>
         </td>
 
-
-
-        <!-- DOCENTE -->
-
-        <td>
-
-
-            <div class="context-label">
-
-                Docente
-
-            </div>
-
-
-            <div class="context-value">
-
-                {{
-                    trim(
-
-                        ($docente->nombre ?? '')
-
-                        . ' '
-
-                        . ($docente->apellido_paterno ?? '')
-
-                        . ' '
-
-                        . ($docente->apellido_materno ?? '')
-
-                    )
-                }}
-
-            </div>
-
-
+        <td class="header-meta">
+            <div class="meta-label">Generado</div>
+            <div class="meta-value">{{ now()->timezone('America/Chihuahua')->format('d/m/Y') }}</div>
+            <div class="meta-gap"></div>
+            <div class="meta-label">Periodo</div>
+            <div class="meta-value">{{ $periodo ?? 'No especificado' }}</div>
         </td>
-
-
-
-        <!-- PERIODO -->
-
-        <td>
-
-
-            <div class="context-label">
-
-                Periodo
-
-            </div>
-
-
-            <div class="context-value">
-
-                {{
-                    $periodo
-                    ?? 'No especificado'
-                }}
-
-            </div>
-
-
-        </td>
-
-
     </tr>
-
 </table>
 
+<!-- IDENTIDAD -->
+<table class="identity">
+    <tr>
+        <td class="identity-main">
+            <div class="group-name">{{ $grupo->nombre ?? 'Sin grupo' }}</div>
+            <div class="subject">{{ $grupo->materia->nombre ?? 'Sin materia' }}</div>
+            <div class="description">
+                Este reporte concentra la actividad registrada por los integrantes del grupo durante el periodo seleccionado.
+            </div>
+        </td>
 
+        <td class="identity-side">
+            <div class="context-row">
+                <div class="context-label">Docente</div>
+                <div class="context-value">
+                    {{ trim(($docente->nombre ?? '') . ' ' . ($docente->apellido_paterno ?? '') . ' ' . ($docente->apellido_materno ?? '')) }}
+                </div>
+            </div>
+            <div class="context-row">
+                <div class="context-label">Periodo de consulta</div>
+                <div class="context-value">{{ $periodo ?? 'No especificado' }}</div>
+            </div>
+        </td>
+    </tr>
+</table>
 
-<!-- =====================================================
-     SECCIÓN 01
-===================================================== -->
-
+<!-- 01 RESUMEN -->
 <div class="section">
-
-
-    <table class="section-table">
-
+    <table class="section-head">
         <tr>
-
-
-            <td class="section-number">
-
-                01
-
-            </td>
-
-
-            <td class="section-title">
-
-                Indicadores principales
-
-            </td>
-
-
-            <td class="section-description">
-
-                Resumen general del grupo
-
-            </td>
-
-
+            <td class="section-number">01</td>
+            <td class="section-name">Resumen del grupo</td>
+            <td class="section-caption">Indicadores principales</td>
         </tr>
-
     </table>
 
-
-</div>
-
-
-
-<!-- =====================================================
-     KPIS
-===================================================== -->
-
-<table class="kpi-table">
-
-    <tr>
-
-
-        <!-- TOTAL ALUMNOS -->
-
-        <td>
-
-
-            <div class="kpi-label">
-
-                Comunidad
-
-            </div>
-
-
-            <div class="kpi-number">
-
-                {{
-                    $totalAlumnosFinal
-                }}
-
-            </div>
-
-
-            <div class="kpi-footer">
-
-                Alumnos registrados
-                en el grupo
-
-            </div>
-
-
-        </td>
-
-
-
-        <!-- ACTIVOS -->
-
-        <td>
-
-
-            <div class="kpi-label">
-
-                Participación
-
-            </div>
-
-
-            <div class="kpi-number">
-
-                {{
-                    $alumnosActivosFinal
-                }}
-
-            </div>
-
-
-            <div class="kpi-footer">
-
-                {{
-                    $porcentajeActivos
-                }}%
-
-                de alumnos
-                con actividad
-
-            </div>
-
-
-        </td>
-
-
-
-        <!-- VISITAS -->
-
-        <td>
-
-
-            <div class="kpi-label">
-
-                Actividad
-
-            </div>
-
-
-            <div class="kpi-number">
-
-                {{
-                    $totalVisitasFinal
-                }}
-
-            </div>
-
-
-            <div class="kpi-footer">
-
-                Visitas totales
-                registradas
-
-            </div>
-
-
-        </td>
-
-
-
-        <!-- PROMEDIO -->
-
-        <td>
-
-
-            <div class="kpi-label">
-
-                Promedio
-
-            </div>
-
-
-            <div class="kpi-number">
-
-                {{
-                    $promedioFinal
-                }}
-
-            </div>
-
-
-            <div class="kpi-footer">
-
-                Visitas promedio
-                por alumno
-
-            </div>
-
-
-        </td>
-
-
-    </tr>
-
-</table>
-
-
-
-<!-- =====================================================
-     PARTICIPACIÓN
-===================================================== -->
-
-<table
-    class="participation keep-together"
->
-
-    <tr>
-
-
-        <!-- IZQUIERDA -->
-
-        <td
-            class="participation-left"
-        >
-
-
-            <div class="participation-title">
-
-                Nivel de participación académica
-
-            </div>
-
-
-            <div class="participation-text">
-
-                Porcentaje de alumnos que han registrado
-                al menos una visita dentro de la plataforma.
-
-            </div>
-
-
-            <div class="progress-bg">
-
-
-                <div
-                    class="progress-fill"
-                    style="
-                        width:
-                        {{ $porcentajeActivos }}%;
-                    "
-                >
-
+    <table>
+        <tr>
+            <td class="metric-cell">
+                <div class="metric">
+                    <div class="metric-label">Alumnos</div>
+                    <div class="metric-value">{{ $totalAlumnosFinal }}</div>
+                    <div class="metric-note">Integrantes registrados</div>
                 </div>
-
-
-            </div>
-
-
-            <div class="progress-info">
-
-
-                <strong>
-
-                    {{
-                        $alumnosActivosFinal
-                    }}
-
-                </strong>
-
-                alumnos activos de
-
-                <strong>
-
-                    {{
-                        $totalAlumnosFinal
-                    }}
-
-                </strong>
-
-                registrados.
-
-
-            </div>
-
-
-        </td>
-
-
-
-        <!-- DERECHA -->
-
-        <td
-            class="participation-right"
-        >
-
-
-            <div
-                class="participation-percent"
-            >
-
-                {{
-                    $porcentajeActivos
-                }}%
-
-            </div>
-
-
-            <div
-                class="participation-status"
-            >
-
-                {{
-                    $nivelParticipacion
-                }}
-
-            </div>
-
-
-            <div
-                class="participation-text"
-            >
-
-                {{
-                    $mensajeParticipacion
-                }}
-
-            </div>
-
-
-        </td>
-
-
-    </tr>
-
-</table>
-
-
-
-<!-- =====================================================
-     SECCIÓN 02
-===================================================== -->
-
-<div class="section">
-
-
-    <table class="section-table">
-
-        <tr>
-
-
-            <td class="section-number">
-
-                02
-
             </td>
-
-
-            <td class="section-title">
-
-                Analítica de actividad
-
+            <td class="metric-cell">
+                <div class="metric">
+                    <div class="metric-label">Con actividad</div>
+                    <div class="metric-value">{{ $alumnosActivosFinal }}</div>
+                    <div class="metric-note">{{ $porcentajeActivos }}% del grupo</div>
+                </div>
             </td>
-
-
-            <td class="section-description">
-
-                Comportamiento de visitas
-
+            <td class="metric-cell">
+                <div class="metric">
+                    <div class="metric-label">Visitas</div>
+                    <div class="metric-value">{{ $totalVisitasFinal }}</div>
+                    <div class="metric-note">Accesos registrados</div>
+                </div>
             </td>
-
-
+            <td class="metric-cell">
+                <div class="metric">
+                    <div class="metric-label">Promedio</div>
+                    <div class="metric-value">{{ $promedioFinal }}</div>
+                    <div class="metric-note">Visitas por alumno</div>
+                </div>
+            </td>
         </tr>
-
     </table>
-
-
 </div>
 
+<!-- 02 ACTIVIDAD -->
+<div class="section">
+    <table class="section-head">
+        <tr>
+            <td class="section-number">02</td>
+            <td class="section-name">Actividad registrada</td>
+            <td class="section-caption">Comportamiento durante el periodo</td>
+        </tr>
+    </table>
 
+    <table>
+        <tr>
+            <td class="activity-main">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="panel-kicker">Visitas</div>
+                        <div class="panel-title">Distribución por día</div>
+                    </div>
 
-<!-- =====================================================
-     ACTIVIDAD
-===================================================== -->
-
-<div
-    class="activity-box keep-together"
->
-
-
-    <div class="activity-header">
-
-
-        <div class="activity-title">
-
-            Actividad por día
-
-        </div>
-
-
-        <div class="activity-subtitle">
-
-            Distribución de las visitas
-            registradas durante el periodo.
-
-        </div>
-
-
-    </div>
-
-
-
-    @if(
-        count($actividad) > 0
-    )
-
-
-        <table class="chart-table">
-
-
-            @foreach(
-                $actividad
-                as $item
-            )
-
-
-                @php
-
-
-                    $visitasActuales =
-
-                        (int)
-                        (
-                            $item['visitas']
-                            ?? 0
-                        );
-
-
-                    if (
-                        $maxVisitasDia > 0
-                    ) {
-
-                        $porcentajeBarra =
-
-                            round(
-                                (
-                                    $visitasActuales
-                                    /
-                                    $maxVisitasDia
-                                )
-                                *
-                                100
-                            );
-
-                    }
-
-                    else {
-
-                        $porcentajeBarra = 0;
-
-                    }
-
-
-                @endphp
-
-
-
-                <tr>
-
-
-                    <!-- FECHA -->
-
-                    <td class="chart-date">
-
-                        {{
-                            $item['fecha']
-                            ?? 'Sin fecha'
-                        }}
-
-                    </td>
-
-
-
-                    <!-- BARRA -->
-
-                    <td>
-
-
-                        <div class="bar-bg">
-
-
-                            <div
-                                class="bar-fill"
-                                style="
-                                    width:
-                                    {{ $porcentajeBarra }}%;
-                                "
-                            >
-
+                    <div class="panel-body">
+                        @if(count($actividad) > 0)
+                            <table>
+                                @foreach($actividad as $item)
+                                    @php
+                                        $visitasActuales = (int) ($item['visitas'] ?? 0);
+                                        $porcentajeBarra = $maxVisitasDia > 0
+                                            ? round(($visitasActuales / $maxVisitasDia) * 100)
+                                            : 0;
+                                    @endphp
+                                    <tr class="activity-row">
+                                        <td class="activity-date">{{ $item['fecha'] ?? 'Sin fecha' }}</td>
+                                        <td class="bar-cell">
+                                            <div class="bar-bg">
+                                                <div class="bar-fill" style="width: {{ $porcentajeBarra }}%;"></div>
+                                            </div>
+                                        </td>
+                                        <td class="activity-number">{{ $visitasActuales }}</td>
+                                    </tr>
+                                @endforeach
+                            </table>
+                        @else
+                            <div class="activity-empty">
+                                <div class="empty-number">0</div>
+                                <div class="empty-title">Sin visitas registradas</div>
+                                <div class="empty-text">No se encontraron accesos durante el periodo consultado.</div>
                             </div>
+                        @endif
+                    </div>
+                </div>
+            </td>
 
+            <td class="activity-side">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div class="panel-kicker">Participación</div>
+                        <div class="panel-title">Alumnos con actividad</div>
+                    </div>
 
+                    <div class="panel-body">
+                        <div class="participation-value">{{ $porcentajeActivos }}%</div>
+                        <div class="participation-title">{{ $nivelParticipacion }}</div>
+                        <div class="participation-text">{{ $mensajeParticipacion }}</div>
+
+                        <div class="track">
+                            <div class="fill" style="width: {{ min(100, max(0, $porcentajeActivos)) }}%;"></div>
                         </div>
 
-
-                    </td>
-
-
-
-                    <!-- NÚMERO -->
-
-                    <td
-                        class="chart-number"
-                    >
-
-                        {{
-                            $visitasActuales
-                        }}
-
-                    </td>
-
-
-                </tr>
-
-
-            @endforeach
-
-
-        </table>
-
-
-
-    @else
-
-
-        <div
-            style="
-                padding: 18px;
-                text-align: center;
-                color: #a1a1aa;
-            "
-        >
-
-            Todavía no hay actividad registrada.
-
-        </div>
-
-
-    @endif
-
-
-</div>
-
-
-
-<!-- =====================================================
-     INSIGHT
-===================================================== -->
-
-<div
-    class="insight keep-together"
->
-
-
-    <div class="insight-label">
-
-        Insight académico
-
-    </div>
-
-
-    <div class="insight-title">
-
-        Resumen inteligente del grupo
-
-    </div>
-
-
-    <div class="insight-text">
-
-
-        El grupo ha generado
-
-        <strong>
-
-            {{
-                $totalVisitasFinal
-            }}
-
-            visitas
-
-        </strong>
-
-        en total.
-
-
-        @if(
-            $maxVisitasDia > 0
-        )
-
-
-            El día con mayor actividad registró
-
-            <strong>
-
-                {{
-                    $maxVisitasDia
-                }}
-
-                visitas
-
-            </strong>
-
-
-            @if(
-                $fechaMayorActividad
-            )
-
-                el día
-
-                <strong>
-
-                    {{
-                        $fechaMayorActividad
-                    }}
-
-                </strong>.
-
-            @endif
-
-
-        @endif
-
-
-        Actualmente el grupo presenta
-
-        <strong>
-
-            {{
-                strtolower(
-                    $nivelParticipacion
-                )
-            }}
-
-        </strong>.
-
-
-    </div>
-
-
-</div>
-
-
-
-<!-- =====================================================
-     SECCIÓN 03
-===================================================== -->
-
-<div class="section">
-
-
-    <table class="section-table">
-
-        <tr>
-
-
-            <td class="section-number">
-
-                03
-
-            </td>
-
-
-            <td class="section-title">
-
-                Alumnos destacados
-
-            </td>
-
-
-            <td class="section-description">
-
-                Mayor actividad registrada
-
-            </td>
-
-
-        </tr>
-
-    </table>
-
-
-</div>
-
-
-
-<!-- =====================================================
-     RANKING
-===================================================== -->
-
-<table
-    class="ranking keep-together"
->
-
-    <tr>
-
-
-        @for(
-
-            $i = 0;
-
-            $i < 3;
-
-            $i++
-
-        )
-
-
-            <td>
-
-
-                <div
-                    class="ranking-position"
-                >
-
-
-                    @if(
-                        $i === 0
-                    )
-
-                        #01 · DESTACADO
-
-
-                    @elseif(
-                        $i === 1
-                    )
-
-                        #02 · SEGUNDO LUGAR
-
-
-                    @else
-
-                        #03 · TERCER LUGAR
-
-                    @endif
-
-
+                        <div class="participation-foot">
+                            {{ $alumnosActivosFinal }} de {{ $totalAlumnosFinal }} alumnos con actividad registrada.
+                        </div>
+                    </div>
                 </div>
-
-
-
-                @if(
-                    isset(
-                        $ranking[$i]
-                    )
-                )
-
-
-                    <div
-                        class="ranking-name"
-                    >
-
-                        {{
-                            $ranking[$i]['nombre']
-                            ?? 'Sin nombre'
-                        }}
-
-                    </div>
-
-
-                    <div
-                        class="ranking-number"
-                    >
-
-                        {{
-                            $ranking[$i]['total_visitas']
-                            ?? 0
-                        }}
-
-                    </div>
-
-
-                    <div
-                        class="ranking-label"
-                    >
-
-                        visitas registradas
-
-                    </div>
-
-
-                @else
-
-
-                    <div
-                        class="ranking-name"
-                    >
-
-                        Sin información
-
-                    </div>
-
-
-                    <div
-                        class="ranking-label"
-                    >
-
-                        No hay suficientes
-                        alumnos con actividad.
-
-                    </div>
-
-
-                @endif
-
-
             </td>
-
-
-        @endfor
-
-
-    </tr>
-
-</table>
-
-
-
-<!-- =====================================================
-     SECCIÓN 04
-===================================================== -->
-
-<div class="section">
-
-
-    <table class="section-table">
-
-        <tr>
-
-
-            <td class="section-number">
-
-                04
-
-            </td>
-
-
-            <td class="section-title">
-
-                Seguimiento individual
-
-            </td>
-
-
-            <td class="section-description">
-
-                Actividad detallada por alumno
-
-            </td>
-
-
         </tr>
-
     </table>
 
-
+    <div class="reading">
+        <div class="reading-label">Lectura del periodo</div>
+        @if($totalVisitasFinal > 0 && $alumnosActivosFinal > 0)
+            <div class="reading-title">Actividad registrada durante el periodo.</div>
+        @else
+            <div class="reading-title">Sin actividad registrada durante el periodo.</div>
+        @endif
+        <div class="reading-text">
+            Se registraron <strong>{{ $totalVisitasFinal }}</strong> visitas y
+            <strong>{{ $alumnosActivosFinal }}</strong> alumnos presentaron actividad.
+            @if($maxVisitasDia > 0)
+                El máximo registrado en un día fue de <strong>{{ $maxVisitasDia }}</strong> visitas.
+            @endif
+        </div>
+    </div>
 </div>
 
-
-
-<!-- =====================================================
-     TABLA ALUMNOS
-===================================================== -->
-
-<table class="students-table">
-
-
-    <thead>
-
+<!-- 03 MAYOR ACTIVIDAD -->
+<div class="section">
+    <table class="section-head">
         <tr>
-
-
-            <!-- # -->
-
-            <th
-                class="center"
-                style="width: 5%;"
-            >
-
-                #
-
-            </th>
-
-
-
-            <!-- ALUMNO -->
-
-            <th
-                style="width: 23%;"
-            >
-
-                Alumno
-
-            </th>
-
-
-
-            <!-- CORREO -->
-
-            <th
-                style="width: 23%;"
-            >
-
-                Correo electrónico
-
-            </th>
-
-
-
-            <!-- VISITAS -->
-
-            <th
-                class="center"
-                style="width: 10%;"
-            >
-
-                Visitas
-
-            </th>
-
-
-
-            <!-- ÚLTIMA ACTIVIDAD -->
-
-            <th
-                style="width: 24%;"
-            >
-
-                Última actividad
-
-            </th>
-
-
-
-            <!-- ESTADO -->
-
-            <th
-                class="center"
-                style="width: 15%;"
-            >
-
-                Estado
-
-            </th>
-
-
+            <td class="section-number">03</td>
+            <td class="section-name">Mayor actividad</td>
+            <td class="section-caption">Alumnos con más visitas registradas</td>
         </tr>
+    </table>
 
-    </thead>
-
-
-
-    <tbody>
-
-
-        @forelse(
-
-            $alumnos
-            ?? []
-
-            as $index => $alumno
-
-        )
-
-
+    <table class="ranking-table">
+        <thead>
             <tr>
-
-
-                <!-- NÚMERO -->
-
-                <td
-                    class="student-number"
-                >
-
-                    {{
-                        $index + 1
-                    }}
-
-                </td>
-
-
-
-                <!-- ALUMNO -->
-
-                <td>
-
-
-                    <div
-                        class="student-name"
-                    >
-
-                        {{
-                            $alumno['nombre']
-                            ?? 'Sin nombre'
-                        }}
-
-                    </div>
-
-
-                    <div
-                        class="student-role"
-                    >
-
-                        Alumno
-
-                    </div>
-
-
-                </td>
-
-
-
-                <!-- CORREO -->
-
-                <td
-                    class="muted"
-                >
-
-                    {{
-                        $alumno['correo']
-                        ?? 'Sin correo'
-                    }}
-
-                </td>
-
-
-
-                <!-- VISITAS -->
-
-                <td
-                    class="center"
-                >
-
-
-                    <span
-                        class="visit-number"
-                    >
-
-                        {{
-                            $alumno['total_visitas']
-                            ?? 0
-                        }}
-
-                    </span>
-
-
-                </td>
-
-
-
-                <!-- ÚLTIMA ACTIVIDAD -->
-
-                <td>
-
-
-                    @if(
-
-                        !empty(
-                            $alumno['ultima_visita']
-                        )
-
-                    )
-
-
-                        {{
-                            $formatearFecha(
-                                $alumno['ultima_visita']
-                            )
-                        }}
-
-
-                    @else
-
-
-                        <span
-                            class="muted"
-                        >
-
-                            Sin actividad
-
-                        </span>
-
-
-                    @endif
-
-
-                </td>
-
-
-
-                <!-- ESTADO -->
-
-                <td
-                    class="center"
-                >
-
-
-                    @php
-
-
-                        $estaActivo =
-
-                            !empty(
-                                $alumno['activo']
-                            )
-
-                            ||
-
-                            (
-                                (
-                                    $alumno['total_visitas']
-                                    ?? 0
-                                )
-                                > 0
-                            );
-
-
-                    @endphp
-
-
-
-                    @if(
-                        $estaActivo
-                    )
-
-
-                        <span
-                            class="badge-active"
-                        >
-
-                            Activo
-
-                        </span>
-
-
-                    @else
-
-
-                        <span
-                            class="badge-inactive"
-                        >
-
-                            Sin actividad
-
-                        </span>
-
-
-                    @endif
-
-
-                </td>
-
-
+                <th style="width:10%;">Pos.</th>
+                <th>Alumno</th>
+                <th style="width:22%; text-align:right;">Visitas</th>
             </tr>
+        </thead>
+        <tbody>
+            @forelse($ranking as $i => $alumno)
+                <tr>
+                    <td class="ranking-position">{{ $i + 1 }}</td>
+                    <td class="ranking-name">{{ $alumno['nombre'] ?? 'Sin nombre' }}</td>
+                    <td class="ranking-visits">{{ (int) ($alumno['total_visitas'] ?? 0) }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="3" class="muted" style="text-align:center;">No hay alumnos registrados.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
+<!-- 04 DETALLE -->
+<div class="section">
+    <table class="section-head">
+        <tr>
+            <td class="section-number">04</td>
+            <td class="section-name">Seguimiento individual</td>
+            <td class="section-caption">Detalle de actividad por alumno</td>
+        </tr>
+    </table>
 
-        @empty
+    <table class="detail-summary">
+        <tr>
+            <td>
+                <div class="detail-summary-label">Alumnos registrados</div>
+                <div class="detail-summary-value">{{ $totalAlumnosFinal }}</div>
+            </td>
+            <td>
+                <div class="detail-summary-label">Con actividad</div>
+                <div class="detail-summary-value">{{ $alumnosActivosFinal }} · {{ $porcentajeActivos }}%</div>
+            </td>
+            <td>
+                <div class="detail-summary-label">Total de visitas</div>
+                <div class="detail-summary-value">{{ $totalVisitasFinal }}</div>
+            </td>
+        </tr>
+    </table>
 
-
+    <table class="students">
+        <thead>
             <tr>
-
-
-                <td
-                    colspan="6"
-                    class="empty"
-                >
-
-                    No hay alumnos registrados
-                    en este grupo.
-
-                </td>
-
-
+                <th class="col-num">#</th>
+                <th class="col-student">Alumno</th>
+                <th class="col-mail">Correo electrónico</th>
+                <th class="col-visits">Visitas</th>
+                <th class="col-last">Última actividad</th>
+                <th class="col-status">Estado</th>
             </tr>
+        </thead>
 
+        <tbody>
+            @forelse($alumnos ?? [] as $index => $alumno)
+                @php
+                    $visitasAlumno = (int) ($alumno['total_visitas'] ?? 0);
+                    $estaActivo = !empty($alumno['activo']) || $visitasAlumno > 0;
+                @endphp
 
-        @endforelse
-
-
-    </tbody>
-
-
-</table>
-
-
-
-<!-- =====================================================
-     FOOTER
-===================================================== -->
+                <tr>
+                    <td class="col-num purple">{{ $index + 1 }}</td>
+                    <td class="col-student">
+                        <div class="student-name">{{ $alumno['nombre'] ?? 'Sin nombre' }}</div>
+                        <div class="student-role">Alumno</div>
+                    </td>
+                    <td class="col-mail">{{ $alumno['correo'] ?? 'Sin correo' }}</td>
+                    <td class="col-visits"><span class="visit-value">{{ $visitasAlumno }}</span></td>
+                    <td class="col-last">
+                        @if(!empty($alumno['ultima_visita']))
+                            {{ $formatearFecha($alumno['ultima_visita']) }}
+                        @else
+                            <span class="muted">Sin actividad</span>
+                        @endif
+                    </td>
+                    <td class="col-status">
+                        @if($estaActivo)
+                            <span class="status status-active">ACTIVO</span>
+                        @else
+                            <span class="status status-none">SIN ACTIVIDAD</span>
+                        @endif
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="6" class="no-students">No hay alumnos registrados en este grupo.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
 <div class="footer">
-
-
-    <div class="footer-left">
-
-
-        <strong>
-
-            ITS
-
-        </strong>
-
-        · Instituto Tecnológico Superior
-
-
-    </div>
-
-
-
+    <div class="footer-left">· ITSNCG</div>
     <div class="footer-right">
-
-
-        Reporte académico generado automáticamente
-
-        ·
-
-        {{
-            now()
-            ->timezone(
-                'America/Chihuahua'
-            )
-            ->format(
-                'd/m/Y H:i'
-            )
-        }}
-
-
+        Reporte académico · {{ now()->timezone('America/Chihuahua')->format('d/m/Y H:i') }}
     </div>
-
-
 </div>
 
-
-
 </body>
-
 </html>
