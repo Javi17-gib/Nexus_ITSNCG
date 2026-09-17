@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 
 import {
+    Fragment,
     useEffect,
     useRef,
     useState,
@@ -18,6 +19,7 @@ import {
     preguntarChatbotRequest,
 } from "../../api/chatbot";
 
+import bufalin from "../../assets/images/Bufalin.png";
 
 interface Mensaje {
     id: number;
@@ -28,6 +30,559 @@ interface Mensaje {
 
 interface ChatbotAlumnoProps {
     materia?: string;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| FORMATEAR TEXTO INLINE
+|--------------------------------------------------------------------------
+*/
+
+function formatearTextoInline(
+    texto: string
+) {
+
+    /*
+    |--------------------------------------------------------------------------
+    | LIMPIAR ELEMENTOS INNECESARIOS
+    |--------------------------------------------------------------------------
+    */
+
+    const limpio =
+        texto
+            .replace(
+                /<svg[\s\S]*?<\/svg>/gi,
+                ""
+            )
+            .replace(
+                /<[^>]*>/g,
+                ""
+            )
+            .replace(
+                /\bsvg\b/gi,
+                ""
+            );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SEPARAR NEGRITAS Y CURSIVAS
+    |--------------------------------------------------------------------------
+    */
+
+    const partes =
+        limpio.split(
+            /(\*\*.*?\*\*|\*.*?\*)/g
+        );
+
+
+    return partes.map(
+        (
+            parte,
+            index
+        ) => {
+
+            /*
+            |--------------------------------------------------------------------------
+            | NEGRITA
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                parte.startsWith("**") &&
+                parte.endsWith("**")
+            ) {
+
+                return (
+                    <strong
+                        key={index}
+                        className="
+                            font-semibold
+                            text-white
+                        "
+                    >
+                        {parte.slice(
+                            2,
+                            -2
+                        )}
+                    </strong>
+                );
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CURSIVA
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                parte.startsWith("*") &&
+                parte.endsWith("*")
+            ) {
+
+                return (
+                    <em
+                        key={index}
+                        className="
+                            text-slate-200
+                        "
+                    >
+                        {parte.slice(
+                            1,
+                            -1
+                        )}
+                    </em>
+                );
+
+            }
+
+
+            return (
+                <Fragment
+                    key={index}
+                >
+                    {parte}
+                </Fragment>
+            );
+
+        }
+    );
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| FORMATEAR RESPUESTA COMPLETA
+|--------------------------------------------------------------------------
+*/
+
+function formatearRespuesta(
+    texto: string
+) {
+
+    if (!texto) {
+        return null;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LIMPIEZA GENERAL
+    |--------------------------------------------------------------------------
+    */
+
+    let limpio =
+        texto
+            .replace(
+                /<svg[\s\S]*?<\/svg>/gi,
+                ""
+            )
+            .replace(
+                /<[^>]*>/g,
+                ""
+            )
+            .replace(
+                /\bsvg\b/gi,
+                ""
+            )
+            .replace(
+                /\$\$(.*?)\$\$/gs,
+                "$1"
+            )
+            .replace(
+                /\\\((.*?)\\\)/gs,
+                "$1"
+            )
+            .replace(
+                /\\\[(.*?)\\\]/gs,
+                "$1"
+            );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CONVERTIR ALGUNAS POTENCIAS
+    |--------------------------------------------------------------------------
+    */
+
+    const potencias: Record<
+        string,
+        string
+    > = {
+
+        "0": "⁰",
+        "1": "¹",
+        "2": "²",
+        "3": "³",
+        "4": "⁴",
+        "5": "⁵",
+        "6": "⁶",
+        "7": "⁷",
+        "8": "⁸",
+        "9": "⁹",
+
+    };
+
+
+    limpio =
+        limpio.replace(
+            /([A-Za-z0-9])\^([0-9]+)/g,
+            (
+                _match,
+                base: string,
+                exponente: string
+            ) => {
+
+                const exponenteUnicode =
+                    exponente
+                        .split("")
+                        .map(
+                            digito =>
+                                potencias[
+                                    digito
+                                ] ??
+                                digito
+                        )
+                        .join("");
+
+                return (
+                    base +
+                    exponenteUnicode
+                );
+
+            }
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | QUITAR ENCABEZADOS MARKDOWN
+    |--------------------------------------------------------------------------
+    */
+
+    limpio =
+        limpio.replace(
+            /^\s*#{1,6}\s*/gm,
+            ""
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | QUITAR SEPARADORES
+    |--------------------------------------------------------------------------
+    */
+
+    limpio =
+        limpio.replace(
+            /^\s*[-*_]{3,}\s*$/gm,
+            ""
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | QUITAR DÓLARES SUELTOS
+    |--------------------------------------------------------------------------
+    */
+
+    limpio =
+        limpio.replace(
+            /(?<!\$)\$(?!\$)/g,
+            ""
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LIMPIAR ESPACIOS
+    |--------------------------------------------------------------------------
+    */
+
+    limpio =
+        limpio.replace(
+            /[ \t]+/g,
+            " "
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | EVITAR DEMASIADOS SALTOS
+    |--------------------------------------------------------------------------
+    */
+
+    limpio =
+        limpio.replace(
+            /\n{3,}/g,
+            "\n\n"
+        );
+
+
+    limpio =
+        limpio.trim();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | DIVIDIR POR LÍNEAS
+    |--------------------------------------------------------------------------
+    */
+
+    const lineas =
+        limpio.split("\n");
+
+
+    return lineas.map(
+        (
+            linea,
+            index
+        ) => {
+
+            const textoLinea =
+                linea.trim();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | LÍNEA VACÍA
+            |--------------------------------------------------------------------------
+            */
+
+            if (!textoLinea) {
+
+                return (
+                    <div
+                        key={index}
+                        className="h-1.5"
+                    />
+                );
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | RESULTADO
+            |--------------------------------------------------------------------------
+            */
+
+            const esResultado =
+                /^resultado\s*:/i.test(
+                    textoLinea
+                );
+
+
+            if (esResultado) {
+
+                const contenido =
+                    textoLinea.replace(
+                        /^resultado\s*:\s*/i,
+                        ""
+                    );
+
+
+                return (
+                    <div
+                        key={index}
+                        className="
+                            mt-3
+                            rounded-xl
+                            border
+                            border-violet-500/20
+                            bg-violet-500/[0.08]
+                            px-3
+                            py-2.5
+                        "
+                    >
+
+                        <div
+                            className="
+                                mb-1
+                                text-[10px]
+                                font-semibold
+                                uppercase
+                                tracking-wider
+                                text-violet-400
+                            "
+                        >
+                            Resultado
+                        </div>
+
+                        <div
+                            className="
+                                font-semibold
+                                text-white
+                            "
+                        >
+                            {formatearTextoInline(
+                                contenido
+                            )}
+                        </div>
+
+                    </div>
+                );
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ENCABEZADOS
+            |--------------------------------------------------------------------------
+            */
+
+            const encabezado =
+                textoLinea.replace(
+                    /^#{1,6}\s*/,
+                    ""
+                );
+
+
+            const eraEncabezado =
+                /^#{1,6}\s+/.test(
+                    textoLinea
+                );
+
+
+            if (eraEncabezado) {
+
+                return (
+                    <div
+                        key={index}
+                        className="
+                            mt-2
+                            mb-2
+                            font-semibold
+                            text-white
+                        "
+                    >
+                        {formatearTextoInline(
+                            encabezado
+                        )}
+                    </div>
+                );
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | LISTA CON GUION
+            |--------------------------------------------------------------------------
+            */
+
+            const lista =
+                textoLinea.match(
+                    /^[-*•]\s+(.*)$/
+                );
+
+
+            if (lista) {
+
+                return (
+                    <div
+                        key={index}
+                        className="
+                            flex
+                            items-start
+                            gap-2
+                            my-1
+                        "
+                    >
+
+                        <span
+                            className="
+                                mt-[7px]
+                                h-1.5
+                                w-1.5
+                                shrink-0
+                                rounded-full
+                                bg-violet-400
+                            "
+                        />
+
+                        <span>
+                            {formatearTextoInline(
+                                lista[1]
+                            )}
+                        </span>
+
+                    </div>
+                );
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | LISTA NUMERADA
+            |--------------------------------------------------------------------------
+            */
+
+            const numerada =
+                textoLinea.match(
+                    /^(\d+)[.)]\s+(.*)$/
+                );
+
+
+            if (numerada) {
+
+                return (
+                    <div
+                        key={index}
+                        className="
+                            flex
+                            items-start
+                            gap-2
+                            my-1
+                        "
+                    >
+
+                        <span
+                            className="
+                                shrink-0
+                                font-semibold
+                                text-violet-400
+                            "
+                        >
+                            {numerada[1]}.
+                        </span>
+
+                        <span>
+                            {formatearTextoInline(
+                                numerada[2]
+                            )}
+                        </span>
+
+                    </div>
+                );
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | TEXTO NORMAL
+            |--------------------------------------------------------------------------
+            */
+
+            return (
+                <div
+                    key={index}
+                    className="my-1"
+                >
+                    {formatearTextoInline(
+                        textoLinea
+                    )}
+                </div>
+            );
+
+        }
+    );
 }
 
 
@@ -67,12 +622,14 @@ export default function ChatbotAlumno({
 
     /*
     |--------------------------------------------------------------------------
-    | REFERENCIA DEL CONTENEDOR DE MENSAJES
+    | REFERENCIA DEL CONTENEDOR
     |--------------------------------------------------------------------------
     */
 
     const mensajesRef =
-        useRef<HTMLDivElement | null>(null);
+        useRef<HTMLDivElement | null>(
+            null
+        );
 
 
     /*
@@ -94,7 +651,7 @@ export default function ChatbotAlumno({
                     id: Date.now(),
                     tipo: "bot",
                     texto:
-                        "¡Hola! 👋 Soy el asistente de NEXUS. ¿En qué tema académico puedo ayudarte?",
+                        "¡Hola! 👋 Soy el asistente del ITSNCG. ¿En qué tema académico puedo ayudarte?",
                 },
 
             ]);
@@ -115,7 +672,9 @@ export default function ChatbotAlumno({
 
     useEffect(() => {
 
-        if (mensajesRef.current) {
+        if (
+            mensajesRef.current
+        ) {
 
             mensajesRef.current.scrollTop =
                 mensajesRef.current.scrollHeight;
@@ -313,6 +872,12 @@ export default function ChatbotAlumno({
         };
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | RENDER
+    |--------------------------------------------------------------------------
+    */
+
     return (
 
         <>
@@ -389,12 +954,16 @@ export default function ChatbotAlumno({
                                 "
                             >
 
-                                <Bot
-                                    size={22}
-                                    className="
-                                        text-white
-                                    "
-                                />
+                                <img
+    src={bufalin}
+    alt="BUFALIN"
+    className="
+        w-11
+        h-11
+        object-contain
+        drop-shadow-[0_0_12px_rgba(139,92,246,0.45)]
+    "
+/>
 
 
                                 <span
@@ -431,9 +1000,7 @@ export default function ChatbotAlumno({
                                             text-white
                                         "
                                     >
-
-                                        Asistente NEXUS
-
+                                        Asistente BUFALIN
                                     </p>
 
 
@@ -454,9 +1021,7 @@ export default function ChatbotAlumno({
                                         text-slate-500
                                     "
                                 >
-
                                     Tutor académico con IA
-
                                 </p>
 
 
@@ -469,9 +1034,7 @@ export default function ChatbotAlumno({
                                             text-violet-300
                                         "
                                     >
-
                                         Materia: {materia}
-
                                     </p>
 
                                 )}
@@ -605,7 +1168,9 @@ export default function ChatbotAlumno({
                                         `}
                                     >
 
-                                        {/* AVATAR */}
+                                        {/* =================================================
+                                            AVATAR
+                                        ================================================= */}
 
                                         <div
                                             className={`
@@ -626,24 +1191,32 @@ export default function ChatbotAlumno({
                                         >
 
                                             {item.tipo ===
-                                            "usuario" ? (
+"usuario" ? (
 
-                                                <User
-                                                    size={14}
-                                                />
+    <User
+        size={14}
+    />
 
-                                            ) : (
+) : (
 
-                                                <Bot
-                                                    size={14}
-                                                />
+    <img
+        src={bufalin}
+        alt="BUFALIN"
+        className="
+            w-7
+            h-7
+            object-contain
+        "
+    />
 
-                                            )}
+)}
 
                                         </div>
 
 
-                                        {/* BURBUJA */}
+                                        {/* =================================================
+                                            BURBUJA
+                                        ================================================= */}
 
                                         <div
                                             className={`
@@ -652,7 +1225,6 @@ export default function ChatbotAlumno({
                                                 py-3
                                                 text-sm
                                                 leading-relaxed
-                                                whitespace-pre-wrap
                                                 ${
                                                     item.tipo ===
                                                     "usuario"
@@ -662,7 +1234,12 @@ export default function ChatbotAlumno({
                                             `}
                                         >
 
-                                            {item.texto}
+                                            {item.tipo ===
+                                            "bot"
+                                                ? formatearRespuesta(
+                                                    item.texto
+                                                )
+                                                : item.texto}
 
                                         </div>
 
@@ -743,9 +1320,7 @@ export default function ChatbotAlumno({
                                                 text-xs
                                             "
                                         >
-
-                                            NEXUS está pensando...
-
+                                            BUFALIN está pensando...
                                         </span>
 
                                     </div>
@@ -884,10 +1459,8 @@ export default function ChatbotAlumno({
                                 text-slate-700
                             "
                         >
-
-                            NEXUS puede cometer errores.
+                            BUFALIN puede cometer errores.
                             Verifica información importante.
-
                         </p>
 
                     </div>
@@ -911,7 +1484,7 @@ export default function ChatbotAlumno({
                 title={
                     abierto
                         ? "Cerrar asistente"
-                        : "Abrir asistente NEXUS"
+                        : "Abrir asistente BUFALIN"
                 }
                 className="
                     fixed
@@ -942,20 +1515,29 @@ export default function ChatbotAlumno({
 
                 {abierto ? (
 
-                    <X
-                        size={25}
-                    />
+    <X
+        size={25}
+    />
 
-                ) : (
+) : (
 
-                    <Bot
-                        size={27}
-                    />
+    <img
+        src={bufalin}
+        alt="BUFALIN"
+        className="
+            w-12
+            h-12
+            object-contain
+            drop-shadow-[0_0_10px_rgba(255,255,255,0.25)]
+        "
+    />
 
-                )}
+)}
 
 
-                {/* INDICADOR */}
+                {/* =================================================
+                    INDICADOR
+                ================================================= */}
 
                 {!abierto && (
 
@@ -981,5 +1563,4 @@ export default function ChatbotAlumno({
         </>
 
     );
-
 }

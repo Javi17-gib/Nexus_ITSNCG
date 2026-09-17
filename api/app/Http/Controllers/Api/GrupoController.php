@@ -1692,24 +1692,39 @@ public function notificacionesDocente(
         */
 
         $grupos =
-            GrupoUser::where(
-                'user_id',
-                $request->user()->id
-            )
-            ->where(
-                'estado',
-                'aceptado'
-            )
-            ->with([
-                'grupo.materia'
-            ])
-            ->get()
-            ->pluck('grupo')
-            ->values();
+    GrupoUser::where(
+        'user_id',
+        $request->user()->id
+    )
+    ->where(
+        'estado',
+        'aceptado'
+    )
+    ->with([
+        'grupo.materia'
+    ])
+    ->get()
+    ->pluck('grupo')
+    ->values();
 
 
-        return response()->json(
-            $grupos
-        );
+// Agregar cantidad de unidades a cada materia
+$grupos->each(function ($grupo) {
+
+    if ($grupo->materia) {
+
+        $grupo->materia->unidades_count =
+            $grupo->materia
+                ->unidades()
+                ->count();
+
+    }
+
+});
+
+
+return response()->json(
+    $grupos
+);
     }
 }

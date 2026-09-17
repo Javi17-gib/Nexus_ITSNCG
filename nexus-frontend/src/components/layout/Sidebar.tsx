@@ -31,6 +31,12 @@ import type {
     Materia,
 } from "../../types/materia";
 
+import itsLogo from "../../assets/images/its-logo.png";
+
+
+// =====================================================
+// TIPOS
+// =====================================================
 
 interface MenuItem {
     name: string;
@@ -38,6 +44,10 @@ interface MenuItem {
     path: string;
 }
 
+
+// =====================================================
+// SIDEBAR
+// =====================================================
 
 export default function Sidebar() {
 
@@ -315,6 +325,10 @@ export default function Sidebar() {
 
                 <div className="flex items-center gap-3">
 
+                    {/* =================================================
+                        LOGO ITS
+                    ================================================= */}
+
                     <div
                         className="
                             relative
@@ -329,21 +343,27 @@ export default function Sidebar() {
                             items-center
                             justify-center
                             shadow-[0_0_30px_rgba(124,58,237,0.35)]
+                            overflow-hidden
+                            shrink-0
                         "
                     >
 
-                        <span
+                        <img
+                            src={itsLogo}
+                            alt="ITS"
                             className="
-                                text-white
-                                text-xl
-                                font-black
+                                w-8
+                                h-8
+                                object-contain
                             "
-                        >
-                            ITS
-                        </span>
+                        />
 
                     </div>
 
+
+                    {/* =================================================
+                        TEXTO
+                    ================================================= */}
 
                     <div>
 
@@ -396,7 +416,9 @@ export default function Sidebar() {
 
                     <>
 
-                        {/* VOLVER A MATERIAS */}
+                        {/* =================================================
+                            VOLVER A MATERIAS
+                        ================================================= */}
 
                         <button
                             type="button"
@@ -423,7 +445,9 @@ export default function Sidebar() {
                             "
                         >
 
-                            <ChevronLeft size={18} />
+                            <ChevronLeft
+                                size={18}
+                            />
 
                             <span className="text-sm">
                                 Mis materias
@@ -542,9 +566,11 @@ export default function Sidebar() {
                                             mt-0.5
                                         "
                                     >
+
                                         {cargandoMateria
                                             ? "Obteniendo información..."
                                             : `ID #${materiaId}`}
+
                                     </p>
 
                                 </div>
@@ -554,7 +580,9 @@ export default function Sidebar() {
                         </div>
 
 
-                        {/* SEPARADOR */}
+                        {/* =================================================
+                            SEPARADOR
+                        ================================================= */}
 
                         <div
                             className="
@@ -566,7 +594,9 @@ export default function Sidebar() {
                         />
 
 
-                        {/* MENÚ DE MATERIA */}
+                        {/* =================================================
+                            MENÚ DE MATERIA
+                        ================================================= */}
 
                         <nav className="space-y-1">
 
@@ -616,7 +646,9 @@ export default function Sidebar() {
                                         `}
                                     >
 
-                                        <Icon size={19} />
+                                        <Icon
+                                            size={19}
+                                        />
 
                                         <span>
                                             {item.name}
@@ -703,7 +735,9 @@ export default function Sidebar() {
                                         `}
                                     >
 
-                                        <Icon size={19} />
+                                        <Icon
+                                            size={19}
+                                        />
 
                                         <span>
                                             {item.name}
@@ -718,7 +752,9 @@ export default function Sidebar() {
                         </nav>
 
 
-                        {/* SEPARADOR */}
+                        {/* =================================================
+                            SEPARADOR
+                        ================================================= */}
 
                         <div
                             className="
@@ -729,7 +765,9 @@ export default function Sidebar() {
                         />
 
 
-                        {/* CUENTA */}
+                        {/* =================================================
+                            CUENTA
+                        ================================================= */}
 
                         <p
                             className="
@@ -777,7 +815,9 @@ export default function Sidebar() {
                             `}
                         >
 
-                            <Settings size={19} />
+                            <Settings
+                                size={19}
+                            />
 
                             <span>
                                 Configuración
@@ -845,7 +885,12 @@ export default function Sidebar() {
                     </div>
 
 
-                    <div className="flex-1 min-w-0">
+                    <div
+                        className="
+                            flex-1
+                            min-w-0
+                        "
+                    >
 
                         <p
                             className="
@@ -875,7 +920,9 @@ export default function Sidebar() {
                 </div>
 
 
-                {/* CERRAR SESIÓN */}
+                {/* =====================================================
+                    CERRAR SESIÓN
+                ===================================================== */}
 
                 <button
                     type="button"
@@ -897,7 +944,9 @@ export default function Sidebar() {
                     "
                 >
 
-                    <LogOut size={19} />
+                    <LogOut
+                        size={19}
+                    />
 
                     <span>
                         Cerrar sesión

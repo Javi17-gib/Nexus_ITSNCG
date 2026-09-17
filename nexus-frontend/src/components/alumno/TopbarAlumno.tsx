@@ -26,6 +26,7 @@ import {
 } from "../../context/ThemeContext";
 
 import api from "../../api/axios";
+import itsLogo from "../../assets/images/its-logo.png";
 
 
 export default function TopbarAlumno() {
@@ -328,19 +329,15 @@ export default function TopbarAlumno() {
                             "
                         />
 
-                        <span
-                            className="
-                                relative
-                                z-10
-                                text-lg
-                                font-black
-                                text-white
-                            "
-                        >
+                       <div className="relative w-15 h-15 rounded-[28px] bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 flex items-center justify-center shadow-[0_0_120px_rgba(139,92,246,0.65)]">
 
-                            ITS
+    <img
+        src={itsLogo}
+        alt="ITS"
+        className="w-10 h-10 object-contain"
+    />
 
-                        </span>
+</div>
 
                     </div>
 

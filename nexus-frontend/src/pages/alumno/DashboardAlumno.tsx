@@ -294,12 +294,11 @@ export default function DashboardAlumno() {
                     |--------------------------------------------------------------------------
                     */
 
-                    const gruposAlumno:
-                        GrupoAlumno[] =
+                    const gruposAlumno =
                         Array.isArray(
                             respuesta
                         )
-                            ? respuesta
+                            ? (respuesta as unknown as GrupoAlumno[])
                             : [];
 
 
@@ -335,9 +334,9 @@ export default function DashboardAlumno() {
 
 
                     console.log(
-                        "📚 Materias encontradas:",
-                        materiasEncontradas
-                    );
+    "📚 MATERIAS COMPLETAS:",
+    JSON.stringify(materiasEncontradas, null, 2)
+);
 
 
 
@@ -1023,8 +1022,6 @@ export default function DashboardAlumno() {
                 overflow-hidden
             "
         >
-            
-
 
 
             {/* =====================================================

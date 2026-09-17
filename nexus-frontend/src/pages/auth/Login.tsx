@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import itsLogo from "../../assets/images/its-logo.png";
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -334,9 +335,15 @@ export default function Login() {
 
             <div className="relative w-28 h-28 rounded-[28px] bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 flex items-center justify-center shadow-[0_0_120px_rgba(139,92,246,0.65)]">
 
-              <span className="text-white text-6xl font-black select-none">
-                ITS
-              </span>
+              <div className="relative w-28 h-28 rounded-[28px] bg-gradient-to-br from-violet-600 via-purple-600 to-blue-600 flex items-center justify-center shadow-[0_0_120px_rgba(139,92,246,0.65)]">
+
+    <img
+        src={itsLogo}
+        alt="ITS"
+        className="w-20 h-20 object-contain"
+    />
+
+</div>
 
             </div>
 

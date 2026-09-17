@@ -10,7 +10,9 @@ use Carbon\Carbon;
 class EstadisticaController extends Controller
 {
     /**
-     * Registrar visita del alumno.
+     * =========================================================
+     * REGISTRAR VISITA DEL ALUMNO
+     * =========================================================
      */
     public function registrar(Request $request)
     {
@@ -43,95 +45,418 @@ class EstadisticaController extends Controller
             'message' => 'Visita registrada'
         ]);
     }
+
+
+    /**
+     * =========================================================
+     * VISITAS POR GRUPO
+     * =========================================================
+     */
     public function visitasPorGrupo($grupoId)
-{
-    $total = Estadistica::where('grupo_id', $grupoId)
-        ->count();
+    {
+        $total = Estadistica::where(
+            'grupo_id',
+            $grupoId
+        )->count();
 
-    return response()->json([
-        'grupo_id' => $grupoId,
-        'total_visitas' => $total
-    ]);
-}
+        return response()->json([
+            'grupo_id' => $grupoId,
+            'total_visitas' => $total
+        ]);
+    }
 
-public function visitasPorSemana($grupoId)
-{
-    $visitas = Estadistica::where('grupo_id', $grupoId)
-        ->where('fecha_ingreso', '>=', now()->subDays(7))
+
+    /**
+     * =========================================================
+     * VISITAS POR SEMANA
+     * =========================================================
+     */
+    public function visitasPorSemana($grupoId)
+    {
+        $visitas = Estadistica::where(
+            'grupo_id',
+            $grupoId
+        )
+        ->where(
+            'fecha_ingreso',
+            '>=',
+            now()->subDays(7)
+        )
         ->get()
         ->groupBy(function ($item) {
-            return \Carbon\Carbon::parse(
+
+            return Carbon::parse(
                 $item->fecha_ingreso
             )->format('Y-m-d');
+
         });
 
-    return response()->json($visitas);
-}
+        return response()->json($visitas);
+    }
 
-public function alumnosActivos($grupoId)
-{
-    $alumnos = Estadistica::where('grupo_id', $grupoId)
+
+    /**
+     * =========================================================
+     * ALUMNOS ACTIVOS
+     * =========================================================
+     */
+    public function alumnosActivos($grupoId)
+    {
+        $alumnos = Estadistica::where(
+            'grupo_id',
+            $grupoId
+        )
         ->distinct('user_id')
         ->count('user_id');
 
-    return response()->json([
-        'grupo_id' => $grupoId,
-        'alumnos_activos' => $alumnos
-    ]);
-}
+        return response()->json([
+            'grupo_id' => $grupoId,
+            'alumnos_activos' => $alumnos
+        ]);
+    }
 
-public function totalAlumnosGrupo($grupoId)
-{
-    $total = Estadistica::where('grupo_id', $grupoId)
+
+    /**
+     * =========================================================
+     * TOTAL DE ALUMNOS DEL GRUPO
+     * =========================================================
+     */
+    public function totalAlumnosGrupo($grupoId)
+    {
+        $total = Estadistica::where(
+            'grupo_id',
+            $grupoId
+        )
         ->distinct('user_id')
         ->count('user_id');
 
-    return response()->json([
-        'grupo_id' => $grupoId,
-        'total_alumnos' => $total
-    ]);
-}
+        return response()->json([
+            'grupo_id' => $grupoId,
+            'total_alumnos' => $total
+        ]);
+    }
 
-public function visitasPorMateria($materiaId)
-{
-    $total = Estadistica::where(
-        'materia_id',
-        $materiaId
-    )->count();
 
-    return response()->json([
-        'materia_id' => $materiaId,
-        'total_visitas' => $total
-    ]);
-}
+    /**
+     * =========================================================
+     * VISITAS POR MATERIA
+     * =========================================================
+     */
+    public function visitasPorMateria($materiaId)
+    {
+        $total = Estadistica::where(
+            'materia_id',
+            $materiaId
+        )->count();
 
-public function dashboardDocente(Request $request)
-{
-    $docente = $request->user();
+        return response()->json([
+            'materia_id' => $materiaId,
+            'total_visitas' => $total
+        ]);
+    }
 
-    $grupos = \App\Models\Grupo::where(
-        'docente_id',
-        $docente->id
-    )->pluck('id');
 
-    $totalGrupos = $grupos->count();
+    /**
+     * =========================================================
+     * DASHBOARD DEL DOCENTE
+     * =========================================================
+     *
+     * Devuelve:
+     *
+     * - Total de materias
+     * - Total de grupos
+     * - Total de contenidos
+     * - Total de retos
+     * - Total de visitas
+     * - Alumnos activos
+     * - Promedio de visitas
+     * - Actividad de los últimos 7 días
+     *
+     */
+    public function dashboardDocente(Request $request)
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | DOCENTE ACTUAL
+        |--------------------------------------------------------------------------
+        */
 
-    $totalVisitas = Estadistica::whereIn(
-        'grupo_id',
-        $grupos
-    )->count();
+        $docente = $request->user();
 
-    $alumnosActivos = Estadistica::whereIn(
-        'grupo_id',
-        $grupos
-    )
-    ->distinct('user_id')
-    ->count('user_id');
 
-    return response()->json([
-        'grupos' => $totalGrupos,
-        'visitas' => $totalVisitas,
-        'alumnos_activos' => $alumnosActivos
-    ]);
-}
+        /*
+        |--------------------------------------------------------------------------
+        | MATERIAS DEL DOCENTE
+        |--------------------------------------------------------------------------
+        */
+
+        $materias = \App\Models\Materia::where(
+            'docente_id',
+            $docente->id
+        )->get();
+
+        $materiaIds = $materias->pluck('id');
+
+        $totalMaterias = $materias->count();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GRUPOS DEL DOCENTE
+        |--------------------------------------------------------------------------
+        */
+
+        $grupos = \App\Models\Grupo::where(
+            'docente_id',
+            $docente->id
+        )->get();
+
+        $grupoIds = $grupos->pluck('id');
+
+        $totalGrupos = $grupos->count();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CONTENIDOS DEL DOCENTE
+        |--------------------------------------------------------------------------
+        |
+        | Contenido
+        |    ↓
+        | Tema
+        |    ↓
+        | Unidad
+        |    ↓
+        | Materia
+        |
+        */
+
+        $totalContenidos = \App\Models\Contenido::whereHas(
+            'tema.unidad.materia',
+            function ($query) use ($docente) {
+
+                $query->where(
+                    'docente_id',
+                    $docente->id
+                );
+
+            }
+        )->count();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RETOS DEL DOCENTE
+        |--------------------------------------------------------------------------
+        |
+        | Reto
+        |    ↓
+        | Tema
+        |    ↓
+        | Unidad
+        |    ↓
+        | Materia
+        |
+        */
+
+        $totalRetos = \App\Models\Reto::whereHas(
+            'tema.unidad.materia',
+            function ($query) use ($docente) {
+
+                $query->where(
+                    'docente_id',
+                    $docente->id
+                );
+
+            }
+        )->count();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ESTADÍSTICAS DEL DOCENTE
+        |--------------------------------------------------------------------------
+        */
+
+        $estadisticas = Estadistica::whereIn(
+            'grupo_id',
+            $grupoIds
+        )->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL DE VISITAS
+        |--------------------------------------------------------------------------
+        */
+
+        $totalVisitas = $estadisticas->count();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ALUMNOS ACTIVOS
+        |--------------------------------------------------------------------------
+        |
+        | Se cuentan usuarios únicos.
+        |
+        */
+
+        $alumnosActivos = $estadisticas
+            ->pluck('user_id')
+            ->unique()
+            ->count();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PROMEDIO DE VISITAS
+        |--------------------------------------------------------------------------
+        */
+
+        $promedioVisitas = $alumnosActivos > 0
+            ? round(
+                $totalVisitas / $alumnosActivos,
+                2
+            )
+            : 0;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ACTIVIDAD DE LOS ÚLTIMOS 7 DÍAS
+        |--------------------------------------------------------------------------
+        */
+
+        $fechaInicio = Carbon::now()
+            ->subDays(6)
+            ->startOfDay();
+
+
+        $estadisticasSemana = Estadistica::whereIn(
+            'grupo_id',
+            $grupoIds
+        )
+        ->where(
+            'fecha_ingreso',
+            '>=',
+            $fechaInicio
+        )
+        ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GENERAR LOS 7 DÍAS
+        |--------------------------------------------------------------------------
+        |
+        | Aunque un día tenga 0 visitas,
+        | lo enviamos al frontend.
+        |
+        */
+
+        $actividad = collect();
+
+
+        for ($i = 6; $i >= 0; $i--) {
+
+            $fecha = Carbon::now()
+                ->subDays($i)
+                ->startOfDay();
+
+            $fechaTexto = $fecha->format('Y-m-d');
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | VISITAS DEL DÍA
+            |--------------------------------------------------------------------------
+            */
+
+            $visitas = $estadisticasSemana
+                ->filter(function ($item) use ($fechaTexto) {
+
+                    return Carbon::parse(
+                        $item->fecha_ingreso
+                    )->format('Y-m-d') === $fechaTexto;
+
+                })
+                ->count();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | NOMBRE DEL DÍA
+            |--------------------------------------------------------------------------
+            */
+
+            $dia = Carbon::parse($fechaTexto)
+                ->locale('es')
+                ->translatedFormat('D');
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | AGREGAR AL ARRAY
+            |--------------------------------------------------------------------------
+            */
+
+            $actividad->push([
+
+                'fecha' => $fechaTexto,
+
+                'dia' => $dia,
+
+                'visitas' => $visitas
+
+            ]);
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RESPUESTA FINAL
+        |--------------------------------------------------------------------------
+        */
+
+        return response()->json([
+
+            /*
+            |--------------------------------------------------------------------------
+            | CONTADORES PRINCIPALES
+            |--------------------------------------------------------------------------
+            */
+
+            'materias' => $totalMaterias,
+
+            'grupos' => $totalGrupos,
+
+            'contenidos' => $totalContenidos,
+
+            'retos' => $totalRetos,
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | ESTADÍSTICAS
+            |--------------------------------------------------------------------------
+            */
+
+            'visitas' => $totalVisitas,
+
+            'alumnos_activos' => $alumnosActivos,
+
+            'promedio_visitas' => $promedioVisitas,
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | GRÁFICA
+            |--------------------------------------------------------------------------
+            */
+
+            'actividad' => $actividad->values()
+
+        ]);
+    }
 }

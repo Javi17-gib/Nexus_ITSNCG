@@ -22,8 +22,9 @@ import {
 } from "../../context/AuthContext";
 
 import {
-    getMateriasRequest,
-} from "../../api/materias";
+    obtenerDashboardDocenteRequest,
+    type DashboardDocenteData,
+} from "../../api/dashboard";
 
 
 export default function DashboardDocente() {
@@ -80,45 +81,72 @@ export default function DashboardDocente() {
 
     /*
     |--------------------------------------------------------------------------
-    | CARGAR MATERIAS DEL DOCENTE
+    | DATOS DEL DASHBOARD
+    |--------------------------------------------------------------------------
+    */
+
+    const [
+        dashboard,
+        setDashboard,
+    ] = useState<DashboardDocenteData | null>(null);
+
+
+    const [
+        cargandoDashboard,
+        setCargandoDashboard,
+    ] = useState(true);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CARGAR DASHBOARD DOCENTE
     |--------------------------------------------------------------------------
     */
 
     useEffect(() => {
 
-        const cargarMaterias =
+        const cargarDashboard =
             async () => {
 
                 try {
 
-                    const materias =
-                        await getMateriasRequest();
+                    setCargandoDashboard(true);
+
+
+                    const data =
+                        await obtenerDashboardDocenteRequest();
 
 
                     console.log(
-                        "📚 Materias del docente:",
-                        materias
+                        "📊 Dashboard docente:",
+                        data
                     );
 
 
+                    setDashboard(data);
+
+
                     setCantidadMaterias(
-                        materias.length
+                        data.materias
                     );
 
 
                 } catch (error) {
 
                     console.error(
-                        "❌ Error al cargar materias:",
+                        "❌ Error al cargar dashboard docente:",
                         error
                     );
 
+
+                    setDashboard(null);
 
                     setCantidadMaterias(0);
 
 
                 } finally {
 
+                    setCargandoDashboard(false);
                     setCargandoMaterias(false);
 
                 }
@@ -126,7 +154,7 @@ export default function DashboardDocente() {
             };
 
 
-        cargarMaterias();
+        cargarDashboard();
 
     }, []);
 
@@ -254,7 +282,7 @@ export default function DashboardDocente() {
                                 size={13}
                             />
 
-                            Panel docente NEXUS
+                            Panel docente ITSNCG
 
                         </div>
 
@@ -584,7 +612,9 @@ export default function DashboardDocente() {
                                 "
                             >
 
-                                —
+                                {cargandoDashboard
+                                    ? "..."
+                                    : dashboard?.grupos ?? 0}
 
                             </p>
 
@@ -695,7 +725,9 @@ export default function DashboardDocente() {
                                 "
                             >
 
-                                —
+                                {cargandoDashboard
+                                    ? "..."
+                                    : dashboard?.contenidos ?? 0}
 
                             </p>
 
@@ -806,7 +838,9 @@ export default function DashboardDocente() {
                                 "
                             >
 
-                                —
+                                {cargandoDashboard
+                                    ? "..."
+                                    : dashboard?.retos ?? 0}
 
                             </p>
 
@@ -961,7 +995,7 @@ export default function DashboardDocente() {
 
 
                     {/* =================================================
-                        GRÁFICA PREPARADA
+                        GRÁFICA DE ACTIVIDAD
                     ================================================= */}
 
                     <div
@@ -969,71 +1003,189 @@ export default function DashboardDocente() {
                             h-64
                             rounded-xl
                             border
-                            border-dashed
                             border-[var(--nexus-border)]
                             bg-[var(--nexus-surface-2)]
-                            flex
-                            flex-col
-                            items-center
-                            justify-center
-                            text-center
+                            p-5
                             transition-colors
                             duration-300
                         "
                     >
 
-                        <div
-                            className="
-                                w-12
-                                h-12
-                                rounded-2xl
-                                flex
-                                items-center
-                                justify-center
-                                bg-[var(--nexus-surface)]
-                                text-[var(--nexus-text-muted)]
-                            "
-                        >
+                        {cargandoDashboard ? (
 
-                            <Users
-                                size={21}
-                            />
+                            <div
+                                className="
+                                    h-full
+                                    flex
+                                    items-center
+                                    justify-center
+                                    text-sm
+                                    text-[var(--nexus-text-muted)]
+                                "
+                            >
 
-                        </div>
+                                Cargando estadísticas...
+
+                            </div>
+
+                        ) : (
+
+                            <div
+                                className="
+                                    h-full
+                                    flex
+                                    flex-col
+                                "
+                            >
+
+                                {/* =================================================
+                                    BARRAS
+                                ================================================= */}
+
+                                <div
+                                    className="
+                                        flex-1
+                                        flex
+                                        items-end
+                                        gap-3
+                                        sm:gap-5
+                                        px-2
+                                        pb-2
+                                        border-b
+                                        border-[var(--nexus-border)]
+                                    "
+                                >
+
+                                    {(dashboard?.actividad ?? []).map(
+                                        (item, index) => {
+
+                                            const maxVisitas =
+                                                Math.max(
+                                                    ...(dashboard?.actividad ?? [])
+                                                        .map(
+                                                            (dia) => dia.visitas
+                                                        ),
+                                                    1
+                                                );
 
 
-                        <p
-                            className="
-                                mt-4
-                                text-sm
-                                font-medium
-                                text-[var(--nexus-text-secondary)]
-                            "
-                        >
-
-                            Sin estadísticas todavía
-
-                        </p>
+                                            const altura =
+                                                item.visitas > 0
+                                                    ? Math.max(
+                                                        (
+                                                            item.visitas /
+                                                            maxVisitas
+                                                        ) * 100,
+                                                        8
+                                                    )
+                                                    : 3;
 
 
-                        <p
-                            className="
-                                mt-1
-                                max-w-sm
-                                text-xs
-                                leading-relaxed
-                                text-[var(--nexus-text-muted)]
-                            "
-                        >
+                                            return (
 
-                            Cuando tengamos grupos y alumnos
-                            registrados podremos mostrar aquí
-                            su actividad.
+                                                <div
+                                                    key={`${item.fecha}-${index}`}
+                                                    className="
+                                                        flex-1
+                                                        h-full
+                                                        flex
+                                                        flex-col
+                                                        justify-end
+                                                        items-center
+                                                        gap-2
+                                                    "
+                                                >
 
-                        </p>
+                                                    <span
+                                                        className="
+                                                            text-[10px]
+                                                            font-semibold
+                                                            text-[var(--nexus-text-secondary)]
+                                                        "
+                                                    >
+
+                                                        {item.visitas}
+
+                                                    </span>
+
+
+                                                    <div
+                                                        className="
+                                                            w-full
+                                                            max-w-10
+                                                            rounded-t-lg
+                                                            bg-gradient-to-t
+                                                            from-violet-600
+                                                            to-indigo-500
+                                                            transition-all
+                                                            duration-500
+                                                            min-h-[3px]
+                                                        "
+                                                        style={{
+                                                            height: `${altura}%`,
+                                                        }}
+                                                    />
+
+                                                </div>
+
+                                            );
+
+                                        }
+                                    )}
+
+                                </div>
+
+
+                                {/* =================================================
+                                    DÍAS
+                                ================================================= */}
+
+                                <div
+                                    className="
+                                        flex
+                                        gap-3
+                                        sm:gap-5
+                                        px-2
+                                        pt-3
+                                    "
+                                >
+
+                                    {(dashboard?.actividad ?? []).map(
+                                        (item, index) => (
+
+                                            <div
+                                                key={`label-${item.fecha}-${index}`}
+                                                className="
+                                                    flex-1
+                                                    text-center
+                                                "
+                                            >
+
+                                                <span
+                                                    className="
+                                                        text-[10px]
+                                                        font-medium
+                                                        text-[var(--nexus-text-muted)]
+                                                        capitalize
+                                                    "
+                                                >
+
+                                                    {item.dia}
+
+                                                </span>
+
+                                            </div>
+
+                                        )
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        )}
 
                     </div>
-
                 </div>
 
 
