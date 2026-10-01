@@ -2,7 +2,13 @@ import {
     BrowserRouter,
     Routes,
     Route,
+    useNavigate,
 } from "react-router-dom";
+
+
+// =====================================================
+// AUTH
+// =====================================================
 
 import Login
     from "../pages/auth/Login";
@@ -67,12 +73,154 @@ import Configuracion
 
 
 // =====================================================
+// PÁGINA NO ENCONTRADA - DOCENTE
+// =====================================================
+
+function NotFoundDocente() {
+
+    const navigate =
+        useNavigate();
+
+
+    return (
+
+        <div
+            className="
+                h-full
+                min-h-0
+                w-full
+                flex
+                items-center
+                justify-center
+                p-8
+                overflow-y-auto
+            "
+        >
+
+            <div
+                className="
+                    w-full
+                    max-w-md
+                    text-center
+                "
+            >
+
+                {/* =================================================
+                    ICONO
+                ================================================= */}
+
+                <div
+                    className="
+                        mx-auto
+                        mb-6
+                        w-20
+                        h-20
+                        rounded-2xl
+                        bg-violet-500/10
+                        border
+                        border-violet-500/20
+                        flex
+                        items-center
+                        justify-center
+                    "
+                >
+
+                    <span
+                        className="
+                            text-xl
+                            font-black
+                            text-violet-400
+                        "
+                    >
+                        404
+                    </span>
+
+                </div>
+
+
+                {/* =================================================
+                    TÍTULO
+                ================================================= */}
+
+                <h1
+                    className="
+                        text-2xl
+                        md:text-3xl
+                        font-black
+                        text-[var(--nexus-text)]
+                    "
+                >
+                    Sección no encontrada
+                </h1>
+
+
+                {/* =================================================
+                    DESCRIPCIÓN
+                ================================================= */}
+
+                <p
+                    className="
+                        mt-3
+                        text-sm
+                        leading-6
+                        text-[var(--nexus-text-muted)]
+                    "
+                >
+                    Esta sección no existe dentro
+                    del espacio docente o la ruta
+                    que intentaste abrir no está disponible.
+                </p>
+
+
+                {/* =================================================
+                    BOTÓN
+                ================================================= */}
+
+                <button
+                    type="button"
+                    onClick={() =>
+                        navigate(
+                            "/dashboard/docente"
+                        )
+                    }
+                    className="
+                        mt-7
+                        inline-flex
+                        items-center
+                        justify-center
+                        h-11
+                        px-6
+                        rounded-xl
+                        bg-violet-600
+                        hover:bg-violet-500
+                        text-white
+                        text-sm
+                        font-semibold
+                        shadow-[0_0_30px_rgba(124,58,237,0.2)]
+                        hover:shadow-[0_0_40px_rgba(124,58,237,0.35)]
+                        transition-all
+                    "
+                >
+                    Volver al panel
+                </button>
+
+            </div>
+
+        </div>
+
+    );
+
+}
+
+
+// =====================================================
 // RUTAS
 // =====================================================
 
 export default function AppRoutes() {
 
     return (
+
         <BrowserRouter>
 
             <Routes>
@@ -211,6 +359,8 @@ export default function AppRoutes() {
 
                     {/* =================================================
                         MATERIA
+
+                        /dashboard/docente/materias/:materiaId
                     ================================================= */}
 
                     <Route
@@ -223,6 +373,8 @@ export default function AppRoutes() {
 
                     {/* =================================================
                         UNIDADES
+
+                        /dashboard/docente/materias/:materiaId/unidades
                     ================================================= */}
 
                     <Route
@@ -235,6 +387,9 @@ export default function AppRoutes() {
 
                     {/* =================================================
                         TEMAS
+
+                        /dashboard/docente/materias/:materiaId/
+                        unidades/:unidadId
                     ================================================= */}
 
                     <Route
@@ -247,6 +402,8 @@ export default function AppRoutes() {
 
                     {/* =================================================
                         GRUPOS
+
+                        /dashboard/docente/grupos
                     ================================================= */}
 
                     <Route
@@ -259,6 +416,8 @@ export default function AppRoutes() {
 
                     {/* =================================================
                         CONTENIDO
+
+                        /dashboard/docente/contenido
                     ================================================= */}
 
                     <Route
@@ -271,6 +430,8 @@ export default function AppRoutes() {
 
                     {/* =================================================
                         RETOS
+
+                        /dashboard/docente/retos
                     ================================================= */}
 
                     <Route
@@ -283,6 +444,8 @@ export default function AppRoutes() {
 
                     {/* =================================================
                         REPORTES
+
+                        /dashboard/docente/reportes
                     ================================================= */}
 
                     <Route
@@ -321,10 +484,28 @@ export default function AppRoutes() {
                         }
                     />
 
+
+                    {/* =================================================
+                        RUTA NO ENCONTRADA
+                        
+                        Cualquier ruta docente que no exista
+                        terminará aquí en lugar de mostrar
+                        una pantalla negra.
+                    ================================================= */}
+
+                    <Route
+                        path="*"
+                        element={
+                            <NotFoundDocente />
+                        }
+                    />
+
                 </Route>
 
             </Routes>
 
         </BrowserRouter>
+
     );
+
 }

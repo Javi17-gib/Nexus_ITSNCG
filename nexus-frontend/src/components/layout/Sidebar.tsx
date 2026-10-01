@@ -138,6 +138,7 @@ export default function Sidebar() {
 
                 }
 
+
             } catch (error) {
 
                 console.error(
@@ -226,6 +227,10 @@ export default function Sidebar() {
     /*
     |--------------------------------------------------------------------------
     | MENÚ DENTRO DE UNA MATERIA
+    |
+    | IMPORTANTE:
+    | Aquí solamente mostramos las secciones que realmente
+    | pertenecen al contexto de una materia.
     |--------------------------------------------------------------------------
     */
 
@@ -243,24 +248,6 @@ export default function Sidebar() {
                     name: "Unidades",
                     icon: BookOpen,
                     path: `/dashboard/docente/materias/${materiaId}/unidades`,
-                },
-
-                {
-                    name: "Grupos",
-                    icon: Users,
-                    path: `/dashboard/docente/materias/${materiaId}/grupos`,
-                },
-
-                {
-                    name: "Retos",
-                    icon: Trophy,
-                    path: `/dashboard/docente/materias/${materiaId}/retos`,
-                },
-
-                {
-                    name: "Estadísticas",
-                    icon: BarChart3,
-                    path: `/dashboard/docente/materias/${materiaId}/estadisticas`,
                 },
 
             ]
@@ -377,6 +364,7 @@ export default function Sidebar() {
                         >
                             Panel
                         </h1>
+
 
                         <p
                             className="
@@ -616,6 +604,7 @@ export default function Sidebar() {
                                             "Resumen"
                                         }
                                         className={({ isActive }) => `
+
                                             group
                                             relative
                                             flex
@@ -643,6 +632,7 @@ export default function Sidebar() {
                                                         dark:hover:bg-white/5
                                                       `
                                             }
+
                                         `}
                                     >
 
@@ -705,6 +695,7 @@ export default function Sidebar() {
                                             "/dashboard/docente"
                                         }
                                         className={({ isActive }) => `
+
                                             group
                                             relative
                                             flex
@@ -732,6 +723,7 @@ export default function Sidebar() {
                                                         dark:hover:bg-white/5
                                                       `
                                             }
+
                                         `}
                                     >
 
@@ -787,6 +779,7 @@ export default function Sidebar() {
                         <NavLink
                             to="/dashboard/docente/configuracion"
                             className={({ isActive }) => `
+
                                 flex
                                 items-center
                                 gap-3
@@ -812,6 +805,7 @@ export default function Sidebar() {
                                             dark:hover:bg-white/5
                                           `
                                 }
+
                             `}
                         >
 

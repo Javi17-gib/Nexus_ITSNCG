@@ -377,11 +377,11 @@ export default function Login() {
           <div className="mt-8">
 
             <p className="text-lg text-slate-400">
-              El Futuro De Aprendizaje
+              El Futuro de Aprendizaje
             </p>
 
             <p className="mt-1 text-3xl font-bold text-white">
-              Comineza Aqui
+              Comienza Aqui
             </p>
 
           </div>

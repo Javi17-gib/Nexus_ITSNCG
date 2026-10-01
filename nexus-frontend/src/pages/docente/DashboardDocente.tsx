@@ -755,33 +755,15 @@ export default function DashboardDocente() {
 
                     </div>
 
-
-                    <button
-                        type="button"
-                        onClick={() =>
-                            navigate(
-                                "/dashboard/docente/contenido"
-                            )
-                        }
-                        className="
-                            mt-5
-                            flex
-                            items-center
-                            gap-1.5
-                            text-xs
-                            text-emerald-500
-                            hover:text-emerald-400
-                            transition-colors
-                        "
-                    >
-
-                        Administrar
-
-                        <ArrowRight
-                            size={13}
-                        />
-
-                    </button>
+<p
+    className="
+        mt-5
+        text-[10px]
+        text-[var(--nexus-text-muted)]
+    "
+>
+    Contenidos registrados en tus materias
+</p>
 
                 </div>
 
@@ -1420,9 +1402,7 @@ export default function DashboardDocente() {
                                             text-[var(--nexus-text-muted)]
                                         "
                                     >
-
-                                        Próximamente
-
+                                        Administrar grupos
                                     </p>
 
                                 </div>
@@ -1441,104 +1421,91 @@ export default function DashboardDocente() {
 
 
                         {/* =================================================
-                            CONTENIDO
-                        ================================================= */}
 
-                        <button
-                            type="button"
-                            onClick={() =>
-                                navigate(
-                                    "/dashboard/docente/contenido"
-                                )
-                            }
-                            className="
-                                w-full
-                                flex
-                                items-center
-                                justify-between
-                                gap-3
-                                p-3
-                                rounded-xl
-                                bg-[var(--nexus-surface-2)]
-                                border
-                                border-[var(--nexus-border)]
-                                hover:bg-emerald-500/[0.06]
-                                hover:border-emerald-500/20
-                                transition-all
-                            "
-                        >
+    RETOS
 
-                            <div
-                                className="
-                                    flex
-                                    items-center
-                                    gap-3
-                                "
-                            >
+================================================= */}
 
-                                <div
-                                    className="
-                                        w-9
-                                        h-9
-                                        rounded-lg
-                                        flex
-                                        items-center
-                                        justify-center
-                                        bg-emerald-500/10
-                                        text-emerald-500
-                                    "
-                                >
+<button
+    type="button"
+    onClick={() =>
+        navigate(
+            "/dashboard/docente/retos"
+        )
+    }
+    className="
+        w-full
+        flex
+        items-center
+        justify-between
+        gap-3
+        p-3
+        rounded-xl
+        bg-[var(--nexus-surface-2)]
+        border
+        border-[var(--nexus-border)]
+        hover:bg-amber-500/[0.06]
+        hover:border-amber-500/20
+        transition-all
+    "
+>
+    <div
+        className="
+            flex
+            items-center
+            gap-3
+        "
+    >
+        <div
+            className="
+                w-9
+                h-9
+                rounded-lg
+                flex
+                items-center
+                justify-center
+                bg-amber-500/10
+                text-amber-500
+            "
+        >
+            <Trophy
+                size={17}
+            />
+        </div>
 
-                                    <FileText
-                                        size={17}
-                                    />
+        <div
+            className="
+                text-left
+            "
+        >
+            <p
+                className="
+                    text-sm
+                    font-medium
+                    text-[var(--nexus-text)]
+                "
+            >
+                Mis retos
+            </p>
 
-                                </div>
+            <p
+                className="
+                    text-[10px]
+                    text-[var(--nexus-text-muted)]
+                "
+            >
+                Administrar retos
+            </p>
+        </div>
+    </div>
 
-
-                                <div
-                                    className="
-                                        text-left
-                                    "
-                                >
-
-                                    <p
-                                        className="
-                                            text-sm
-                                            font-medium
-                                            text-[var(--nexus-text)]
-                                        "
-                                    >
-
-                                        Crear contenido
-
-                                    </p>
-
-
-                                    <p
-                                        className="
-                                            text-[10px]
-                                            text-[var(--nexus-text-muted)]
-                                        "
-                                    >
-
-                                        Próximamente
-
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-                            <ArrowRight
-                                size={15}
-                                className="
-                                    text-[var(--nexus-text-muted)]
-                                "
-                            />
-
-                        </button>
+    <ArrowRight
+        size={15}
+        className="
+            text-[var(--nexus-text-muted)]
+        "
+    />
+</button>
 
                     </div>
 

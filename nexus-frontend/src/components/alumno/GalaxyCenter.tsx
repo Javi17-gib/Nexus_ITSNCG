@@ -148,7 +148,7 @@ export default function GalaxyCenter() {
                         select-none
                     "
                 >
-                    N
+                    ITS
                 </span>
 
             </motion.div>

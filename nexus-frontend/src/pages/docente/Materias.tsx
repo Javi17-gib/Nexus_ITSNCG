@@ -440,6 +440,13 @@ export default function Materias() {
     const [editingId, setEditingId] =
         useState<number | null>(null);
 
+    // Confirmación para eliminar materia
+    const [materiaAEliminar, setMateriaAEliminar] =
+        useState<Materia | null>(null);
+
+    const [eliminandoMateria, setEliminandoMateria] =
+        useState(false);
+
 
     /*
     |--------------------------------------------------------------------------
@@ -837,36 +844,41 @@ export default function Materias() {
     |--------------------------------------------------------------------------
     */
 
-    const eliminarMateria = async (
-        id: number
+    const solicitarEliminarMateria = (
+        materia: Materia
     ) => {
 
-        const confirmar =
-            window.confirm(
-                "¿Seguro que deseas eliminar esta materia?"
-            );
+        setShowMenu(null);
+        setMateriaAEliminar(materia);
 
-        if (!confirmar) {
+    };
+
+
+    const confirmarEliminarMateria = async () => {
+
+        if (!materiaAEliminar) {
             return;
         }
 
         try {
 
+            setEliminandoMateria(true);
             setError("");
 
             await deleteMateriaRequest(
-                id
+                materiaAEliminar.id
             );
 
             setMaterias(
                 (actuales) =>
                     actuales.filter(
                         (materia) =>
-                            materia.id !== id
+                            materia.id !==
+                            materiaAEliminar.id
                     )
             );
 
-            setShowMenu(null);
+            setMateriaAEliminar(null);
 
         } catch (error: any) {
 
@@ -880,10 +892,24 @@ export default function Materias() {
                 "No se pudo eliminar la materia."
             );
 
+        } finally {
+
+            setEliminandoMateria(false);
+
         }
 
     };
 
+
+    const cancelarEliminarMateria = () => {
+
+        if (eliminandoMateria) {
+            return;
+        }
+
+        setMateriaAEliminar(null);
+
+    };
 
     /*
     |--------------------------------------------------------------------------
@@ -1463,8 +1489,8 @@ export default function Materias() {
 
                                                         <button
                                                             onClick={() =>
-                                                                eliminarMateria(
-                                                                    materia.id
+                                                                solicitarEliminarMateria(
+                                                                    materia
                                                                 )
                                                             }
                                                             className="
@@ -2827,6 +2853,91 @@ export default function Materias() {
 
                             </button>
 
+                        </div>
+
+                    </div>
+
+                </div>
+
+            )}
+
+
+            {/* =========================================================
+                MODAL CONFIRMAR ELIMINACIÓN
+            ========================================================= */}
+
+            {materiaAEliminar && (
+
+                <div
+                    className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                    onMouseDown={(e) => {
+                        if (e.target === e.currentTarget && !eliminandoMateria) {
+                            cancelarEliminarMateria();
+                        }
+                    }}
+                >
+
+                    <div
+                        className="w-full max-w-md rounded-2xl bg-[var(--nexus-surface)] border border-[var(--nexus-border)] shadow-[0_30px_100px_rgba(0,0,0,0.65)] overflow-hidden"
+                    >
+
+                        <div className="px-6 pt-7 pb-3">
+                            <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                                <Trash2 size={25} className="text-red-400" />
+                            </div>
+                        </div>
+
+                        <div className="px-6 pb-6">
+                            <h2 className="text-xl font-bold text-[var(--nexus-text)]">
+                                ¿Eliminar materia?
+                            </h2>
+
+                            <p className="mt-2 text-sm leading-6 text-[var(--nexus-text-secondary)]">
+                                Estás a punto de eliminar la materia:
+                            </p>
+
+                            <div className="mt-4 rounded-xl bg-red-500/5 border border-red-500/10 px-4 py-3">
+                                <p
+                                    className="text-sm font-semibold text-[var(--nexus-text)] truncate"
+                                    title={materiaAEliminar.nombre}
+                                >
+                                    {materiaAEliminar.nombre}
+                                </p>
+                            </div>
+
+                            <p className="mt-4 text-xs leading-5 text-[var(--nexus-text-muted)]">
+                                Esta acción eliminará la materia y puede afectar el contenido académico relacionado. Esta acción no se puede deshacer.
+                            </p>
+                        </div>
+
+                        <div className="px-6 py-4 border-t border-[var(--nexus-border)] flex items-center justify-end gap-3">
+                            <button
+                                type="button"
+                                onClick={cancelarEliminarMateria}
+                                disabled={eliminandoMateria}
+                                className="h-11 px-5 rounded-xl text-sm font-medium text-[var(--nexus-text-secondary)] hover:text-[var(--nexus-text)] hover:bg-black/5 dark:hover:bg-white/5 disabled:opacity-40 transition-all"
+                            >
+                                Cancelar
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={confirmarEliminarMateria}
+                                disabled={eliminandoMateria}
+                                className="h-11 px-5 rounded-xl bg-red-600 hover:bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-semibold inline-flex items-center justify-center gap-2 transition-all"
+                            >
+                                {eliminandoMateria ? (
+                                    <>
+                                        <Loader2 size={17} className="animate-spin" />
+                                        Eliminando...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Trash2 size={17} />
+                                        Eliminar materia
+                                    </>
+                                )}
+                            </button>
                         </div>
 
                     </div>
