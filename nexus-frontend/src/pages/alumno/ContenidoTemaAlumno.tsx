@@ -17,7 +17,6 @@ import {
     PlayCircle,
     Puzzle,
     StickyNote,
-    Video,
 } from "lucide-react";
 
 import {
@@ -944,13 +943,7 @@ export default function ContenidoTemaAlumno() {
     |--------------------------------------------------------------------------
     */
 
-    const recursoActual =
-        recursos.find(
-            recurso =>
-                recurso.id ===
-                recursoSeleccionado
-        ) ||
-        null;
+    
 
 
     /*
@@ -959,16 +952,7 @@ export default function ContenidoTemaAlumno() {
     |--------------------------------------------------------------------------
     */
 
-    const seleccionarRecurso =
-        (
-            recurso: Recurso
-        ) => {
-
-            setRecursoSeleccionado(
-                recurso.id
-            );
-
-        };
+   
 
 
     /*

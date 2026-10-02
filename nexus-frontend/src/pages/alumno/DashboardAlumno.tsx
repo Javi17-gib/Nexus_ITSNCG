@@ -29,8 +29,6 @@ import GalaxyLines
 import MateriaNode
     from "../../components/alumno/MateriaNode";
 
-import NexusConnections
-    from "../../components/common/NexusConnections";
 
 
 import {
@@ -39,9 +37,6 @@ import {
 } from "../../api/grupos";
 
 
-import {
-    getMateriasRequest,
-} from "../../api/materias";
 
 import type {
     Materia,
@@ -133,10 +128,7 @@ export default function DashboardAlumno() {
     |--------------------------------------------------------------------------
     */
 
-    const [
-        grupos,
-        setGrupos,
-    ] = useState<GrupoAlumno[]>([]);
+    
 
 
 
@@ -302,9 +294,7 @@ export default function DashboardAlumno() {
                             : [];
 
 
-                    setGrupos(
-                        gruposAlumno
-                    );
+                    
 
 
 

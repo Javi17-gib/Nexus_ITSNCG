@@ -42,7 +42,7 @@ import {
 
 import type {
     Materia,
-} from "../../api/materias";
+} from "../../types/materia";
 
 
 /*
@@ -436,7 +436,7 @@ export default function Grupos() {
 
                 setGrupos(
                     Array.isArray(respuesta)
-                        ? respuesta
+                        ? respuesta as Grupo[]
                         : []
                 );
 
@@ -3295,7 +3295,7 @@ export default function Grupos() {
 
                                         </span>{" "}
 
-                                        NEXUS generará automáticamente
+                                        Bufalin generará automáticamente
                                         un código único para que tus
                                         alumnos puedan solicitar unirse
                                         al grupo.
@@ -4224,7 +4224,7 @@ export default function Grupos() {
                                     px-4 py-3 text-left
                                 ">
                                     <p className="text-xs leading-5 text-orange-400">
-                                        El alumno no será eliminado de NEXUS.
+                                        El alumno no será eliminado de ITS.
                                         Solamente dejará de pertenecer a este
                                         grupo y la materia dejará de aparecerle
                                         en su espacio.

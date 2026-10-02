@@ -19,6 +19,16 @@ use App\Http\Controllers\Api\ReporteController;
 |--------------------------------------------------------------------------
 | RUTAS PÚBLICAS
 |--------------------------------------------------------------------------
+|
+| Estas rutas NO requieren autenticación.
+|
+*/
+
+
+/*
+|--------------------------------------------------------------------------
+| REGISTRO
+|--------------------------------------------------------------------------
 */
 
 Route::post(
@@ -26,9 +36,51 @@ Route::post(
     [AuthController::class, 'register']
 );
 
+
+/*
+|--------------------------------------------------------------------------
+| LOGIN
+|--------------------------------------------------------------------------
+*/
+
 Route::post(
     '/login',
     [AuthController::class, 'login']
+);
+
+
+/*
+|--------------------------------------------------------------------------
+| RECUPERACIÓN DE CONTRASEÑA
+|--------------------------------------------------------------------------
+|
+| Estas rutas deben permanecer públicas porque el usuario
+| todavía no tiene un token de Sanctum.
+|
+*/
+
+
+/*
+|--------------------------------------------------------------------------
+| SOLICITAR PIN
+|--------------------------------------------------------------------------
+*/
+
+Route::post(
+    '/forgot-password',
+    [AuthController::class, 'forgotPassword']
+);
+
+
+/*
+|--------------------------------------------------------------------------
+| RESTABLECER CONTRASEÑA
+|--------------------------------------------------------------------------
+*/
+
+Route::post(
+    '/reset-password',
+    [AuthController::class, 'resetPassword']
 );
 
 
@@ -47,20 +99,35 @@ Route::middleware('auth:sanctum')->group(function () {
     |--------------------------------------------------------------------------
     */
 
+
+    /*
+    | CERRAR SESIÓN
+    */
+
     Route::post(
         '/logout',
         [AuthController::class, 'logout']
     );
+
+
+    /*
+    | USUARIO AUTENTICADO
+    */
 
     Route::get(
         '/user',
         [AuthController::class, 'user']
     );
 
+
+    /*
+    | ACTUALIZAR PERFIL
+    */
+
     Route::put(
-        '/user/profile', 
+        '/user/profile',
         [AuthController::class, 'updateProfile']
-        );
+    );
 
 
     /*
@@ -73,16 +140,19 @@ Route::middleware('auth:sanctum')->group(function () {
         'grupos',
         GrupoController::class
     );
-    /*
-|--------------------------------------------------------------------------
-| NOTIFICACIONES DEL DOCENTE
-|--------------------------------------------------------------------------
-*/
 
-Route::get(
-    '/notificaciones/docente',
-    [GrupoController::class, 'notificacionesDocente']
-);
+
+    /*
+    |--------------------------------------------------------------------------
+    | NOTIFICACIONES DEL DOCENTE
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/notificaciones/docente',
+        [GrupoController::class, 'notificacionesDocente']
+    );
+
 
     /*
     |--------------------------------------------------------------------------
@@ -191,6 +261,7 @@ Route::get(
         UnidadController::class
     );
 
+
     Route::get(
         '/materias/{materiaId}/unidades',
         [UnidadController::class, 'porMateria']
@@ -207,6 +278,7 @@ Route::get(
         'temas',
         TemaController::class
     );
+
 
     Route::get(
         '/unidades/{unidadId}/temas',
@@ -225,6 +297,7 @@ Route::get(
         ContenidoController::class
     );
 
+
     Route::get(
         '/temas/{temaId}/contenidos',
         [ContenidoController::class, 'porTema']
@@ -242,6 +315,7 @@ Route::get(
         ArchivoController::class
     );
 
+
     Route::get(
         '/contenidos/{contenidoId}/archivos',
         [ArchivoController::class, 'porContenido']
@@ -249,27 +323,27 @@ Route::get(
 
 
     /*
-|--------------------------------------------------------------------------
-| RETOS
-|--------------------------------------------------------------------------
-*/
+    |--------------------------------------------------------------------------
+    | RETOS
+    |--------------------------------------------------------------------------
+    */
 
-Route::apiResource(
-    'retos',
-    RetoController::class
-);
-
-
-Route::get(
-    '/temas/{tema}/retos',
-    [RetoController::class, 'index']
-);
+    Route::apiResource(
+        'retos',
+        RetoController::class
+    );
 
 
-Route::patch(
-    '/retos/{id}/solucion',
-    [RetoController::class, 'cambiarSolucion']
-);
+    Route::get(
+        '/temas/{tema}/retos',
+        [RetoController::class, 'index']
+    );
+
+
+    Route::patch(
+        '/retos/{id}/solucion',
+        [RetoController::class, 'cambiarSolucion']
+    );
 
 
     /*
@@ -283,20 +357,24 @@ Route::patch(
         [EstadisticaController::class, 'registrar']
     );
 
+
     Route::get(
         '/estadisticas/grupo/{grupoId}',
         [EstadisticaController::class, 'visitasPorGrupo']
     );
+
 
     Route::get(
         '/estadisticas/grupo/{grupoId}/semana',
         [EstadisticaController::class, 'visitasPorSemana']
     );
 
+
     Route::get(
         '/estadisticas/grupo/{grupoId}/activos',
         [EstadisticaController::class, 'alumnosActivos']
     );
+
 
     Route::get(
         '/estadisticas/materia/{materiaId}',
@@ -315,23 +393,24 @@ Route::patch(
         [EstadisticaController::class, 'dashboardDocente']
     );
 
+
     /*
-/*
-|--------------------------------------------------------------------------
-| REPORTES
-|--------------------------------------------------------------------------
-*/
-
-Route::get(
-    '/reportes/grupo/{grupoId}/actividad',
-    [ReporteController::class, 'actividadGrupo']
-);
+    |--------------------------------------------------------------------------
+    | REPORTES
+    |--------------------------------------------------------------------------
+    */
 
 
-Route::get(
-    '/reportes/grupo/{grupoId}/pdf',
-    [ReporteController::class, 'descargarPdf']
-);
+    Route::get(
+        '/reportes/grupo/{grupoId}/actividad',
+        [ReporteController::class, 'actividadGrupo']
+    );
+
+
+    Route::get(
+        '/reportes/grupo/{grupoId}/pdf',
+        [ReporteController::class, 'descargarPdf']
+    );
 
 
     /*

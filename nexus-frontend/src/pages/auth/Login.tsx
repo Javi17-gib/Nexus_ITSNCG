@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, Lock, Eye, EyeOff, Hash } from "lucide-react";
+import { Eye, EyeOff, Hash } from "lucide-react";
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -623,7 +623,8 @@ export default function Login() {
 
               <button
                 type="button"
-                className="text-violet-400"
+                onClick={() => navigate("/forgot-password")}
+                className="text-violet-400 hover:text-violet-300 transition"
               >
                 ¿Olvidaste tu contraseña?
               </button>

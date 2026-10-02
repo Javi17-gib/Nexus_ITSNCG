@@ -14,7 +14,6 @@ import {
     MoreVertical,
     Pencil,
     Trash2,
-    GraduationCap,
     Loader2,
     AlertCircle,
     X,
@@ -1637,6 +1636,7 @@ export default function Materias() {
                                                     "
                                                 >
                                                     {
+                                                        materia.unidades_count ??
                                                         materia.unidades ??
                                                         0
                                                     }
@@ -1680,6 +1680,7 @@ export default function Materias() {
                                                     "
                                                 >
                                                     {
+                                                        materia.temas_count ??
                                                         materia.temas ??
                                                         0
                                                     }
@@ -1723,7 +1724,7 @@ export default function Materias() {
                                                     "
                                                 >
                                                     {
-                                                        materia.grupos_count ?? 0
+                                                        materia.grupos_count ?? materia.grupos ?? 0
                                                     }
                                                 </p>
 

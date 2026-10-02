@@ -33,6 +33,9 @@ import DashboardAlumnoLayout
 import ConfiguracionAlumno
     from "../pages/alumno/ConfiguracionAlumno";
 
+import ForgotPassword 
+    from "../pages/auth/ForgotPassword";
+
 
 // =====================================================
 // DOCENTE
@@ -236,6 +239,12 @@ export default function AppRoutes() {
                     }
                 />
 
+                <Route
+                    path="/forgot-password"
+                    element={<ForgotPassword />
+                        
+                    }
+                />
 
                 {/* =================================================
                     ALUMNO

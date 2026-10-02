@@ -7,6 +7,13 @@ import type {
     User,
 } from "../types/auth";
 
+
+/*
+|--------------------------------------------------------------------------
+| LOGIN
+|--------------------------------------------------------------------------
+*/
+
 export async function loginRequest(
     data: LoginData
 ): Promise<AuthResponse> {
@@ -18,6 +25,13 @@ export async function loginRequest(
 
     return response.data;
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| REGISTRO
+|--------------------------------------------------------------------------
+*/
 
 export async function registerRequest(
     data: RegisterData
@@ -31,10 +45,24 @@ export async function registerRequest(
     return response.data;
 }
 
+
+/*
+|--------------------------------------------------------------------------
+| CERRAR SESIÓN
+|--------------------------------------------------------------------------
+*/
+
 export async function logoutRequest() {
 
     return await api.post("/logout");
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| OBTENER USUARIO
+|--------------------------------------------------------------------------
+*/
 
 export async function getUserRequest(): Promise<User> {
 
@@ -42,6 +70,13 @@ export async function getUserRequest(): Promise<User> {
 
     return response.data;
 }
+
+
+/*
+|--------------------------------------------------------------------------
+| ACTUALIZAR PERFIL
+|--------------------------------------------------------------------------
+*/
 
 export async function updateProfileRequest(
     data: FormData
@@ -56,6 +91,58 @@ export async function updateProfileRequest(
             headers: {
                 "Content-Type": "multipart/form-data",
             },
+        }
+    );
+
+    return response.data;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| RECUPERAR CONTRASEÑA
+|--------------------------------------------------------------------------
+| Solicita el envío del PIN al correo.
+|--------------------------------------------------------------------------
+*/
+
+export async function forgotPasswordRequest(
+    correo: string
+) {
+
+    const response = await api.post(
+        "/forgot-password",
+        {
+            correo,
+        }
+    );
+
+    return response.data;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| RESTABLECER CONTRASEÑA
+|--------------------------------------------------------------------------
+| Envía correo + PIN + nueva contraseña.
+|--------------------------------------------------------------------------
+*/
+
+export async function resetPasswordRequest(
+    correo: string,
+    pin: string,
+    password: string,
+    password_confirmation: string
+) {
+
+    const response = await api.post(
+        "/reset-password",
+        {
+            correo,
+            pin,
+            password,
+            password_confirmation,
         }
     );
 

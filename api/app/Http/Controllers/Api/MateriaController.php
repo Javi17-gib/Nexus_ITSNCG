@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Materia;
+use App\Models\Tema;
 
 class MateriaController extends Controller
 {
@@ -50,7 +51,7 @@ class MateriaController extends Controller
     |
     */
 
-    public function index(Request $request)
+  public function index(Request $request)
 {
     /*
     |--------------------------------------------------------------------------
@@ -71,6 +72,32 @@ class MateriaController extends Controller
             ->orderBy('id', 'asc')
             ->get();
 
+        /*
+        |--------------------------------------------------------------------------
+        | CONTAR TEMAS DE CADA MATERIA
+        |--------------------------------------------------------------------------
+        |
+        | Cada tema pertenece a una unidad mediante unidad_id.
+        | Cada unidad pertenece a una materia mediante materia_id.
+        |
+        */
+
+        $materias->each(function ($materia) {
+
+            $materia->setAttribute(
+                'temas_count',
+                Tema::whereHas('unidad', function ($query) use ($materia) {
+
+                    $query->where(
+                        'materia_id',
+                        $materia->id
+                    );
+
+                })->count()
+            );
+
+        });
+
         return response()->json(
             $materias
         );
@@ -90,6 +117,29 @@ class MateriaController extends Controller
         ->where('activa', true)
         ->orderBy('id', 'asc')
         ->get();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CONTAR TEMAS DE CADA MATERIA
+    |--------------------------------------------------------------------------
+    */
+
+    $materias->each(function ($materia) {
+
+        $materia->setAttribute(
+            'temas_count',
+            Tema::whereHas('unidad', function ($query) use ($materia) {
+
+                $query->where(
+                    'materia_id',
+                    $materia->id
+                );
+
+            })->count()
+        );
+
+    });
 
 
     return response()->json(

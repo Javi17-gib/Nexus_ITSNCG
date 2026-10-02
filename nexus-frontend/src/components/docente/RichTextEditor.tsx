@@ -1,4 +1,3 @@
-import type React from "react";
 
 import {
     useEffect,
@@ -32,9 +31,6 @@ import {
     Italic,
     Underline as UnderlineIcon,
     Strikethrough,
-    Heading1,
-    Heading2,
-    Heading3,
     List,
     ListOrdered,
     AlignLeft,

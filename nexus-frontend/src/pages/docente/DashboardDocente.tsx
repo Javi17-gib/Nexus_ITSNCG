@@ -174,13 +174,22 @@ export default function DashboardDocente() {
 
         <div
             className="
-                w-full
-                min-h-full
-                p-0
-                text-[var(--nexus-text)]
-                transition-colors
-                duration-300
-            "
+    w-full
+    min-h-full
+    p-0
+    text-[var(--nexus-text)]
+    transition-colors
+    duration-300
+
+    [scrollbar-color:rgba(139,92,246,0.45)_transparent]
+    [scrollbar-width:thin]
+
+    [&::-webkit-scrollbar]:w-1.5
+    [&::-webkit-scrollbar-track]:bg-transparent
+    [&::-webkit-scrollbar-thumb]:rounded-full
+    [&::-webkit-scrollbar-thumb]:bg-violet-500/30
+    hover:[&::-webkit-scrollbar-thumb]:bg-violet-500/55
+"
         >
 
             {/* =====================================================

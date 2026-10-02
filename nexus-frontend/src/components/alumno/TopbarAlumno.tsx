@@ -5,7 +5,6 @@ import {
     Sun,
     Moon,
     User,
-    Settings,
     LogOut,
 } from "lucide-react";
 
