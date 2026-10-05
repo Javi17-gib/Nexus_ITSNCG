@@ -292,33 +292,18 @@ class AuthController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        Mail::raw(
-
-            "Hola {$user->nombre},\n\n" .
-
-            "Recibimos una solicitud para restablecer " .
-            "la contraseña de tu cuenta.\n\n" .
-
-            "Tu PIN de recuperación es:\n\n" .
-
-            "{$pin}\n\n" .
-
-            "Este PIN tiene una vigencia de 10 minutos.\n\n" .
-
-            "Si tú no solicitaste este cambio, " .
-            "puedes ignorar este correo.\n\n" .
-
-            "Saludos.",
-
-            function ($message) use ($user) {
-
-                $message
-                    ->to($user->correo)
-                    ->subject(
-                        'PIN para recuperar tu contraseña'
-                    );
-            }
-        );
+        Mail::send(
+    'emails.recuperacion-contrasena',
+    [
+        'codigo' => $pin,
+        'nombre' => $user->nombre,
+    ],
+    function ($message) use ($user) {
+        $message
+            ->to($user->correo)
+            ->subject('Recuperación de contraseña • NEXUS');
+    }
+);
 
 
         /*
