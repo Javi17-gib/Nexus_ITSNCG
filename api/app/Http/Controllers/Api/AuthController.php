@@ -293,7 +293,7 @@ class AuthController extends Controller
         */
 
         Mail::send(
-    'emails.recuperacion-contrasena',
+    'emails.recovery',
     [
         'codigo' => $pin,
         'nombre' => $user->nombre,
@@ -301,7 +301,7 @@ class AuthController extends Controller
     function ($message) use ($user) {
         $message
             ->to($user->correo)
-            ->subject('Recuperación de contraseña • NEXUS');
+            ->subject('Recuperación de contraseña • BUFALIN');
     }
 );
 
