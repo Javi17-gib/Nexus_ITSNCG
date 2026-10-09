@@ -775,7 +775,7 @@ export default function ConfiguracionAlumno() {
                                 >
                                     Esta imagen aparecerá
                                     en tu perfil y en la
-                                    navegación de NEXUS.
+                                    navegación del ITSNCG.
                                 </p>
 
 

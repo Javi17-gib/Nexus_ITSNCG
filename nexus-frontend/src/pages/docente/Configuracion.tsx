@@ -479,7 +479,7 @@ export default function Configuracion() {
                         "
                     >
                         Administra la información que
-                        aparece en tu perfil de NEXUS.
+                        aparece en tu perfil del ITSNCG.
                     </p>
 
                 </div>
@@ -653,7 +653,7 @@ export default function Configuracion() {
                                 >
                                     Esta imagen aparecerá
                                     en tu perfil y en la
-                                    navegación de NEXUS.
+                                    navegación del ITSNCG.
                                 </p>
 
                                 <p
