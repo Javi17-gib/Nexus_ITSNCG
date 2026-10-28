@@ -1700,9 +1700,9 @@ export default function ContenidoTema() {
 
         <a
             href={
-                archivo.url ||
-                `http://127.0.0.1:8000/storage/${archivo.ruta}`
-            }
+    archivo.url ||
+    `https://api.aprendiendoconbufalin.website/storage/${archivo.ruta}`
+}
             target="_blank"
             rel="noreferrer"
             className="
